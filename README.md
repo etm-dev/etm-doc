@@ -24,3 +24,27 @@ En-Tan-Mo， 灵感来源于 Entente（联盟）、Transaction（交易）和 Mo
 为了解决区块链快速和区块链即服务(BaaS)的问题,“En-Tan-Mo”采用了一条中心链加多条衍生链的设计,中心链负责网络安全及价值交换。衍生链是一种特殊的区块链,每一个衍生链对应一个DAPP,是一个独立的、隔离的系统,通过继承和复用主链强大的区块技术,每个应用都拥有一套个性化的账本,拥有自己的代币,其共识机制、区块参数、交易类型都是可以被定制的。各衍生链之间具有平行关系,即衍生链与衍生链之间互为平行链。它们可以通过中心链的“平行链交互层”实现其与中心链、其他衍生链及外部区块链链之间的双向资产传递,这使得用户能用已有的资产来使用“En-Tan-Mo”系统。
 
 以下是链结构：
+<div align="center">
+
+![img](./img/sidechain.png)
+
+</div>  
+
+#### 多链结构优势
+1. 合作共赢关系
+  对比与大多数公链，使用为什么昂贵，效率低，其最本质的特点就是资源竞争问题；entanmo独创的多链结构，一个Dapp运行在一个单独的侧链上，那么他们的资源是不受其他链影响的。
+2. 私人定制
+  由于entanmo的Dapp是运行在单独的侧链上，不受其他链影响，那么在可控范围内，entanmo给予了侧链足够高的定制性，比如genesis.json中的相关参数。
+3. 高并发、安全、易开发
+  这些基本属性稍后会在侧链章节仔细讲解。
+ 
+ ## 文档指南
+ - [开发前准备](http://www.entanmo.com/download/entanmo-windows.zip)
+ - [智能合约开发](http://www.entanmo.com/download/entanmo-windows.zip)
+ - [智能合约sdk详解](http://www.entanmo.com/download/entanmo-windows.zip)
+ - [http接口详解](http://www.entanmo.com/download/entanmo-windows.zip)
+ - [实际demo](http://www.entanmo.com/download/entanmo-windows.zip)
+ - [查找问题](http://www.entanmo.com/download/entanmo-windows.zip)
+ - [Q&A](http://www.entanmo.com/download/entanmo-windows.zip)
+ - [TODO](http://www.entanmo.com/download/entanmo-windows.zip)
+
