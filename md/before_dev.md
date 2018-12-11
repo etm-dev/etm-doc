@@ -1,4 +1,5 @@
-## 开发前准备
+## 开发准备
+### 1.介绍
 #### 1.1 entanmo组件版本
 | 组件        | version           |
 | ------------- |:-------------:| 
@@ -29,7 +30,78 @@ Ubuntu 18.04
 
 MacOS Darwin 10.12及更高版本（建议使用MacOS 10.13.x）
 
-可以安装js相关库的系统都可以支持，详情请见下章。
+可以安装js相关库的系统都可以支持，详情请见下节(2.x)。
 #### 1.6 其他要求
 命令行：entanmo提供各类工具以及命令，所以要求开发者具备命令行（shell）相关知识。
 日志：entanmo有两大日志输出文件，一个是主链日志，一个是侧链日志，需要开发者能基于相关日志能查找相关问题。
+
+-------------------
+### 2.开发环境准备
+#### 2.1 mac安装相应环境
+**1.安装brew**
+
+打开命令行，执行以下命令：
+`/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
+
+**2.安装相关库**
+``
+	
+	//更新
+	brew update
+	//安装8.x.x版本node
+	brew install node@8
+	//输出8.x.x 即为安装成功	或者npm -v
+	node -v 
+	//安装相关库文件
+	brew install curl sqlite3 wget git openssl autoconf automake libtool libsodium
+	//clone 代码
+	git clone -b testNet https://github.com/entanmo/etm.git 
+	//安装包以及编译运行
+	cd etm && npm install && node app.js
+	
+	
+``
+**3.查看是否安装成功**
+
+npm install 以后显示以下内容即为成功
+![](../img/install_success-mac.png)
+
+运行代码 `node app.js`
+![](../img/node_app_error-mac.png)
+
+修改./config/miner-cfg.json 如果是矿机挖矿是需要开启的
+	
+	//修改成false
+	"enableGPU": true 
+
+修改./config/config.json [参考](../img/config.json)
+
+```
+   ...
+	"peers": {
+    	"list": [
+      		{                          //删除
+        		"ip": "52.187.232.98",  //删除
+        		"port":4096             //删除
+      		}                          //删除
+    	],
+    ...
+    "forging": {
+    	"secret": [
+    	//此处需要添加101个secret
+    	],
+    	"access": {
+      		"whiteList": [
+        		"127.0.0.1"
+      		]
+    	}
+  	},
+  	...
+
+```
+
+**运行成功**
+
+![](../img/run_success.png)
+
+
