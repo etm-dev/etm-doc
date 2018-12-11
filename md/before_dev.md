@@ -44,7 +44,7 @@ MacOS Darwin 10.12及更高版本（建议使用MacOS 10.13.x）
 `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
 
 **2.安装相关库**
-``
+
 	
 	//更新
 	brew update
@@ -60,7 +60,7 @@ MacOS Darwin 10.12及更高版本（建议使用MacOS 10.13.x）
 	cd etm && npm install && node app.js
 	
 	
-``
+
 **3.查看是否安装成功**
 
 npm install 以后显示以下内容即为成功
@@ -104,4 +104,132 @@ npm install 以后显示以下内容即为成功
 
 ![](../img/run_success.png)
 
+#### 2.2 linux安装相关环境
+**1.选择linux系统**
+
+官方推荐版本：Ubuntu18.04
+
+由于市面16.04版本居多，本文以16.04系统安装举例。
+	
+	//版本信息（阿里云服务器）
+	Linux version 4.4.0-85-generic (buildd@lcy01-21) (gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.4) ) #108-Ubuntu SMP Mon Jul 3 17:23:59 UTC 2017
+	
+**2.安装库文件**
+	
+	//更新源
+	sudo apt-get update
+	//安装lib库
+	sudo apt-get install curl sqlite3 ntp wget git libssl-dev openssl make gcc g++ autoconf automake python build-essential libtool libtool-bin -y
+
+**3.安装nodejs**
+	
+	//获取安装脚本并执行
+	curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+	//安装
+	sudo apt-get install nodejs -y
+	
+**4.验证是否成功安装（可参考mac验证过程）**
+
+*修改任何配置请参考mac验证过程*
+
+	//克隆代码
+	git clone -b testNet https://github.com/entanmo/etm.git
+	//编译运行
+	cd etm && npm install && node app.js
+
+**4.其他Linux系统**
+对于其他linux系统，其实只要lib安装好，都是可以很方便的运行的。
+
+#### 2.3 windows安装相关环境（极其不推荐）
+**1.不推荐windows系统**
+
+由于entanmo使用了C++编译工具，做过C++开发的同学都知道，在windows上安装C++编译环境是非常繁琐，而且安装失败很难清除，所以强烈建议使用mac或者linux系统。
+
+不推荐也得给大家安装一个～
+
+**2.安装nodejs**
+
+在[nodejs](https://nodejs.org/en/download/)官网下载指定版本，点击安装即可
+
+**3.安装node-gyp**
+
+这一步比较麻烦
+
+简单步骤（如果大家时间比较多，网速比较好）
+	
+	//请以管理员的身份运行命令后
+	npm install --global --production windows-build-tools
+	//等着就行了
+
+复杂步骤（如果大家时间宝贵，[参考](https://www.jianshu.com/p/2b831714bbff)）
+
+	//下载Microsoft Build Tools 2015
+	https://www.microsoft.com/en-us/download/details.aspx?id=48159
+	
+	//下载安装 python2.7
+	https://www.python.org/
+	
+	//配置
+	npm config set python python2.7
+	npm config set msvs_version 2015
+
+
+**4.安装sqlite3**
+	
+	//下载文件
+	https://www.sqlite.org/2018/sqlite-dll-win32-x86-3260000.zip
+	https://www.sqlite.org/2018/sqlite-tools-win32-x86-3260000.zip
+	
+解压两个文件夹
+
+将dll（其中一个文件夹）文件移动到sqlite3.exe（另一个文件夹）文件夹中
+
+将含有sqlite3.exe的文件夹路径加入path中
+
+**5.验证安装是否成功（参考mac验证）**
+
+不建议大家使用windows，但是这里还有一种比较简单的方式，官方给打包好的程序，一键运行。
+
+#### 2.4 docker安装相关环境
+可以参考本组织另外[一个库](https://github.com/etm-dev/etm-dev-docker)
+需要注意的是修改相关配置，才能运行
+
+	//一个命令搞定（如果配置正确）
+	docker run -it --rm --name etm-dev -v $(pwd):/etm -p 4096:4096 ray0523/etm_base /bin/bash -c "npm install https://github.com/entanmo/etm-js.git https://github.com/entanmo/etm-vm.git && npm install && node app.js"
+	//如果配置不正确，进入docker环境，此镜像已经安装好了lib，然后重复mac的验证过程即可
+	docker run -it --rm --name etm-dev -v $(pwd):/etm -p 4096:4096 ray0523/etm_base /bin/bash
+	
+#### 2.5 一键安装相关环境（Ubuntu、windows）
+
+[参考](https://github.com/entanmo/etm/blob/testNet/README.zh-CN.md)
+
+**ubuntu**
+
+	wget http://www.entanmo.com/download/entanmo-ubuntu.tar.gz
+	tar zxvf entanmo-ubuntu.tar.gz
+	cd entanmo
+
+运行：
+	
+	./entanmod configure 
+	./entanmod start	
+
+**windows**
+	
+	//下载解压
+	http://www.entanmo.com/download/entanmo-windows.zip
+
+运行：
+	
+	./entanmod.bat start	
+
+命令解释：
+	
+	start: 在前台启动节点系统，此时控制台(终端)会被节点系统进程独占
+	start_daemon: 在后台启动节点系统，此时控制台(终端)不会被节点系统独占
+	stop: 停止后台运行的节点系统
+	restart: 前台重启节点系统
+	restart_daemon: 后台重启节点系统
+	status: 查看节点系统是否启动
+	
 
