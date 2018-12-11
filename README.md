@@ -39,12 +39,12 @@ En-Tan-Mo， 灵感来源于 Entente（联盟）、Transaction（交易）和 Mo
   这些基本属性稍后会在侧链章节仔细讲解。
  
  ## 文档指南
- - [开发前准备](http://www.entanmo.com/download/entanmo-windows.zip)
- - [智能合约开发](http://www.entanmo.com/download/entanmo-windows.zip)
- - [智能合约sdk详解](http://www.entanmo.com/download/entanmo-windows.zip)
- - [http接口详解](http://www.entanmo.com/download/entanmo-windows.zip)
- - [实际demo](http://www.entanmo.com/download/entanmo-windows.zip)
- - [查找问题](http://www.entanmo.com/download/entanmo-windows.zip)
- - [Q&A](http://www.entanmo.com/download/entanmo-windows.zip)
- - [TODO](http://www.entanmo.com/download/entanmo-windows.zip)
+ - [开发前准备](./md/before_dev.md)
+ - [智能合约开发](./md/smart_contract.md)
+ - [智能合约sdk详解](./md/smart_contract_api.md)
+ - [http接口详解](./md/http_api.md)
+ - [实际demo](./md/demo.md)
+ - [查找问题](./md/log.md)
+ - [Q&A](./md/QA.md)
+ - [TODO](./md/TODO.md)
 
