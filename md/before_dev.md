@@ -237,11 +237,112 @@ npm install 以后显示以下内容即为成功
 
 ### 3.钱包使用
 
+clone钱包代码：
+
+	git clone https://github.com/entanmo/etm-wallet.git
+
+修改配置：
+	
+	cd etm-wallet
+	vi config/ip.js //修改ip地址为本地etm主链ip端口，默认4096
+
+编译运行：
+	
+	npm install //安装库文件
+	npm run dev //运行
+	-----------------------------------------------------------------
+	//or docker运行
+	docker run -d --name etm-wallet -w /etm -v $(pwd):/etm -p 8080:8080 node /bin/bash -c "npm install && npm run dev"
+	
+验证：
+	
+	访问http://0.0.0.0:8080 显示钱包网页，即为编译成功
+
+
 
 --------------
 
 ### 4.etm-cli介绍
+下载安装etm-cli
+	
+	//clone代码
+	git clone https://github.com/etm-developer/etm-cli.git
+	//将目录下的bin目录设置到path环境下
+	set xx/xx/etm-cli/bin to path //伪代码，根据不同系统设置不同
 
+
+使用(etm-cli -h)
+
+	etm-cli [options] [command]
+	options:
+		-V, --version                          版本号
+    	-H, --host <host>                      指定host(default: 127.0.0.1)
+    	-P, --port <port>                      指定端口(default: 4096)
+    	-M, --main                             Specify the mainnet, default: false
+    	-h, --help                             帮助
+    
+    command:
+    	getheight                              get block height
+    	getblockstatus                         get block status
+    	openaccount [secret]                   open your account and get the infomation by secret
+    	openaccountbypublickey [publickey]     open your account and get the infomation by publickey
+    	getbalance [address]                   get balance by address
+    	getaccount [address]                   get account by address
+    	getvoteddelegates [options] [address]  get delegates voted by address
+    	getdelegatescount                      get delegates count
+    	getdelegates [options]                 get delegates
+    	getvoters [publicKey]                  get voters of a delegate by public key
+    	getdelegatebypublickey [publicKey]     get delegate by public key
+    	getdelegatebyusername [username]       get delegate by username
+    	getblocks [options]                    get blocks
+    	getblockbyid [id]                      get block by id
+    	getblockbyheight [height]              get block by height
+    	getpeers [options]                     get peers
+    	getunconfirmedtransactions [options]   get unconfirmed transactions
+    	gettransactions [options]              get transactions
+    	gettransaction [id]                    get transactions
+    	sendmoney [options]                    send money to some address
+    	sendasset [options]                    send asset to some address
+    	registerdelegate [options]             register delegate
+    	listdiffvotes [options]                list the votes each other
+    	upvote [options]                       vote for delegates
+    	downvote [options]                     cancel vote for delegates
+    	setsecondsecret [options]              set second secret
+    	registerdapp [options]                 register a dapp
+    	deposit [options]                      deposit assets to an app
+    	dapptransaction [options]              create a dapp transaction
+    	lock [options]                         lock account transfer
+    	getfullblockbyid [id]                  get full block by block id
+    	getfullblockbyheight [height]          get full block by block height
+    	gettransactionbytes [options]          get transaction bytes
+    	gettransactionid [options]             get transaction id
+    	getblockbytes [options]                get block bytes
+    	getblockpayloadhash [options]          get block bytes
+    	getblockid [options]                   get block id
+    	verifybytes [options]                  verify bytes/signature/publickey
+    	contract [options]                     contract operations
+    	crypto [options]                       crypto operations
+    	dapps [options]                        manage your dapps
+    	creategenesis [options]                create genesis block
+    	peerstat                               analyze block height of all peers
+    	delegatestat                           analyze delegates status
+    	ipstat                                 analyze peer ip info
+
+使用方式：
+
+	etm-cli -H 119.110.112.122 -P 8096 getheight //ip 端口是主链的ip端口
+	> 56110
+	etm-cli -H 119.110.112.122 -P 8096 getblockstatus
+	> {
+  	>	  "success": true,
+  	>	  "height": 56113,
+  	>	  "fee": 10000000,
+  	>	  "milestone": 0,
+  	>	  "reward": 300000000,
+  	>	  "supply": 10016816200000000
+	> }
+
+下一章讲合约的时候会用到更多的命令，这里就不一一列举，大家先对这个命令工具有一个大致的了解即可。
 
 --------------
 
