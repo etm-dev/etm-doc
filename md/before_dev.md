@@ -1,20 +1,20 @@
 # 开发准备
 
-* [1.介绍](#1-介绍)
+* [1.介绍](#1介绍)
 	* [1.1 entanmo组件版本](#11-entanmo组件版本)
 	* [1.2 etm-vm功能](#12-etm-vm功能)
 	* [1.3 开发语言要求](#13-开发语言要求)
 	* [1.4 entanmo使用数据库（sqlite）介绍](#14-entanmo使用数据库sqlite介绍)
 	* [1.5 开发系统要求](#15-开发系统要求)
 	* [1.6 其他要求](#16-其他要求)
-* [2.开发环境准备](#2-开发环境准备)
+* [2.开发环境准备](#2开发环境准备)
 	* [2.1 mac安装相应环境](#21-mac安装相应环境)
 	* [2.2 linux安装相关环境](#22-linux安装相关环境)
 	* [2.3 windows安装相关环境（极其不推荐）](#23-windows安装相关环境极其不推荐)
 	* [2.4 docker安装相关环境](#24-docker安装相关环境)
-	* [2.5 一键安装相关环境（Ubuntu、windows）](#25-一键安装相关环境Ubuntu-windows)
-* [3.钱包使用](#3-钱包使用)
-* [4.etm-cli介绍](#4-etm-cli介绍)
+	* [2.5 一键安装相关环境](#25-一键安装相关环境)
+* [3.钱包使用](#3钱包使用)
+* [4.etm-cli介绍](#4etm-cli介绍)
 
 
 ### 1.介绍
@@ -217,7 +217,7 @@ npm install 以后显示以下内容即为成功
 	//如果配置不正确，进入docker环境，此镜像已经安装好了lib，然后重复mac的验证过程即可
 	docker run -it --rm --name etm-dev -v $(pwd):/etm -p 4096:4096 ray0523/etm_base /bin/bash
 	
-#### 2.5 一键安装相关环境（Ubuntu、windows）
+#### 2.5 一键安装相关环境
 
 [参考](https://github.com/entanmo/etm/blob/testNet/README.zh-CN.md)
 
