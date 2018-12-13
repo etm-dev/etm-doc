@@ -268,6 +268,10 @@ clone钱包代码：
 	6.牢记密钥
 	7.登录
 	8.个人中心查看钱包地址（类似：ANZccyU3CFJSmS2bfC5MRneoaCzAXEK5ki）
+	
+	or：
+	//下一小节会讲到etm-cli命令行工具
+	etm-cli crypto -g 
 
 
 
