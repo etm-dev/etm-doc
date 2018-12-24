@@ -25,6 +25,33 @@
 		* [4.1 获取所有智能合约](#41-获取所有智能合约)
 
 ### 1.区块信息获取
+接口地址：/api/dapps/dappID/blocks/height	
+请求方式：GET	
+支持格式：urlencode
+	
+返回参数说明：	
+
+| 参数        | 类型           |说明|
+| ------------- |:-------------:| :-------------:|
+| success      | boolean| 是否成功|
+| height      | integer      | Dapp的区块高度|
+
+请求示例：
+	
+	curl -k -H "Content-Type: application/json" -X GET http://localhost:4096/api/dapps/bebe3c57d76a5bbe3954bd7cb4b9e381e8a1ba3c78e183478b4f98b9d532f024/blocks/height && echo  
+ 
+ps：bebe3c57d76a5bbe3954bd7cb4b9e381e8a1ba3c78e183478b4f98b9d532f024 此参数为dappid
+
+JSON返回示例： 
+
+```
+{    
+	height: 10,    
+	success: true    
+}  
+
+```
+
 
 #### 1.1 获取DApp区块高度
 
