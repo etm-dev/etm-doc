@@ -661,3 +661,14 @@ JSON返回示例：
 
 
 ### 5.自定义合约接口调用
+参看demo中的[helloworld](demo.md)
+合约中部分代码：
+	
+	xxxx//功能
+	
+	xxxx//功能
+
+http接口调用方式：
+	
+	xxx
+	xxx
