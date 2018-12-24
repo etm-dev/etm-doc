@@ -656,3 +656,5 @@ app.balances.decrease('AC3pinmvz9qX9cj6c7VrGigq7bpPxVJq85', 'ETM', '100000')
 #### 7.12 混沌随机
 
 	//TODO
+-----------------
+下一章：[http接口详解](./http_api.md)
