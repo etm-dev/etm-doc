@@ -1,0 +1,180 @@
+{"level":"log","message":"Asch started: 0.0.0.0:4096","timestamp":"2018-08-06 03:15:02 157"}
+{"level":"info","message":"Modules ready and launched","timestamp":"2018-08-06 03:15:02 535"}
+{"level":"warn","message":"Failed to get public ip, block forging MAY not work!","timestamp":"2018-08-06 03:15:02 536"}
+{"level":"info","message":"Blocks 1610","timestamp":"2018-08-06 03:15:02 539"}
+{"level":"info","message":"Rebuilding blockchain, current block height:0","timestamp":"2018-08-06 03:15:02 543"}
+{"level":"info","message":"Blockchain ready","timestamp":"2018-08-06 03:15:11 601"}
+{"level":"warn","message":"Peers list is empty","timestamp":"2018-08-06 03:15:11 605"}
+{"level":"info","message":"Forging enabled on account: 6518038767050467653","timestamp":"2018-08-06 03:15:11 606"}
+{"level":"info","message":"start to launch 2 installed dapps","timestamp":"2018-08-06 03:15:11 606"}
+{"level":"info","message":"Forging enabled on account: 7286541193277597873","timestamp":"2018-08-06 03:15:11 611"}
+{"level":"info","message":"Forging enabled on account: 9915615509786512541","timestamp":"2018-08-06 03:15:11 612"}
+{"level":"info","message":"Forging enabled on account: 2196663803597658306","timestamp":"2018-08-06 03:15:11 613"}
+{"level":"info","message":"Forging enabled on account: 5277565260144300464","timestamp":"2018-08-06 03:15:11 613"}
+{"level":"info","message":"Forging enabled on account: 5249948908724276634","timestamp":"2018-08-06 03:15:11 614"}
+{"level":"info","message":"Forging enabled on account: 12419875832564375918","timestamp":"2018-08-06 03:15:11 622"}
+{"level":"info","message":"Forging enabled on account: 15191089745047050165","timestamp":"2018-08-06 03:15:11 623"}
+{"level":"info","message":"Launched dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b] successfully","timestamp":"2018-08-06 03:15:11 624"}
+{"level":"info","message":"Forging enabled on account: 2654377566358112161","timestamp":"2018-08-06 03:15:11 625"}
+{"level":"info","message":"Forging enabled on account: 3861648804602384674","timestamp":"2018-08-06 03:15:11 628"}
+{"level":"info","message":"Forging enabled on account: 13971029505549412813","timestamp":"2018-08-06 03:15:11 628"}
+{"level":"info","message":"Forging enabled on account: 6596854339030013318","timestamp":"2018-08-06 03:15:11 629"}
+{"level":"info","message":"Forging enabled on account: 17225760305387132051","timestamp":"2018-08-06 03:15:11 630"}
+{"level":"info","message":"Forging enabled on account: 6129325673362276724","timestamp":"2018-08-06 03:15:11 630"}
+{"level":"info","message":"Forging enabled on account: 614584684924564857","timestamp":"2018-08-06 03:15:11 631"}
+{"level":"info","message":"Forging enabled on account: 8629093377187074733","timestamp":"2018-08-06 03:15:11 632"}
+{"level":"info","message":"Forging enabled on account: 867476366794555242","timestamp":"2018-08-06 03:15:11 632"}
+{"level":"info","message":"Forging enabled on account: 13671993732758776566","timestamp":"2018-08-06 03:15:11 633"}
+{"level":"info","message":"Forging enabled on account: 14967207896348956924","timestamp":"2018-08-06 03:15:11 638"}
+{"level":"info","message":"Launched dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb] successfully","timestamp":"2018-08-06 03:15:11 639"}
+{"level":"info","message":"Forging enabled on account: 2267040904035968995","timestamp":"2018-08-06 03:15:11 639"}
+{"level":"info","message":"Forging enabled on account: 4606994808961614396","timestamp":"2018-08-06 03:15:11 640"}
+{"level":"info","message":"Forging enabled on account: 10270692077208000856","timestamp":"2018-08-06 03:15:11 641"}
+{"level":"info","message":"Forging enabled on account: 4752137788839516181","timestamp":"2018-08-06 03:15:11 641"}
+{"level":"info","message":"Forging enabled on account: 9016899885902611284","timestamp":"2018-08-06 03:15:11 642"}
+{"level":"info","message":"Forging enabled on account: 15730492268102608976","timestamp":"2018-08-06 03:15:11 643"}
+{"level":"info","message":"Forging enabled on account: 137088868843191947","timestamp":"2018-08-06 03:15:11 643"}
+{"level":"info","message":"Forging enabled on account: 14009023630914588191","timestamp":"2018-08-06 03:15:11 644"}
+{"level":"info","message":"Forging enabled on account: 9100402900910843769","timestamp":"2018-08-06 03:15:11 644"}
+{"level":"info","message":"Forging enabled on account: 9964788986386939244","timestamp":"2018-08-06 03:15:11 645"}
+{"level":"info","message":"Forging enabled on account: 2134303229144738109","timestamp":"2018-08-06 03:15:11 651"}
+{"level":"info","message":"Forging enabled on account: 822581192891699066","timestamp":"2018-08-06 03:15:11 652"}
+{"level":"info","message":"Forging enabled on account: 4354832300657989346","timestamp":"2018-08-06 03:15:11 653"}
+{"level":"info","message":"Forging enabled on account: 16843680767646192182","timestamp":"2018-08-06 03:15:11 653"}
+{"level":"info","message":"Forging enabled on account: 6062450801639125954","timestamp":"2018-08-06 03:15:11 654"}
+{"level":"info","message":"Forging enabled on account: 15154845558675226463","timestamp":"2018-08-06 03:15:11 654"}
+{"level":"info","message":"Forging enabled on account: 8280768395963849562","timestamp":"2018-08-06 03:15:11 661"}
+{"level":"info","message":"Forging enabled on account: 18013541154273697370","timestamp":"2018-08-06 03:15:11 661"}
+{"level":"info","message":"Forging enabled on account: 13039156885779050533","timestamp":"2018-08-06 03:15:11 662"}
+{"level":"info","message":"Forging enabled on account: 15748476572381496732","timestamp":"2018-08-06 03:15:11 662"}
+{"level":"info","message":"Forging enabled on account: 16494449392359591122","timestamp":"2018-08-06 03:15:11 663"}
+{"level":"info","message":"Forging enabled on account: 11646115410523723730","timestamp":"2018-08-06 03:15:11 664"}
+{"level":"info","message":"Forging enabled on account: 504225209801073329","timestamp":"2018-08-06 03:15:11 664"}
+{"level":"info","message":"Forging enabled on account: 11090625790947314624","timestamp":"2018-08-06 03:15:11 665"}
+{"level":"info","message":"Forging enabled on account: 3934875420632564404","timestamp":"2018-08-06 03:15:11 665"}
+{"level":"info","message":"Forging enabled on account: 4516770862894053894","timestamp":"2018-08-06 03:15:11 671"}
+{"level":"info","message":"Forging enabled on account: 1086079581049355840","timestamp":"2018-08-06 03:15:11 672"}
+{"level":"info","message":"Forging enabled on account: 17980703424046392731","timestamp":"2018-08-06 03:15:11 673"}
+{"level":"info","message":"Forging enabled on account: 11422669861760589627","timestamp":"2018-08-06 03:15:11 673"}
+{"level":"info","message":"Forging enabled on account: 6231988926563388805","timestamp":"2018-08-06 03:15:11 674"}
+{"level":"info","message":"Forging enabled on account: 7233149273518458057","timestamp":"2018-08-06 03:15:11 690"}
+{"level":"info","message":"Forging enabled on account: 7950654695176084485","timestamp":"2018-08-06 03:15:11 691"}
+{"level":"info","message":"Forging enabled on account: 13420521984550134926","timestamp":"2018-08-06 03:15:11 691"}
+{"level":"info","message":"Forging enabled on account: 15268142367898027317","timestamp":"2018-08-06 03:15:11 693"}
+{"level":"info","message":"Forging enabled on account: 78964157226938160","timestamp":"2018-08-06 03:15:11 694"}
+{"level":"info","message":"Forging enabled on account: 15741508733724163129","timestamp":"2018-08-06 03:15:11 694"}
+{"level":"info","message":"Forging enabled on account: 8651448583328188575","timestamp":"2018-08-06 03:15:11 695"}
+{"level":"info","message":"Forging enabled on account: 291182133400624639","timestamp":"2018-08-06 03:15:11 696"}
+{"level":"info","message":"Forging enabled on account: 7776781527651344530","timestamp":"2018-08-06 03:15:11 697"}
+{"level":"info","message":"Forging enabled on account: 10088188829165168369","timestamp":"2018-08-06 03:15:11 698"}
+{"level":"info","message":"Forging enabled on account: 2139843561111943046","timestamp":"2018-08-06 03:15:11 698"}
+{"level":"info","message":"Forging enabled on account: 10840137966709961956","timestamp":"2018-08-06 03:15:11 699"}
+{"level":"info","message":"Forging enabled on account: 14751218895719775371","timestamp":"2018-08-06 03:15:11 699"}
+{"level":"info","message":"Forging enabled on account: 3151430549328684090","timestamp":"2018-08-06 03:15:11 700"}
+{"level":"info","message":"Forging enabled on account: 10806408145327315857","timestamp":"2018-08-06 03:15:11 701"}
+{"level":"info","message":"Forging enabled on account: 3685938816501109929","timestamp":"2018-08-06 03:15:11 701"}
+{"level":"info","message":"Forging enabled on account: 3208080781629859479","timestamp":"2018-08-06 03:15:11 702"}
+{"level":"info","message":"Forging enabled on account: 16378352261715117110","timestamp":"2018-08-06 03:15:11 702"}
+{"level":"info","message":"Forging enabled on account: 1283236810419354001","timestamp":"2018-08-06 03:15:11 703"}
+{"level":"info","message":"Forging enabled on account: 12350371977314655635","timestamp":"2018-08-06 03:15:11 704"}
+{"level":"info","message":"Forging enabled on account: 6678284012195355489","timestamp":"2018-08-06 03:15:11 704"}
+{"level":"info","message":"Forging enabled on account: 1679600082717232660","timestamp":"2018-08-06 03:15:11 705"}
+{"level":"info","message":"Forging enabled on account: 12991620508529554503","timestamp":"2018-08-06 03:15:11 705"}
+{"level":"info","message":"Forging enabled on account: 1380897639646299245","timestamp":"2018-08-06 03:15:11 706"}
+{"level":"info","message":"Forging enabled on account: 3124991658137681040","timestamp":"2018-08-06 03:15:11 707"}
+{"level":"info","message":"Forging enabled on account: 11543311034257751908","timestamp":"2018-08-06 03:15:11 708"}
+{"level":"info","message":"Forging enabled on account: 15549690197682230528","timestamp":"2018-08-06 03:15:11 708"}
+{"level":"info","message":"Forging enabled on account: 13266739669041601398","timestamp":"2018-08-06 03:15:11 720"}
+{"level":"info","message":"Forging enabled on account: 2738168391661537140","timestamp":"2018-08-06 03:15:11 724"}
+{"level":"info","message":"Forging enabled on account: 15500896945957070790","timestamp":"2018-08-06 03:15:11 725"}
+{"level":"info","message":"Forging enabled on account: 266635682147023071","timestamp":"2018-08-06 03:15:11 725"}
+{"level":"info","message":"Forging enabled on account: 9185894488260328519","timestamp":"2018-08-06 03:15:11 726"}
+{"level":"info","message":"Forging enabled on account: 7455323197813666517","timestamp":"2018-08-06 03:15:11 727"}
+{"level":"info","message":"Forging enabled on account: 3542092484349250832","timestamp":"2018-08-06 03:15:11 750"}
+{"level":"info","message":"Forging enabled on account: 4489394575950793319","timestamp":"2018-08-06 03:15:11 750"}
+{"level":"info","message":"Forging enabled on account: 9873639952457669776","timestamp":"2018-08-06 03:15:11 751"}
+{"level":"info","message":"Forging enabled on account: 12552324801585463294","timestamp":"2018-08-06 03:15:11 752"}
+{"level":"info","message":"Forging enabled on account: 2623787653068046048","timestamp":"2018-08-06 03:15:11 753"}
+{"level":"info","message":"Forging enabled on account: 4933303450226578320","timestamp":"2018-08-06 03:15:11 754"}
+{"level":"info","message":"Forging enabled on account: 14165899166559037990","timestamp":"2018-08-06 03:15:11 755"}
+{"level":"info","message":"Forging enabled on account: 7262705292726675568","timestamp":"2018-08-06 03:15:11 755"}
+{"level":"info","message":"Forging enabled on account: 9458566611758973460","timestamp":"2018-08-06 03:15:11 770"}
+{"level":"info","message":"Forging enabled on account: 132478835842380248","timestamp":"2018-08-06 03:15:11 771"}
+{"level":"info","message":"Forging enabled on account: 12613738849499732377","timestamp":"2018-08-06 03:15:11 771"}
+{"level":"info","message":"Forging enabled on account: 16834967931513181351","timestamp":"2018-08-06 03:15:11 772"}
+{"level":"info","message":"Forging enabled on account: 5008977810528501699","timestamp":"2018-08-06 03:15:11 773"}
+{"level":"info","message":"Forging enabled on account: 16093201530526106149","timestamp":"2018-08-06 03:15:11 773"}
+{"level":"info","message":"Forging enabled on account: 16527055000593777392","timestamp":"2018-08-06 03:15:11 774"}
+{"level":"info","message":"Forging enabled on account: 2875550846950375136","timestamp":"2018-08-06 03:15:11 775"}
+{"level":"info","message":"Forging enabled on account: 7995474671327751522","timestamp":"2018-08-06 03:15:11 776"}
+{"level":"info","message":"Forging enabled on account: 15652667420882928094","timestamp":"2018-08-06 03:15:11 790"}
+{"level":"info","message":"Forging enabled on account: 11705168753296944226","timestamp":"2018-08-06 03:15:11 794"}
+{"level":"info","message":"Generate new block at height 1611","timestamp":"2018-08-06 03:15:11 801"}
+{"level":"info","message":"Block applied correctly with 0 transactions","timestamp":"2018-08-06 03:15:11 865"}
+{"level":"error","message":"onNewBlock message","timestamp":"2018-08-06 03:15:11 867","data":"Dapp not ready"}
+{"level":"error","message":"onNewBlock message","timestamp":"2018-08-06 03:15:11 867","data":"Dapp not ready"}
+{"level":"log","message":"Forged new block id: f8c6f2b4ac0d73d55bed4a59188778191156258ebfd465c6b39220443f368459 height: 1611 round: 16 slot: 6646771 reward: 350000000","timestamp":"2018-08-06 03:15:11 867"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:11 957","data":"dappRootDir /data/asch/dapps/1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:11 973","data":"loading model account.js"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:11 979","data":"loading model balance.js"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:11 980","data":"loading model block.js"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:11 987","data":"loading model deposit.js"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:11 989","data":"loading model round-fee.js"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:11 991","data":"loading model transaction.js"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:11 993","data":"loading model transfer.js"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:11 994","data":"loading model variable.js"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:11 995","data":"loading model article.js"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:11 997","data":"loading model comment.js"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:11 998","data":"loading model report.js"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:12 000","data":"loading contract core.js"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:12 001","data":"loading contract index.js"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:12 001","data":"loading contract cctime.js"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:12 002","data":"loading interface basic.js"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:12 013","data":"loading interface index.js"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 013","data":"dappRootDir /data/asch/dapps/87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 023","data":"loading model account.js"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 028","data":"loading model balance.js"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 030","data":"loading model block.js"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 030","data":"loading model deposit.js"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 031","data":"loading model round-fee.js"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 031","data":"loading model transaction.js"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 032","data":"loading model transfer.js"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 033","data":"loading model variable.js"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 034","data":"loading model domain.js"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 035","data":"loading contract core.js"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 035","data":"loading contract index.js"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 036","data":"loading contract domain.js"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 036","data":"loading interface basic.js"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 036","data":"loading interface domain.js"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 037","data":"loading interface helloworld.js"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 213","data":"enter dapp init"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 215","data":"Forging enable on account: AN1yKK47P3MtD5ZgHYoncGQ1gCn4p2vGAC"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 216","data":"Forging enable on account: AGeeCmSVLDNbtMqqpJchQZakchwzpuje1P"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 216","data":"Forging enable on account: A7NWaYUkpa543hdTsfw57AoZAgCBr2NFY6"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 216","data":"Forging enable on account: ABU1G2pQFMGa7c1GiAPYCQuUhiPHdvCSB2"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 216","data":"Forging enable on account: AG1A3ojeLAMZySaZWTkg49jcoVCV7FCKXF"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 217","data":"Initialize complete"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 218","data":"Blocks found: 252"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 222","data":"register app interface get /contracts"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:12 224","data":"Forging enable on account: AN1yKK47P3MtD5ZgHYoncGQ1gCn4p2vGAC"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 225","data":"register app interface get /domain/:address"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:12 226","data":"Forging enable on account: AGeeCmSVLDNbtMqqpJchQZakchwzpuje1P"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 226","data":"app set ready success\nregister app interface get /domain/suffix/:suffix"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:12 227","data":"Forging enable on account: A7NWaYUkpa543hdTsfw57AoZAgCBr2NFY6"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:12 228","data":"Forging enable on account: ABU1G2pQFMGa7c1GiAPYCQuUhiPHdvCSB2"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:12 228","data":"Forging enable on account: AG1A3ojeLAMZySaZWTkg49jcoVCV7FCKXF"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 229","data":"register app interface get /helloworld"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:12 230","data":"Trace\n    at /data/asch/node_modules/asch-sandbox/framework/init.js:197:9\n    at <anonymous>\n    at runMicrotasksCallback (internal/process/next_tick.js:121:5)\n    at _combinedTickCallback (internal/process/next_tick.js:131:7)\n    at process._tickCallback (internal/process/next_tick.js:180:9)"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 231","data":"get main block height { height: 1611 }"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 232","data":"register app interface put /ping/:seq"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 232","data":"register app interface post /sleep"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:12 233","data":"TypeError: Cannot read property 'info' of undefined\n    at module.exports (/data/asch/dapps/1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b/init.js:4:13)\n    at /data/asch/node_modules/asch-sandbox/framework/init.js:195:12\n    at Array.async.auto.ready (/data/asch/node_modules/asch-sandbox/framework/init.js:202:6)\n    at listener (/data/asch/node_modules/async/lib/async.js:605:42)\n    at /data/asch/node_modules/async/lib/async.js:544:17\n    at _arrayEach (/data/asch/node_modules/async/lib/async.js:85:13)\n    at Immediate.taskComplete [as _onImmediate] (/data/asch/node_modules/async/lib/async.js:543:13)\n    at runCallback (timers.js:781:20)\n    at tryOnImmediate (timers.js:743:5)\n    at processImmediate [as _immediateCallback] (timers.js:714:5)"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:12 233","data":"Failed to initialize app: TypeError: Cannot read property 'info' of undefined"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 234","data":"Sync#blockSync timer Failed to get blocks height: No peers in db"}
+{"level":"log","message":"dapp[87c6d5317ab1093dadceda3fd32b5ef36fa9186e47bd1b3c4da221e89889facb]","timestamp":"2018-08-06 03:15:12 241","data":"Sync#transactionsSync timer No peers in db"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:12 269","data":"Failed to close db: RangeError: Maximum call stack size exceeded\n    at Promise (/data/asch/node_modules/asch-sandbox/framework/helpers/index.js:1:1)\n    at Promise (<anonymous>)\n    at PIFY.args (/data/asch/node_modules/asch-sandbox/framework/helpers/index.js:4:14)\n    at Orm.close (/data/asch/node_modules/asch-sandbox/framework/helpers/orm.js:212:7)\n    at /data/asch/node_modules/asch-sandbox/shovel2.js:112:26\n    at Sandbox.<anonymous> (/data/asch/node_modules/asch-sandbox/shovel2.js:116:11)\n    at emitOne (events.js:115:13)\n    at Sandbox.emit (events.js:210:7)\n    at process.exit (/data/asch/node_modules/asch-sandbox/framework/index.js:105:11)\n    at Sandbox.<anonymous> (/data/asch/node_modules/asch-sandbox/shovel2.js:117:17)"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:12 270","data":"(node:534) UnhandledPromiseRejectionWarning: Unhandled promise rejection (rejection id: 2): RangeError: Maximum call stack size exceeded"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:12 270","data":"(node:534) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code.\n(node:534) UnhandledPromiseRejectionWarning: Unhandled promise rejection (rejection id: 5): RangeError: Maximum call stack size exceeded"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:12 273","data":"Initialize complete"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:12 274","data":"closing"}
+{"level":"log","message":"dapp[1a351d2092cf3bd9e4289372fccf39e3e7af02d4eef62f266c58b07e02226f1b]","timestamp":"2018-08-06 03:15:12 274","data":"bye bye"}

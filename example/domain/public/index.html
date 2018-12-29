@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.css">
+  <title>Etm DApp Example - domain</title>
+</head>
+
+<body style="font-size: 100%;">
+  <script type="text/javascript">
+    $(document).ready(function() {
+      console.log('ready')
+      setTimeout(function() {
+        window.location.href = "http://localhost:8080"
+      }, 3500)
+    })
+  </script>
+  <div class="ui segment">
+    <div class="ui message">
+      <div class="header">
+          etm Dapp Tutorial
+      </div>
+      <p>Be sure to have to have your development server running on <span class="ui horizontal label">https://localhost:8080</span>
+      </p>
+      <a href="https://localhost:8080" class="ui button primary large">Click to forward to tutorial</a>
+    </div>
+  </div>
+</body>
+</html>

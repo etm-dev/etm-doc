@@ -1,9 +1,12 @@
 # 实际例子
 
-### 游戏demo（dice、fomo3d简版、摇色子）
-代码讲解
+如果大家对dapp还不了解 ，请查看[智能合约开发](./smart_contract.md),该章节讲解了合约模版各个文件的作用，开发者只需要对合约逻辑思考即可。
+
+### 初识dapp
+[domain](../example/README.md)
+
 ### 图书demo
-[代码讲解](https://github.com/etm-developer/book-front)
+[news]([domain](../example/README.md))
 ### 案例展示（epony）
 [epony.cn](epony.cn)
 
