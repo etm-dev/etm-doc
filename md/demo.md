@@ -6,7 +6,7 @@
 [domain](../example/README.md)
 
 ### 图书demo
-[news]([domain](../example/README.md))
+[news](../example/README.md)
 ### 案例展示（epony）
 [epony.cn](epony.cn)
 
