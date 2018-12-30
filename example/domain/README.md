@@ -1,13 +1,11 @@
-# 实际例子
 
-如果大家对dapp还不了解 ，请查看[智能合约开发](./smart_contract.md),该章节讲解了合约模版各个文件的作用，开发者只需要对合约逻辑思考即可。
+# Domain 样例
 
-### 初识dapp
-详细样例请参考[domain](../example/domain/README.md),此样子仅供参考，只为更方便的为大家讲解entanmo dapp的使用。
+此样子仅供参考，只为更方便的为大家讲解entanmo dapp的使用。
 
 **注：假设大家都会发布dapp，如果大家还不会请查看前面章节**
 
-#### 1.配置及路由 
+### 1.配置及路由 
 **我们从哪里开始呢？**
 
 代码都会有一个开始位置，比如java中`main()`函数, Android中 `onCreate()`等等。在entanmo中合约的入口文件是[ `init.js`](./init.js)
@@ -55,7 +53,7 @@
 	//返回helloworld
 	
 
-#### 2.模型定义
+### 2.模型定义
 模型的定义其实是定义数据结构，让数据以什么方式存储到区块链上，在dapp模版中，我们可以看到model目录，此example对应的[domain.js](./model/domain.js)就是对于的数据模型定义文件。
 
 	module.exports = {
@@ -91,7 +89,7 @@
 	
 可以发现，定义了一张domain表，里面包含，address，ip，owner 等等，下一小节，我们将讲到合约中如何使用。
 
-#### 3.合约实现
+### 3.合约实现
 之前我们已经说过，entanmo官方为了让开发者更容易的开发合约，在设计上就是尽量让开发者只做逻辑相关的工作。那我们来看一下contract目录下的[domain.js](./contract/domain.js)实现
 
 	module.exports = {
@@ -119,14 +117,3 @@
 其实很简单，注释中已经说明，是不是很简单。其实开发者只需要关注合约中的逻辑实现即可。
 	
 然后重启应用节点即可，咱们dapp就成功发布啦，就这么简单。
-
-------------------
-
-### 图书demo
-需要成功发布以后，对着代码讲解。	
-[news]([domain](../example/README.md))
-### 案例展示（epony）
-[epony.cn](epony.cn)
-
-------------
-下一章：[Q&A](./QA.md)
