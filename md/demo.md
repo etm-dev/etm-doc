@@ -10,7 +10,7 @@
 #### 1.配置及路由 
 **我们从哪里开始呢？**
 
-代码都会有一个开始位置，比如java中`main()`函数, Android中 `onCreate()`等等。在entanmo中合约的入口文件是[ `init.js`](./init.js)
+代码都会有一个开始位置，比如java中`main()`函数, Android中 `onCreate()`等等。在entanmo中合约的入口文件是[ `init.js`](../example/domain/init.js)
 
 	module.exports = async function () {
 		//...
@@ -25,7 +25,7 @@
 很显然，可以看到两个注册的接口（并不是合约）。
 
 
-然后可以查看interface目录下的[domain.js](./interface/domain.js) ,这里定义了路由访问规则。
+然后可以查看interface目录下的[domain.js](../example/domain/interface/domain.js) ,这里定义了路由访问规则。
 
 	app.route.get('/domain/:address',  async function (req) {
 	  let result = await app.model.Domain.findOne({
@@ -41,7 +41,7 @@
 	//这样就可以访问到这个合约接口
 	http://ip:port/dappid/domain/:address
 	
-其实如果大家只是为了测试，可以直接查看[helloworld.js](./interface/helloworld.js)
+其实如果大家只是为了测试，可以直接查看[helloworld.js](../example/domain/interface/helloworld.js)
 
 	app.route.get('/helloworld',  async function (req) {
 	  return { message: 'helloworld' }
@@ -56,7 +56,7 @@
 	
 
 #### 2.模型定义
-模型的定义其实是定义数据结构，让数据以什么方式存储到区块链上，在dapp模版中，我们可以看到model目录，此example对应的[domain.js](./model/domain.js)就是对于的数据模型定义文件。
+模型的定义其实是定义数据结构，让数据以什么方式存储到区块链上，在dapp模版中，我们可以看到model目录，此example对应的[domain.js](../example/domain/model/domain.js)就是对于的数据模型定义文件。
 
 	module.exports = {
 	  name: 'domains',
@@ -92,7 +92,7 @@
 可以发现，定义了一张domain表，里面包含，address，ip，owner 等等，下一小节，我们将讲到合约中如何使用。
 
 #### 3.合约实现
-之前我们已经说过，entanmo官方为了让开发者更容易的开发合约，在设计上就是尽量让开发者只做逻辑相关的工作。那我们来看一下contract目录下的[domain.js](./contract/domain.js)实现
+之前我们已经说过，entanmo官方为了让开发者更容易的开发合约，在设计上就是尽量让开发者只做逻辑相关的工作。那我们来看一下contract目录下的[domain.js](../example/domain/contract/domain.js)实现
 
 	module.exports = {
 		register: async function(address) {
