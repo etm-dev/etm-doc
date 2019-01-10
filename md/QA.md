@@ -1,6 +1,6 @@
-# Q&A
+# 问答
 
-这篇文档里，我们讲述常见的DApp开发问题和它们的解决方案. 
+本章将讲述开发者开发DApp会遇见的一些常见问题以及它们的解决方案. 
 
 **Dapp 安装在哪个目录？**	
 DApp安装在 `ETM_HOME/dapps/your-dapp-id` 目录 your-dapp-id是你注册Dapp的时候生成的. 

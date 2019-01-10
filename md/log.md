@@ -1,4 +1,4 @@
-# 查看日志
+# 日志
 ### 主链log查看
 目录：xxx/etm/logs/xxx.log
 
