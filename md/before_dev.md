@@ -84,45 +84,74 @@ MacOS Darwin 10.12及更高版本（建议使用MacOS 10.13.x）
 **3.查看是否安装成功**
 
 npm install 以后显示以下内容即为成功
-![](../img/install_success-mac.png)
+	
+	> ...
+	> sodium-native@2.3.0 install /home/wanglei/www_test/etm/node_modules/sodium-native
+	> node-gyp-build "node preinstall.js" "node postinstall.js"
+	> npm notice created a lockfile as package-lock.json. You should commit this file.
+	> npm WARN entanmo@1.0.0 No repository field.
+
+	> added 439 packages from 371 contributors and audited 1044 packages in 199.301s
+	> found 0 vulnerabilities
+	
+
+修改config文件
+	
+	//主目录下文件
+	-rw-rw-r--   1 wanglei wanglei   5229 Feb 15 22:24 app.js
+	drwxrwxr-x   2 wanglei wanglei   4096 Feb 15 22:52 config
+	drwxrwxr-x   2 wanglei wanglei   4096 Feb 15 22:24 dapps
+	drwxrwxr-x   2 wanglei wanglei   4096 Feb 15 22:52 data
+	drwxrwxr-x   2 wanglei wanglei   4096 Feb 15 22:38 logs
+	drwxrwxr-x 384 wanglei wanglei  12288 Feb 15 22:34 node_modules
+	-rw-rw-r--   1 wanglei wanglei 126339 Feb 15 22:34 package-lock.json
+	-rw-rw-r--   1 wanglei wanglei   1693 Feb 15 22:24 package.json
+	drwxrwxr-x  12 wanglei wanglei   4096 Feb 15 22:24 src
+	
+	//如果是单机测试，请使用 config-personal.json 替换 config.json(同时也需要使用genesisBlock-personal.json 替换genesisBlock.json)
+	cd config 
+	mv config.json config.json.bk && mv config-personal.json config.json
+	mv genesisBlock.json genesisBlock.json.bk && mv cgenesisBlock-personal.json genesisBlock.json
 
 运行代码 `node app.js`
-![](../img/node_app_error-mac.png)
-
-修改./config/miner-cfg.json 如果是矿机挖矿是需要开启的
 	
+	> blockTick: []
+	> debug 2019-02-15 14:48:05 762 blocks.js:1040 apply block ok
+	> debug 2019-02-15 14:48:05 762 blocks.js:1055 save block ok
+	> -------------- round tick: 6
+	> debug 2019-02-15 14:48:05 763 round.js:390 Round tick completed 	> { block:
+   		{ 	
+   			version: 0,
+     		totalAmount: 0,
+     		totalFee: 0,
+     		reward: 600000000,
+     		payloadHash: 			'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+     		timestamp: 10896486,
+     		numberOfTransactions: 0,
+     		payloadLength: 0,
+			previousBlock:'32c53caeef675cea5dd0acf7a30709d4acfbaafdda06b8743b0f869b9a8eb570',
+     		generatorPublicKey: '99e5d86cc35cc31d3be8ec4e4a296b080820d396a875fad2bd60e17201bf4dc5',
+     		blockSignature: '591948fccf06b180d6c001f8706518c07e65317267cdbf500dfc656dfeb173de5c3b5ddf7bb5d34fc108321376edf736dca3f991a1b2b2adffdfa047f383790b',
+     		id: 'b40c48deaeb23b7cedd59515e8665f7b347aa86f565a21cbd53283365ec3237a',
+     		height: 6 
+     	} 
+    }
+	> info 2019-02-15 14:48:05 764 blocks.js:962 Block applied correctly 	with 0 transactions
+	> log 2019-02-15 14:48:05 764 blocks.js:1468 Forged new block id: 	b40c48deaeb23b7cedd59515e8665f7b347aa86f565a21cbd53283365ec3237a 	> height: 6 round: 1 slot: 3632162 reward: 600000000
+	> [transport] 3s boardcast tr count: 0
+
+如果本机只是做为测试使用，可以修改./config/miner-cfg.json 将该选项关掉	
+
 	//修改成false
 	"enableGPU": true 
 
-修改./config/config.json [参考](../img/config.json)
-
-```
-   ...
-	"peers": {
-    	"list": [
-      		{                          //删除
-        		"ip": "52.187.232.98",  //删除
-        		"port":4096             //删除
-      		}                          //删除
-    	],
-    ...
-    "forging": {
-    	"secret": [
-    	//此处需要添加101个secret
-    	],
-    	"access": {
-      		"whiteList": [
-        		"127.0.0.1"
-      		]
-    	}
-  	},
-  	...
-
-```
 
 **运行成功**
 
-![](../img/run_success.png)
+运行成功后区块高度会不停的变化。
+
+	> height: 6 round: 1 slot: 3632162 reward: 600000000
+	> [transport] 3s boardcast tr count: 0
 
 #### 2.2 linux安装相关环境
 **1.选择linux系统**
