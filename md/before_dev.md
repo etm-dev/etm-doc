@@ -309,6 +309,8 @@ clone钱包代码：
 	
 	//clone代码
 	git clone https://github.com/etm-developer/etm-cli.git
+	//安装库文件
+	cd etm-cli && npm install 
 	//将目录下的bin目录设置到path环境下
 	set xx/xx/etm-cli/bin to path //伪代码，根据不同系统设置不同
 
