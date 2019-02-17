@@ -281,7 +281,12 @@ clone钱包代码：
 
 获取私链代币：
 
-一般新建账号是没有代币的，如果是新启动的私链，entanmo官方为开发者创建了一个超级账号，该账户中有非常多的代币，还有就是config/config.json中101个出块节点是有代币的：
+一般新建账号是没有代币的，如果是新启动的私链，entanmo官方为开发者创建了一个超级账号，该账户中有非常多的代币	
+
+	//该超级账号中有非常多的测试币，只在测试网中有效
+	race forget pause shoe trick first abuse insane hope budget river enough
+
+还有就是config/config.json中101个出块节点是有代币的：
 	
 	//可以在config/config.json中查看101个出块节点私钥
 	...

@@ -1,0 +1,17 @@
+{
+  "name": "helloworld",
+  "link": "http://etm.red/helloworld.zip",
+  "category": 1,
+  "description": "helloworld",
+  "tags": "helloworld",
+  "icon": "http://52lo.cc/static/img/bg-login.0f8575a.png",
+  "delegates": [
+    "8169c6672f5985d8b13d81c17c16a4f2318779bdcd676385f755535883a9b2ad",
+    "7004f44fb5849b8628ee8431fa3e1a95b06d0cc70e414c875603e0fead739362",
+    "b21360d7c0f4c55bfe30d6f9291000b171442f04c887a03f6466d9dcac1fcb79",
+    "4f73d11c9a6eddbc46cb3af17debb2350cc702240493032761287f387128cc58",
+    "6271ff0d381b0bf8d24661b2b4902c3d1ac5411fa502bf32696a7ca2569e1eed"
+  ],
+  "unlockDelegates": 3,
+  "type": 0
+}
