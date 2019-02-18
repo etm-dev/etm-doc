@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'helloworld',
+  name: 'words',
   fields: [
     {
       name: 'words',

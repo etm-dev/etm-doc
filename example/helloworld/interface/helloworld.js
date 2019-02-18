@@ -4,6 +4,6 @@ app.route.get('/helloworld',  async function (req) {
 })
 // 获取所有单词
 app.route.get("/words", async req => {
-  let words = await app.model.helloworld.findAll()
+  let words = await app.model.words.findAll({})
   return { words }
 })
