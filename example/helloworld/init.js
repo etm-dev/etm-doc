@@ -1,8 +1,8 @@
 module.exports = async function () {
   console.log('enter dapp init')
 
-  app.registerContract(1000, 'domain.register')
-  app.registerContract(1001, 'domain.set_ip')
+  //注册合约方法
+  app.registerContract(1000, 'helloworld.hello')
 
 
   app.events.on('newBlock', (block) => {
