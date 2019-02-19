@@ -13,6 +13,6 @@ app.route.get("/words", async req => {
 // 获取所有单词
 app.route.get("/balance/:address", async req => {
   let address = req.params.address
-  let amount = await app.balance.get(address,FEE_NAME)
+  let amount = await app.balances.get(address,FEE_NAME)
   return { amount }
 })
