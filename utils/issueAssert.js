@@ -1,3 +1,9 @@
+//扣费
+//注册代理人 100 ETM
+//注册资产 500 ETM
+//发行资产 0.1 ETM
+//转账 0.1 ETM
+
 let etmjs = require('etm-js');
 let axios = require('axios');
 
@@ -17,7 +23,7 @@ let assertName = 'CNY';
 
 
 //第一步
-//注册资产发行人
+//注册资产发行人  100 ETM
 function registerAssertIssuer() {
   //发行人 RAY
   let transaction = etmjs.uia.createIssuer(issuerName, "issuer", password, secondPassword);
@@ -27,7 +33,7 @@ function registerAssertIssuer() {
 }
 
 //第二步
-//注册资产
+//注册资产 500 ETM
 function registerAssrt() {
   // 资产名称，发行商名.资产名，唯一标识
   let name = issuerName + '.' + assertName;
@@ -51,7 +57,7 @@ function registerAssrt() {
     "transaction": trs
   })
 }
-//第三步 发行代币
+//第三步 发行代币  0.1 ETM
 function issueAssert() {
   let currency = issuerName + '.' + assertName;
   // 本次发行量=真实数量（100）*10**精度（3），所有发行量之和需 <= 上限*精度
@@ -63,7 +69,7 @@ function issueAssert() {
   })
 }
 
-//第四步 向dapp（侧链充值代币），只有向dapp充值了的代币，才能使用
+//第四步 向dapp（侧链充值代币），只有向dapp充值了的代币，才能使用  0.1 ETM
 function chargeIntoDapp(){
   /**充值到侧链**/
   let dappid = "663ecd52420b98e0a7b5f050bf63d5c15ddc32fe1ddbf8442a0adbecdce6beba";
@@ -107,3 +113,6 @@ function chargeIntoDapp(){
 // }).catch(err => {
 //   console.error(err);
 // })
+
+//获取dapp下的账号  充值到侧链之后就可以查询了
+//http://xx.x.xx.xx:port/api/dapps/[dappid]/balances/[address]

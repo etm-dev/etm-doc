@@ -9,10 +9,3 @@ app.route.get("/words", async req => {
   let words = await app.model.Words.findAll({})
   return { words }
 })
-
-// 获取所有单词
-app.route.get("/balance/:address", async req => {
-  let address = req.params.address
-  let amount = await app.balances.get(address,FEE_NAME)
-  return { amount }
-})

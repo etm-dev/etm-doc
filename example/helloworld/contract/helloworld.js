@@ -1,8 +1,8 @@
 //改变信息
 module.exports = {
   hello: async function(words) {
-    app.sdb.create('Words', {
-      words
+    app.sdb.create('Word', {
+      'words': words
     })
   }
 }
