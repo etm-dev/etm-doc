@@ -70,20 +70,24 @@ function issueAssert() {
 }
 
 //第四步 向dapp（侧链充值代币），只有向dapp充值了的代币，才能使用  0.1 ETM
-function chargeIntoDapp(){
+function chargeIntoDapp() {
   /**充值到侧链**/
   let dappid = "663ecd52420b98e0a7b5f050bf63d5c15ddc32fe1ddbf8442a0adbecdce6beba";
-  let currency =  issuerName + '.' + assertName
-  let amount = 10*100000000 ;
+  let currency = issuerName + '.' + assertName
+  let amount = 10000 * 100000000;
   let trs = etmjs.transfer.createInTransfer(dappid, currency, amount, password, secondPassword || undefined);
   return JSON.stringify({
     "transaction": trs
   })
 }
 
+//dapp内部转币
+//curl -k -H "Content-Type: application/json" -X PUT -d '{"secret":"luggage work tourist glove response stairs ozone guide pear bounce journey body","amount":"14","recipientId":"APeskjFa4KRR3oHHP7wqFP8tpQxiTrDD9a","currency":"RAY.CNY"}' 'http://etm.red:8096/api/uia/transfers' && echo
+
+
 //请分别注释各个步骤，然后依次执行
 
-//第一步注册发行商
+// 第一步注册发行商
 // axios.post(url, registerAssertIssuer()).then(res => {
 //   console.log(res)
 // }).catch(err => {

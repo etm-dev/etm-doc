@@ -82,7 +82,7 @@ Dapp的开发同样要涉及到这三种网络，即
 
 
 ### 3.helloworld
-每一个程序的开始都是从hello world开始的，entanmo也不例外，此小节大致介绍合约发布的过程以及简单的调用。
+每一个程序的开始都是从[hello world](../example/helloworld)开始的，entanmo也不例外，此小节大致介绍合约发布的过程以及简单的调用。
 
 #### 3.1 注册代理人账号
 每个dapp都有独立的受托人，这些受托人也是默认的记账人，他们负责区块的生产，跨链资产的中转，与此同时可以获得交易手续费。     
@@ -293,13 +293,46 @@ Done
 
 ### 4.发布代币
 本小节列举发布代币的例子，仅供开发者参考，更多功能，请参考接口API。   
-发布代币的流程如下   
-第一步：注册资产商   
-第二步：注册资产   
-第三步：发布资产   
+发布代币的流程如下：
+   
+**第一步：注册资产商**   
+现在主链登记，某个账户需要成为资产发行商，此步操作将会消耗100 ETM。  
+
+**第二步：注册资产**   
+注册成为资产商以后，才有资格注册资产。此步操作将消耗500 ETM.  
+
+**第三步：发布资产**  
+注册资产以后，便可以发布资产了。
+
+**第四步：将资产充值到侧链**  
+发布的资产只有充值到dapp中，才可以使用。
+
+开发者可以查看详细的[代码示例](../utils/issueAssert.js)
+
+	//获取dapp下的账号  充值到侧链之后就可以查询了
+	http://xx.x.xx.xx:port/api/dapps/[dappid]/balances/[address]
 
 
 ### 5.代币转账
+按照上一章的方法，查询代币
+	
+	//有代币的账户，上一章充值的
+	http://etm.red:8096/api/dapps/663ecd52420b98e0a7b5f050bf63d5c15ddc32fe1ddbf8442a0adbecdce6beba/balances/A2hZMnzc8wc4UpF4Tk5yUAkaNWzHYep4fu
+	> {"balances":[{"currency":"RAY.CNY","balance":"1001400000000"}],"success":true}
+	
+	//没有代币的账户
+	http://etm.red:8096/api/dapps/663ecd52420b98e0a7b5f050bf63d5c15ddc32fe1ddbf8442a0adbecdce6beba/balances/APeskjFa4KRR3oHHP7wqFP8tpQxiTrDD9a
+	> {"balances":[],"success":true}
+	
+将代币从有代币账户转至无代币账户：
+	
+	//dapp内部转币
+	curl -k -H "Content-Type: application/json" -X PUT -d '{"secret":"luggage work tourist glove response stairs ozone guide pear bounce journey body","amount":"14","recipientId":"APeskjFa4KRR3oHHP7wqFP8tpQxiTrDD9a","currency":"RAY.CNY"}' 'http://etm.red:8096/api/uia/transfers' && echo
+	//查询之前没有代币的账户
+	http://etm.red:8096/api/dapps/663ecd52420b98e0a7b5f050bf63d5c15ddc32fe1ddbf8442a0adbecdce6beba/balances/APeskjFa4KRR3oHHP7wqFP8tpQxiTrDD9a
+	> 
+	
+//TODO 还未验证成功
 
 ### 6.数据储存
 
