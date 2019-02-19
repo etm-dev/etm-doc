@@ -328,15 +328,85 @@ Done
 	
 	//dapp内部转币
 	curl -k -H "Content-Type: application/json" -X PUT -d '{"secret":"luggage work tourist glove response stairs ozone guide pear bounce journey body","amount":"14","recipientId":"APeskjFa4KRR3oHHP7wqFP8tpQxiTrDD9a","currency":"RAY.CNY"}' 'http://etm.red:8096/api/uia/transfers' && echo
-	//查询之前没有代币的账户
+	//查询之前没有代币的账户  这个账户一定要激活（存储过etm）
 	http://etm.red:8096/api/dapps/663ecd52420b98e0a7b5f050bf63d5c15ddc32fe1ddbf8442a0adbecdce6beba/balances/APeskjFa4KRR3oHHP7wqFP8tpQxiTrDD9a
 	> 
 	
 //TODO 还未验证成功
 
 ### 6.数据储存
+储存数据从最基本的增删改查开始。开始之前需要在`dapp目录/model/`下新建一个[words.js](../example/helloworld/model/words.js),这其中就定义了数据结构。
+
+一般情况：   
+`dapp目录/contract/`目录下的文件是做`增删改`操作   
+`dapp目录/interface/`目录下的文件是做`查`操作  
+**一定注册文件名称、表名称、合约中调用时的表名称，有些地方需要大写，及其容易出错**
+
+[helloworld示例程序](../example/helloworld/)目录结构如下：
+
+	|-- config.json
+	|-- contract
+	|   `-- helloworld.js
+	|-- dapp.json
+	|-- genesis.json
+	|-- init.js
+	|-- interface
+	|   `-- helloworld.js
+	|-- logs
+	|   `-- debug.20190219.log
+	|-- model
+	|   `-- words.js
+	`-- public
+	    `-- index.html
+
+**数据库增加数据**
+
+可以查看contract目录下的helloworld.js文件，其中定义了hello方法（此方法在init.js中注册）
+
+	module.exports = {
+	  hello: async function(words) {
+	    app.sdb.create('Word', {
+	      'words': words
+	    })
+	  }
+	}
+	//此操作既是向数据库（words表）中插入一条数据
+	app.sdb.create('Word', {
+	      'words': words
+	    })
+
+**数据库删除数据**
+	
+	//删除数据 
+	app.sdb.del("Word", {
+        'words': words
+      })
+
+**数据库修改数据**
+	
+	//修改数据 
+	app.sdb.del("Word", {
+        'words': words
+      })
+      
+**数据库查询数据**   
+可以参考interface目录下的helloworld.js文件
+	
+	// 获取所有单词
+	app.route.get("/words", async req => {
+	  let words = await app.model.Words.findAll({})
+	  return { words }
+	})
+	
+本小节只是简单的带开发者了解数据储存的方式，具体接口，可以在后续章节中详情阅读。
+
 
 ### 7.单节点运行与多节点运行
+//TODO 补充完善
+
+1.5个代理人分配个2个节点
+2.修改config中的peer（写对应应用节点的ip）
+
 
 ---------
 

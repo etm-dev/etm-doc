@@ -84,6 +84,31 @@ function chargeIntoDapp() {
 //dapp内部转币
 //curl -k -H "Content-Type: application/json" -X PUT -d '{"secret":"luggage work tourist glove response stairs ozone guide pear bounce journey body","amount":"14","recipientId":"APeskjFa4KRR3oHHP7wqFP8tpQxiTrDD9a","currency":"RAY.CNY"}' 'http://etm.red:8096/api/uia/transfers' && echo
 
+//转ETM
+function transferETM() {
+
+  let targetAddress = "APeskjFa4KRR3oHHP7wqFP8tpQxiTrDD9a";
+  let amount = 100*100000000;
+  let password = 'race forget pause shoe trick first abuse insane hope budget river enough';
+  let secondPassword  = '';
+  let message = ''; // 转账备注
+
+  // 其中password是在用户登录的时候记录下来的，secondPassword需要每次让用户输入
+  // 可以通过user.secondPublicKey来判断用户是否有二级密码，如果没有，则不必输入，以下几个交易类型类似
+  let transaction = etmjs.transaction.createTransaction(targetAddress, amount, message, password, secondPassword || undefined);
+
+  return JSON.stringify({
+    "transaction": transaction
+  })
+}
+//ETM 主网转账
+// axios.post(url, transferETM()).then(res => {
+//   console.log(res);
+// }).catch(err => {
+//   console.error(err);
+// })
+
+
 
 //请分别注释各个步骤，然后依次执行
 
