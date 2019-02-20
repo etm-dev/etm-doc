@@ -13,7 +13,10 @@ axios.defaults.headers = {
   'magic': 'personal',
   'version': ''
 }
+//主链
 let url = 'http://etm.red:8096/peer/transactions'
+//侧链
+let dappUrl = 'http://etm.red:8096/api/dapps/663ecd52420b98e0a7b5f050bf63d5c15ddc32fe1ddbf8442a0adbecdce6beba/transactions/signed'
 let password = 'luggage work tourist glove response stairs ozone guide pear bounce journey body';
 let secondPassword = '';
 
@@ -81,8 +84,17 @@ function chargeIntoDapp() {
   })
 }
 
-//dapp内部转币
-//curl -k -H "Content-Type: application/json" -X PUT -d '{"secret":"luggage work tourist glove response stairs ozone guide pear bounce journey body","amount":"14","recipientId":"APeskjFa4KRR3oHHP7wqFP8tpQxiTrDD9a","currency":"RAY.CNY"}' 'http://etm.red:8096/api/uia/transfers' && echo
+//第五步 dapp内部转币
+//curl -H "Content-Type: application/json" -H "magic:20190130" -H "version:''" -k -X PUT -d '{"transaction":`+JSON.stringify(trs7) + `}' 'http://39.98.65.187:4096/api/dapps/2a2969e7a5d9e1a4dbd03887ed335313d1271b1b9ea46436bd754894f521ad6b/transactions/signed' && echo
+function dappInnerTransfer() {
+  let fee = String(0.1*100000000);
+  let type = 3;
+  let options = {fee: fee, type: type, args: [issuerName + '.' + assertName, "100000000", "APeskjFa4KRR3oHHP7wqFP8tpQxiTrDD9a"]};
+  let trs = etmjs.dapp.createInnerTransaction(options, password);
+  return JSON.stringify({
+    "transaction": trs
+  })
+}
 
 //转ETM
 function transferETM() {
@@ -145,3 +157,14 @@ function transferETM() {
 
 //获取dapp下的账号  充值到侧链之后就可以查询了
 //http://xx.x.xx.xx:port/api/dapps/[dappid]/balances/[address]
+
+
+console.log(dappInnerTransfer());
+//第五步 侧链间转账
+// 注意url
+// 注意是put请求
+// axios.put(dappUrl, dappInnerTransfer()).then(res => {
+//   console.log(res);
+// }).catch(err => {
+//   console.error(err);
+// })

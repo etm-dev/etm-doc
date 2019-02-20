@@ -324,13 +324,13 @@ Done
 	http://etm.red:8096/api/dapps/663ecd52420b98e0a7b5f050bf63d5c15ddc32fe1ddbf8442a0adbecdce6beba/balances/APeskjFa4KRR3oHHP7wqFP8tpQxiTrDD9a
 	> {"balances":[],"success":true}
 	
-将代币从有代币账户转至无代币账户：
+将代币从有代币账户转至无代币账户[代码示例](../utils/issueAssert.js)：
 	
-	//dapp内部转币
-	curl -k -H "Content-Type: application/json" -X PUT -d '{"secret":"luggage work tourist glove response stairs ozone guide pear bounce journey body","amount":"14","recipientId":"APeskjFa4KRR3oHHP7wqFP8tpQxiTrDD9a","currency":"RAY.CNY"}' 'http://etm.red:8096/api/uia/transfers' && echo
+	//dapp内部转币 
+	curl -H "Content-Type: application/json" -H "magic:personal" -H "version:''" -k -X PUT -d '{"transaction":{"fee":"10000000","timestamp":11299042,"senderPublicKey":"ffcbf9e299ecce902d668faef5fdb3f5c9ed38a881befee2e313de7b9cf36ede","type":3,"args":"[\"RAY.CNY\",\"100000000\",\"APeskjFa4KRR3oHHP7wqFP8tpQxiTrDD9a\"]","signature":"424e09dcf50d4dc82304e2837c0efa8453e93d5a2af2ceb1cd38da2d9953f106b156e73538978be26957080e7b2fac7ee2ed0a0ca8450dd97840ecb87f35c50e"}}' 'http://etm.red:8096/api/dapps/663ecd52420b98e0a7b5f050bf63d5c15ddc32fe1ddbf8442a0adbecdce6beba/transactions/signed' && echo
 	//查询之前没有代币的账户  这个账户一定要激活（存储过etm）
 	http://etm.red:8096/api/dapps/663ecd52420b98e0a7b5f050bf63d5c15ddc32fe1ddbf8442a0adbecdce6beba/balances/APeskjFa4KRR3oHHP7wqFP8tpQxiTrDD9a
-	> 
+	> {"balances":[{"currency":"RAY.CNY","balance":"100000000"}],"success":true}
 	
 //TODO 还未验证成功
 
