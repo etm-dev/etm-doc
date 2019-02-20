@@ -174,6 +174,8 @@
 #### 2.1 加载模型
 **`aync` app.sdb.load(model, fields, indices)**
 
+参考[init.js](../example/helloworld/init.js)
+
 - `model` 模型名称
 - `fields` 加载到内存中的字段
 - `indices` 索引数组, 单字段索引时, 元素为字符串; 多字段索引时, 元素为字符串数组
@@ -186,8 +188,8 @@
 
 示例:
 
+	//最重要的工作是把数据加载到内存中，app.sdb.*是操作的内存数据，等区块打包，才会写入数据库，所以load可以保持数据一致性
 	await app.sdb.load('Balance', app.model.Balance.fields(), [['address', 'currency']])
-	await app.sdb.load('Variable', ['key', 'value'], ['key'])
 
 
 #### 2.2 获取模型
@@ -203,22 +205,20 @@
 
 示例:
 
-	app.sdb.get('Variable', { key: 'foo' })
-	//输出
-	{
-	  key: 'foo',
-	  value: 'bar'
-	}
-
+	//获取内存中的模型数据
+	app.route.get("/getModel", async req => {
+	  let balance = await app.sdb.get('Balance', {
+	    address: 'AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX',
+	    currency: 'HLB'
+	  })
+	  return {
+	    balance
+	  }
+	})
 	
-	let balance = app.sdb.get('Balance', { address: 'foo', currency: 'ETM' })
-	//输出
-	{
-	  address: 'foo',
-	  currency: 'ETM',
-	  balance: '1000000'
-	}
-
+	//调用合约接口
+	http://etm.red:8096/api/dapps/5929ee23ea77968a7ec686c124ed3bad43c096e5b38a54eb7ab72ef7b635900d/getModel
+	> {"balance":{"address":"AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX","currency":"HLB","balance":"100000000"},"success":true}
 
 #### 2.3 获取索引
 **app.sdb.keys(model)**
@@ -230,15 +230,19 @@
 - 返回一个数据模型的全部索引字段
 
 示例:
-
-	let keys = app.sdb.keys('Variable')
-	for (let i of keys) {
-	  console.log(i)
-	}
-	//输出
-	foo
-	foo1
-	foo2
+	
+	//获取索引
+	app.route.get("/getKeys", async req => {
+	  let keys = await app.sdb.keys('Balance')
+	  return {
+	    keys
+	  }
+	})
+	
+	//调用合约接口
+	http://etm.red:8096/api/dapps/5929ee23ea77968a7ec686c124ed3bad43c096e5b38a54eb7ab72ef7b635900d/getKeys
+	//TODO  返回值有问题 
+	> {"keys":{},"success":true}
 
 
 #### 2.4 获取模型缓存
@@ -252,17 +256,22 @@
 
 示例:
 
-	let entries = app.sdb.entries('Variable')
-	for (let [key, value] of entries) {
-	  console.log(key, value)
-	}
-	//输出
-	foo bar
-	foo1 bar1
-	foo2 bar2
+	//获取模型缓存
+	app.route.get("/getEntry", async req => {
+	  let entries = await app.sdb.entries('Balance')
+	  return {
+	    entries
+	  }
+	})	
+	// 请求接口以及输出
+	http://etm.red:8096/api/dapps/5929ee23ea77968a7ec686c124ed3bad43c096e5b38a54eb7ab72ef7b635900d/getEntry
+	//TODO 返回数据有问题
+	> {"entries":{},"success":true}
 
 #### 2.5 锁定
 **app.sdb.lock(key)**
+
+参考[helloworld.js](../example/helloworld/contract/helloworld.js)
 
 - `key` 索引
 
@@ -274,11 +283,12 @@
 
 示例:
 
-	app.sdb.lock('AC3pinmvz9qX9cj6c7VrGigq7bpPxVJq85@nickname'
+	app.sdb.lock("add-word")
 
 
 #### 2.6 创建模型
 **app.sdb.create(model, values)**
+参考[helloworld.js](../example/helloworld/contract/helloworld.js)
 
 - `model` 模型名称
 - `values` 待创建的数据项
@@ -289,12 +299,13 @@
 
 示例:
 
-	app.sdb.create('Article', {
-	  title: 'This is an article title',
-	  content: 'article contents',
-	  author: 'qingfeng',
-	  tag: 'Science'
-	})
+	hello: async function(words) {
+    //单步添加单词
+    app.sdb.lock("add-word")
+    app.sdb.create('Word', {
+      'words': words
+    })
+  }
 
 #### 2.7 替代模型
 **app.sdb.replace(model, values)**
@@ -308,7 +319,7 @@
 
 示例:
 
-	
+	//示例中无法表示，开发者可以按照此方式调用
 	app.sdb.replace('Account', {
 	  address: 'AC3pinmvz9qX9cj6c7VrGigq7bpPxVJq85',
 	  nickname: 'Nakamoto'
@@ -327,6 +338,7 @@
 
 示例:
 
+	//示例中无法表示，开发者可以按照此方式调用
 	app.sdb.update('Account', { nickname: 'Nakamoto' }, { nickname: 'Satoshi' })
 
 
@@ -342,7 +354,7 @@
 
 示例:
 
-
+	//示例中无法表示，开发者可以按照此方式调用
 	app.sdb.increment('Article', { votes: -10 }, { id: '10000' })
 	app.sdb.increment('Article', { comments: 1 }, { id: '10000' })
 
@@ -360,7 +372,7 @@
 - 删除操作的底层实现目前是标记为deleted, 默认的查询接口都会过滤掉被标记的数据, 但非标准接口或协议仍然可以获取到这些已经被`删除`的数据
 
 示例:
-
+	//示例中无法表示，开发者可以按照此方式调用
 	app.sdb.del('Article', { id: '100001' })
 
 

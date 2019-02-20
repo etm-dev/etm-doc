@@ -5,7 +5,10 @@ module.exports = async function () {
 
   //注册合约方法
   app.registerContract(1000, 'helloworld.hello')
-  
+
+
+  await app.sdb.load('Balance', app.model.Balance.fields(), [['address', 'currency']])
+
   app.setDefaultFee("0", config.FEE_NAME)
 
 
