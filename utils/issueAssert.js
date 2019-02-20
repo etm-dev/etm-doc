@@ -16,8 +16,10 @@ axios.defaults.headers = {
 //主链
 let url = 'http://etm.red:8096/peer/transactions'
 //侧链
-let dappUrl = 'http://etm.red:8096/api/dapps/663ecd52420b98e0a7b5f050bf63d5c15ddc32fe1ddbf8442a0adbecdce6beba/transactions/signed'
-let password = 'luggage work tourist glove response stairs ozone guide pear bounce journey body';
+let dappUrl = 'http://etm.red:8096/api/dapps/5929ee23ea77968a7ec686c124ed3bad43c096e5b38a54eb7ab72ef7b635900d/transactions/signed'
+let dappid = "5929ee23ea77968a7ec686c124ed3bad43c096e5b38a54eb7ab72ef7b635900d";
+
+let password = 'race forget pause shoe trick first abuse insane hope budget river enough';
 let secondPassword = '';
 
 //必须大写
@@ -75,7 +77,6 @@ function issueAssert() {
 //第四步 向dapp（侧链充值代币），只有向dapp充值了的代币，才能使用  0.1 ETM
 function chargeIntoDapp() {
   /**充值到侧链**/
-  let dappid = "663ecd52420b98e0a7b5f050bf63d5c15ddc32fe1ddbf8442a0adbecdce6beba";
   let currency = issuerName + '.' + assertName
   let amount = 10000 * 100000000;
   let trs = etmjs.transfer.createInTransfer(dappid, currency, amount, password, secondPassword || undefined);
@@ -101,13 +102,13 @@ function transferETM() {
 
   let targetAddress = "APeskjFa4KRR3oHHP7wqFP8tpQxiTrDD9a";
   let amount = 100*100000000;
-  let password = 'race forget pause shoe trick first abuse insane hope budget river enough';
+  let password1 = 'race forget pause shoe trick first abuse insane hope budget river enough';
   let secondPassword  = '';
   let message = ''; // 转账备注
 
   // 其中password是在用户登录的时候记录下来的，secondPassword需要每次让用户输入
   // 可以通过user.secondPublicKey来判断用户是否有二级密码，如果没有，则不必输入，以下几个交易类型类似
-  let transaction = etmjs.transaction.createTransaction(targetAddress, amount, message, password, secondPassword || undefined);
+  let transaction = etmjs.transaction.createTransaction(targetAddress, amount, message, password1, secondPassword || undefined);
 
   return JSON.stringify({
     "transaction": transaction
@@ -149,6 +150,7 @@ function transferETM() {
 
 //只有在第三步执行完成后并且等待区块确认了，才能执行第四步
 //第四步 充值到侧链
+//查询主链资产 http://etm.red:8096/api/uia/balances/AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX
 // axios.post(url, chargeIntoDapp()).then(res => {
 //   console.log(res);
 // }).catch(err => {
@@ -159,7 +161,6 @@ function transferETM() {
 //http://xx.x.xx.xx:port/api/dapps/[dappid]/balances/[address]
 
 
-console.log(dappInnerTransfer());
 //第五步 侧链间转账
 // 注意url
 // 注意是put请求

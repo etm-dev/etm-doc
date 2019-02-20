@@ -53,6 +53,8 @@
 		* [7.11 自增id增加](#711-自增id增加)
 		* [7.12 混沌随机](#712-混沌随机)
 
+以下所有接口都可以在[helloworld](../example/helloworld)中查询
+
 ### 1.余额
 余额接口是在合约中操作用户余额的方法集合，所有的操作接口都会在此做详细的说明。
 
@@ -69,14 +71,17 @@
 示例:
 
 
-	app.balances.get('AC3pinmvz9qX9cj6c7VrGigq7bpPxVJq85', 'ETM')
+	app.route.get("/balance/:address", async req => {
+	  	let address = req.params.address
+	  	let balance = await app.balances.get(address, 'HLB')
+	  	return { balance }
+	})
 	
-	//输出结果
-	{
-	  address: 'AC3pinmvz9qX9cj6c7VrGigq7bpPxVJq85',
-	  currency: 'ETM',
-	  balance: '10000000'
-	}
+	//输出结果 1*10^16 
+	>{"b":{"s":1,"e":16,"c":[1]},"success":true}
+	//同样可以http访问
+	http://etm.red:8096/api/dapps/5929ee23ea77968a7ec686c124ed3bad43c096e5b38a54eb7ab72ef7b635900d/balances/A9mhydu4PJd3KnSbi1p6vwuoBMGcHc4xjr
+	>{"balances":[{"currency":"HLB","balance":"10000000000000000"}],"success":true}
 	
 
 
@@ -91,11 +96,27 @@
 
 - 无返回值	
 - 增加指定账户、指定币种的余额
-- 只有dapp合约发布者才有权限做此操作
 
 示例:
+	
+	//第一步 查询新账户的余额
+	http://etm.red:8096/api/dapps/5929ee23ea77968a7ec686c124ed3bad43c096e5b38a54eb7ab72ef7b635900d/balances/AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX
+	> {"balances":[],"success":true}
+	
+	// 第二步 增加余额
+	
+	app.route.get("/increase", async req => {
+	  await app.balances.increase('AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX', 'HLB',100000000)
+	})
+	
+	http://etm.red:8096/api/dapps/5929ee23ea77968a7ec686c124ed3bad43c096e5b38a54eb7ab72ef7b635900d/increase
+	> {"success":true}
+	
+	//第三步 再次查询
+	http://etm.red:8096/api/dapps/5929ee23ea77968a7ec686c124ed3bad43c096e5b38a54eb7ab72ef7b635900d/balances/AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX
+	> {"balances":[{"currency":"HLB","balance":"100000000"}],"success":true}
+	
 
-	app.balances.increase('AC3pinmvz9qX9cj6c7VrGigq7bpPxVJq85', 'ETM', '100000')
 
 #### 1.3 减少余额
 **app.balances.decrease(address, currency, amount)**
@@ -108,13 +129,25 @@
 
 - 无返回值	
 - 减少指定账户、指定币种的余额
-- 只有dapp合约发布者才有权限做此操作
 
 示例:
 
-```
-app.balances.decrease('AC3pinmvz9qX9cj6c7VrGigq7bpPxVJq85', 'ETM', '100000')
-```
+	//第一步 查询
+	http://etm.red:8096/api/dapps/5929ee23ea77968a7ec686c124ed3bad43c096e5b38a54eb7ab72ef7b635900d/balances/AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX
+	> {"balances":[{"currency":"HLB","balance":"100000000"}],"success":true}
+	
+	//第二步 减少余额
+	app.route.get("/decrease", async req => {
+  		await app.balances.decrease('AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX', 'HLB',50000000)
+	})
+	
+	http://etm.red:8096/api/dapps/5929ee23ea77968a7ec686c124ed3bad43c096e5b38a54eb7ab72ef7b635900d/decrease
+	> {"success":true}
+	
+	//第一步 再次查询
+	http://etm.red:8096/api/dapps/5929ee23ea77968a7ec686c124ed3bad43c096e5b38a54eb7ab72ef7b635900d/balances/AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX
+	> {"balances":[{"currency":"HLB","balance":"50000000"}],"success":true}
+	
 #### 1.4 转账
 **app.balances.transfer(currency, amount, from, to)**
 
@@ -129,7 +162,12 @@ app.balances.decrease('AC3pinmvz9qX9cj6c7VrGigq7bpPxVJq85', 'ETM', '100000')
 
 示例:
 
-	app.balances.transfer('ETM', '100000', 'AC3pinmvz9qX9cj6c7VrGigq7bpPxVJq85', 'A4MFPoF3c9vCzZ3GGf9sNQ3rDy2q8aXuVF')
+	// 转账
+	app.route.get("/transfer", async req => {
+	  await app.balances.transfer('HLB', 50000000, 'A9mhydu4PJd3KnSbi1p6vwuoBMGcHc4xjr', 'AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX')
+	})
+	//调用接口并查询 相比上一小节多了50000000
+	> {"balances":[{"currency":"HLB","balance":"100000000"}],"success":true}
 
 
 ### 2.数据库
