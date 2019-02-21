@@ -378,23 +378,50 @@
 
 ### 3.数据模型
 #### 3.1 获取实例
-**app.model[name]**
+**app.model.[name]**
 
 - `name` 模型名称
 说明：
 
-- 返回一个模型的实例, 主要用于查询已确认的数据
+- 返回一个模型的实例, 主要用于查询已确认的数据   
+
+示例：
+	
+	//获取数据库模型
+	app.route.get("/getDBModel", async req => {
+	  let entries = await app.model.Words.findAll({})
+	  return {
+	    entries
+	  }
+	})
+	//请求合约接口
+	http://etm.red:8096/api/dapps/5929ee23ea77968a7ec686c124ed3bad43c096e5b38a54eb7ab72ef7b635900d/getDBModel
+	//返回数据
+	> {"entries":[{"words":"helloworld"},{"words":" hello world "},{"words":" hello world "},{"words":" hello world "},{"words":" hello world "},{"words":" hello world "},{"words":" hello world "},{"words":" hello world "},{"words":" hello world "},{"words":" hello world "},{"words":" hello world "},{"words":" hello ray "}],"success":true}
 
 #### 3.2 获取所有字段
-**fields()**
+**app.model.[table].fields()**
 
 说明：
 
 - 返回该模型所有字段
 
+示例：
+	
+	//获取数据库模型字段
+	app.route.get("/getDBMFields", async req => {
+	  let fields = await app.model.Words.fields()
+	  return {
+	    fields
+	  }
+	})
+	//请求接口
+	http://etm.red:8096/api/dapps/5929ee23ea77968a7ec686c124ed3bad43c096e5b38a54eb7ab72ef7b635900d/getDBMFields
+	//返回结果
+	> {"fields":["words"],"success":true}
 
 #### 3.3 计数
-**app.model.Block.count(cond)**
+**app.model.[table].count(cond)**
 
 - `cond` 查询条件
 
@@ -404,15 +431,27 @@
 - 表示指定条件的数据项总数
 
 示例:
-
+	
+	//获取数据库模型数据数量
+	app.route.get("/getDBMCount", async req => {
+	  let count = await app.model.Words.count({})
+	  return {
+	    count
+	  }
+	})
+	//请求合约接口
+	http://etm.red:8096/api/dapps/5929ee23ea77968a7ec686c124ed3bad43c096e5b38a54eb7ab72ef7b635900d/getDBMCount
+	//返回结果
+	> {"count":12,"success":true}
+	
+	//或者
 	app.model.Block.count({ height: { $lt: 100 } })
 	//输出
-	99
+	> 99
 
 
 #### 3.4 是否存在
-**app.model.Transaction.exists(cond)**
-**app.model.Account.exists(cond)**
+**app.model.[table].exists(cond)**
 
 - `cond` 查询条件
 
@@ -424,6 +463,19 @@
 示例:
 
 	
+	//获取数据库中是否存在某些数据
+	app.route.get("/exist", async req => {
+	  let exist = await app.model.Words.exists({"words":" hello ray "})
+	  return {
+	    exist
+	  }
+	})
+	//请求合约
+	http://etm.red:8096/api/dapps/5929ee23ea77968a7ec686c124ed3bad43c096e5b38a54eb7ab72ef7b635900d/exist
+	//返回结果
+	> {"exist":true,"success":true}
+	
+	//或者
 	app.model.Transaction.exists({ id: '9a5ec0669c79b9f5a1d5a4dbb2c200bc28c9ea829dbff71f41cbb2ad5a7d9b01' })
 	//输出
 	false
@@ -433,7 +485,7 @@
 	true
 
 #### 3.5 查找
-**app.model.Account.findOne(condition)**	
+**app.model.[table].findOne(condition)**	
 
 `options`是一个对象, 包含以下元素
 
@@ -444,8 +496,20 @@
 - 查询一个指定条件的数据项
 
 示例:
-
-
+	
+	//查找数据库中的数据
+	app.route.get("/findOne", async req => {
+	  let one = await app.model.Words.findOne({"words":" hello ray "})
+	  return {
+	    one
+	  }
+	})
+	//调用接口
+	http://etm.red:8096/api/dapps/5929ee23ea77968a7ec686c124ed3bad43c096e5b38a54eb7ab72ef7b635900d/findOne
+	//返回结果
+	> {"one":{"words":"helloworld"},"success":true}
+	
+	//或者
 	app.model.Account.findOne({ nickname: 'Nakamoto' })
 	//输出
 	{
@@ -455,7 +519,7 @@
 	}
 
 #### 3.6 查找全部
-**app.model.Transfer.findAll(condition）**
+**app.model.[table].findAll(condition）**
 
 `options`是一个对象, 包含以下元素
 
@@ -470,7 +534,18 @@
 - 查询指定条件的所有数据项 
 
 示例:
-
+	
+	// 获取所有单词
+	app.route.get("/words", async req => {
+	  let words = await app.model.Words.findAll({})
+	  return {
+	    words
+	  }
+	})
+	//调用合约接口
+	http://etm.red:8096/api/dapps/5929ee23ea77968a7ec686c124ed3bad43c096e5b38a54eb7ab72ef7b635900d/words
+	//返回结果
+	> {"words":[{"words":"helloworld"},{"words":" hello world "},{"words":" hello world "},{"words":" hello world "},{"words":" hello world "},{"words":" hello world "},{"words":" hello world "},{"words":" hello world "},{"words":" hello world "},{"words":" hello world "},{"words":" hello world "},{"words":" hello ray "}],"success":true}
 	
 	app.model.Transfer.findAll({ senderId: 'AC3pinmvz9qX9cj6c7VrGigq7bpPxVJq85'})
 	//输出
@@ -506,15 +581,22 @@
 **app.route.get(path, handler)**
 
 	注册一个`get`类型的http请求处理函数
+	app.route.get('/helloworld', async function(req) {
+	  return {
+	    message: 'helloworld'
+	  }
+	})
 
 #### 4.2 post
 **app.route.post(path, handler)**
 
 	注册一个`post`类型的http请求处理函数
+	
 #### 4.3 put
 **app.route.put(path, handler)**
 
 	注册一个`put`类型的http请求处理函数
+	
 ### 5.手续费
 #### 5.1 添加手续费
 **app.feePool.add(currency, amount)**
@@ -529,27 +611,34 @@
 
 示例:
 
-	app.feelPool.add('ETM', '10000000')
+	//----------添加费用池----------
+	app.route.get("/addFee", async req => {
+	  await app.feePool.add('HLB', '10000000000')
+	})
+	
+	//查看数据库中 
+	sqlite3 blockchain.db
+	sqlite> select * from round_fees;
+	//结果中增加了
+	> 12565|HLB|10000000000|0
 
 
 ### 6.日志
 #### 6.1 设置等级
-#### 6.2 日志
-#### 6.3 跟踪
-#### 6.4 调试
-#### 6.5 信息输出
-#### 6.6 警告
-#### 6.7 错误 
-示例:
-
+	
 	app.logger.setLevel('debug')
 	app.logger.setLevel('info')
-	
+#### 6.2 日志
 	logger.log('hello');
+#### 6.3 跟踪
 	logger.trace('hello', 'world');
+#### 6.4 调试
 	logger.debug('hello %s',  'world', 123);
+#### 6.5 信息输出
 	logger.info('hello %s %d',  'world', 123, {foo:'bar'});
+#### 6.6 警告
 	logger.warn('hello %s %d %j', 'world', 123, {foo:'bar'});
+#### 6.7 错误 
 	logger.error('hello %s %d %j', 'world', 123, {foo:'bar'}, [1, 2, 3, 4], Object);
 
 
@@ -575,6 +664,8 @@
 #### 7.2 注册合约
 **app.registerContract(type, name)**
 
+参考[init.js](../example/helloworld/init.js)
+
 - `type` 合约数值类型或编号
 - `name` 合约的字符串名称
 
@@ -585,7 +676,9 @@
 
 示例:
 
-	app.registerContract(1001, 'cctime.postArticle')
+	//注册合约方法
+  	app.registerContract(1000, 'helloworld.hello')
+
 
 
 
@@ -600,7 +693,7 @@
 
 示例:
 
-	app.getContractName(1001) === 'cctime.postArticle'
+	app.getContractName(1000) === 'helloworld.hello'
 
 #### 7.4 初始化手续费
 **app.registerFee(type, min, currency)**
@@ -616,7 +709,7 @@
 
 示例:
 
-	app.registerFee(1001, '100000', 'ETM')
+	app.registerFee(1000, '100000', 'HLB')
 
 #### 7.5 获取手续费
 **app.getFee(type)**
@@ -629,11 +722,11 @@
 
 示例:
 
-	app.getFee(1001)
+	app.getFee(1000)
 	//输出
 	{
 	  min: '100000',
-	  currency: 'ETM'
+	  currency: 'HLB'
 	}
 #### 7.6 获取默认手续费
 **app.setDefaultFee(min, currency)**
@@ -646,7 +739,8 @@
 
 示例:
 
-	app.setDefaultFee('10000', 'ETM')
+	app.setDefaultFee('10000000', 'HLB')
+	
 
 #### 7.7 获取真实时间戳
 **app.getRealTime(epochTime)**
@@ -656,11 +750,21 @@
 说明：
 
 - 返回完整的时间戳, 即区块创世时间加上偏移量, 单位为毫秒
-- etm系统中底层存储和上层查询的时间戳均为一个偏移量, 并非实际时间戳, 可以调用这个函数转换为真实的时间戳
+- entanmo系统中底层存储和上层查询的时间戳均为一个偏移量, 并非实际时间戳, 可以调用这个函数转换为真实的时间戳
 
 示例:
 
-	app.getRealTime(4353634)
+	//获取真实时间戳
+	app.route.get("/getRealTime", async req => {
+	  let realtime = await app.getRealTime(4353634)
+	  return {
+	    realtime
+	  }
+	})
+	//调用合约接口
+	http://etm.red:8096/api/dapps/5929ee23ea77968a7ec686c124ed3bad43c096e5b38a54eb7ab72ef7b635900d/getRealTime
+	//返回结果
+	> {"realtime":1543699234000,"success":true}
 
 
 #### 7.8 注册回调
@@ -670,6 +774,8 @@
 	
 #### 7.9 应用列表
 **app.custom[]**
+
+	//TODO
 
 说明：
 
@@ -695,11 +801,16 @@
 - 对指定类型的ID增加1并以字符串形式返回更新后的数值, 相当于原子的`++1`, 超大数也适用
 
 示例:
-
-	const AID = 'article_id'
-	app.autoID.get(AID) === '0'
-	app.autoID.increment(AID) === '1'
-	app.autoID.get(AID) === '1'
+	
+	//示例
+	app.sdb.create("Market", {
+        id: app.autoID.increment("market_max_id"),
+        type: 1,
+        status: 1,
+        price: Math.round(price),
+        horse: id,
+        seller: sender
+      })
 
 
 #### 7.12 混沌随机
