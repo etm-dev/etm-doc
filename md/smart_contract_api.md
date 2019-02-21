@@ -802,7 +802,7 @@
 
 示例:
 	
-	//示例
+	//示例 加密马合约部分代码
 	app.sdb.create("Market", {
         id: app.autoID.increment("market_max_id"),
         type: 1,
@@ -815,6 +815,6 @@
 
 #### 7.12 混沌随机
 
-	//TODO
+	//TODO 暂时还没有接口
 -----------------
 下一章：[http接口详解](./http_api.md)
