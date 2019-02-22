@@ -2,10 +2,28 @@
 
 开发DApp应该分为智能合约开发、前端界面开发。本小节主要讲述了前端界面如何调用合约接口，重点关注[5.自定义合约接口调用](#5自定义合约接口调用)，因为大家的dapp功能各异，只有学习到了如何调用自定义的接口，大家调用起合约来才能得心应手。
 
+**构建请求过程：**   
+1. 构造请求数据，用户数据按照entanmo提供的接口规则，通过程序生成签名，生成请求数据集合；   
+2. 发送请求数据，把构造完成的数据集合通过POST/GET等提交的方式传递给entanmo；   
+3. entanmo对请求数据进行处理，服务器在接收到请求后，会首先进行安全校验，验证通过后便会处理该次发送过来的请求；   
+4. 返回响应结果数据，entanmo把响应结果以JSON的格式反馈给用户，每个响应都包含success字段，表示请求是否成功，成功为true, 失败为false。 如果失败，则还会包含一个error字段，表示错误原因；   
+5. 对获取的返回结果数据进行处理；
+
+
 * [http接口详解](#http请求接口详解)
-	* [1.信息获取](#1信息获取)
-		* [1.1 获取DApp区块高度](#11-获取DApp区块高度)
-		* [1.2 获取DApp区块数据](#12-获取DApp区块数据)
+	* [1.账户系统](#1账户系统)
+		* [1.1 登录](#11-登录)
+		* [1.2 不加密直接登录](#12-不加密直接登录)
+		* [1.3 根据地址获取账户信息](#13-根据地址获取账户信息)
+		* [1.4 获取账户余额](#14-获取账户余额)
+		* [1.5 根据地址获取账户公钥](#15-根据地址获取账户公钥)
+		* [1.6 生成公钥](#16-生成公钥)
+		* [1.7 根据地址获取其投票列表](#17-根据地址获取其投票列表)
+		* [1.8 获取受托人手续费](#18-获取受托人手续费)
+		* [1.9 给受托人投票](#19-给受托人投票)
+		* [1.10 生成新账户](#110-生成新账户)
+		* [1.11 获取账户排行榜前100名](#111-获取账户排行榜前100名)
+		* [1.12 获取当前链上账户总个数](#112-获取当前链上账户总个数)
 	* [2.账户信息获取](#2账户信息获取)
 		* [2.1 获取DApp账户信息](#21-获取DApp账户信息)
 	* [3.交易](#3交易)
@@ -28,85 +46,494 @@
 		* [4.1 获取所有智能合约](#41-获取所有智能合约)
 	* [5.自定义合约接口调用](#5自定义合约接口调用)
 
-### 1.信息获取
-通过http请求获取dapp相关信息
+### 1.账户系统
+通过http请求进行账户（account）的相关操作。  
+参考[示例](../utils/account.js)
 
-#### 1.1 获取DApp区块高度
-接口地址：/api/dapps/dappID/blocks/height	
-请求方式：GET	
-支持格式：urlencode
+#### 1.1 登录
+接口地址：/api/accounts/open2/   
+请求方式：POST   
+支持格式：JSON   
+接口备注：根据用户密码在本地客户端用js代码生成公钥   
+
+请求参数说明:   
+
+| 参数        | 类型           |必填|  说明 |
+| ------------- |:-------------:| :-------------:|:-------------:|
+| publicKey      | String| Y|账户公钥|
+
 	
-返回参数说明：	
+返回参数说明:   
 
 | 参数        | 类型           |说明|
 | ------------- |:-------------:| :-------------:|
 | success      | boolean| 是否成功|
-| height      | integer      | Dapp的区块高度|
+| account      | json      | 账户信息|
 
 请求示例：
 	
-	curl -k -H "Content-Type: application/json" -X GET http://localhost:4096/api/dapps/bebe3c57d76a5bbe3954bd7cb4b9e381e8a1ba3c78e183478b4f98b9d532f024/blocks/height && echo  
+	
+	//安全登录  推荐
+	function safeLogin() {
+	  let publicKey = etmjs.crypto.getKeys(secret).publicKey; //根据密码生成公钥
+	  return JSON.stringify({
+	    publicKey
+	  });
+	}
+	axios.post(loginUrl, safeLogin()).then(res => {
+	  console.log(res);
+	}).catch(err => {
+	  console.error(err);
+	})
 
 JSON返回示例： 
 
-```
-{    
-	height: 10,    
-	success: true    
-}  
+	{ 	
+		success: true,
+     	account:{	
+      		address: 'A9mhydu4PJd3KnSbi1p6vwuoBMGcHc4xjr',
+        	unconfirmedBalance: 9996006130000000,
+        	balance: 9996006130000000,
+        	publicKey: 'bd93add22ab931a279f0ef741b768796afc3756ec697f76bef4e2f634969294d',
+        	unconfirmedSignature: false,
+        	secondSignature: false,
+        	secondPublicKey: '',
+        	multisignatures: [],
+        	u_multisignatures: [],
+        	lockHeight: 0 
+    	}
+    	latestBlock: { height: 52372, timestamp: 11457690 },
+     	version: { version: '1.0.0', build: 'development', net: 'localnet' } 
+    }
 
-```
 
-
-#### 1.2 获取DApp区块数据
-接口地址：/api/dapps/dappID/blocks	
-请求方式：GET	
-支持格式：urlencode	
-接口说明：不加参数则获取全网区块详情	
+#### 1.2 不加密直接登录
+接口地址：/api/accounts/open/	
+请求方式：POST
+支持格式：JSON
+接口备注：将密码传入到server端，根据生成的地址去查询账户信息。不推荐在公网坏境使用！	
 请求参数说明：
 
-| 参数        | 类型             | 必填            | 说明          |
+
+| 参数        | 类型           |必填|  说明 |
 | ------------- |:-------------:| :-------------:|:-------------:|
-| limit| integer|N|限制返回区块信息结果集数量,最大值：100|
-| orderBy| string|N|根据表中字段排序，如height:desc|
-| offset| integer|N|偏移量|
-| generatorPublicKey| string|N|根据区块生产者公钥查询区块|
-| totalAmount| integer | N |根据交易总额查询，最小值：0，最大值：10000000000000000|
-| totalFee| integer| N|根据手续费总额查询，最小值：0，最大值：10000000000000000|
-| previousBlock| string|N|根据上一个区块id查询|
-| height| integer| N|根据区块高度查询|
+| secret      | String| Y|账户私钥|
 
 返回参数说明：
 
 | 参数        | 类型           |说明|
 | ------------- |:-------------:| :-------------:|
 | success      | boolean| 是否成功|
-| count      | integer      | 符合条件的总结果数目|
-| blocks      | array      | 每个元素是一个block对象，对象里面包含block的id、height、产块受托人公钥等信息|
+| account      | json      | 账户信息|
 
 请求示例：
 
-	curl -k -H "Content-Type: application/json" -X GET http://localhost:4096/api/dapps/bebe3c57d76a5bbe3954bd7cb4b9e381e8a1ba3c78e183478b4f98b9d532f024/blocks?limit=1 && echo
+	//危险登录，不推荐使用
+	function loginNotSafe() {
+	  return JSON.stringify({
+	    'secret':secret
+	  });
+	}
+
+	axios.post(login2Url, loginNotSafe()).then(res => {
+	  console.log(res);
+	}).catch(err => {
+	  console.error(err);
+	})
 
 JSON返回示例：
 
-	{    
-		blocks: [{    
-			id: "451dd17f273ea5fbd240238178c1343b11031a1d309ee8b29e8b1a5838473ec6",    
-			timestamp: 0,    
-			height: 1,    
-			payloadLength: 103,    
-			payloadHash: "995f4749e1924af55f1cdefd202efd0b37b2aa70553982378c037bc6015d5634",    
-			prevBlockId: "",    
-			pointId: "",    
-			pointHeight: 0,    
-			delegate: "8065a105c785a08757727fded3a06f8f312e73ad40f1f3502e0232ea42e67efd",    
-			signature: "b1d0171494ce6c0621902c6005f7a85e15f3509a68ac6106b166abf711ced73efaeaf1eae0cdf594143854e27b417b253485cf98b3cc9f7aa967a929b717020b",    
-			count: 1    
-		}],    
-		count: 133,    
-		success: true    
-	}   
+	{ 
+		success: true,
+     	account:
+      	{ 
+      		address: 'A9mhydu4PJd3KnSbi1p6vwuoBMGcHc4xjr',
+        	unconfirmedBalance: 9996006130000000,
+        	balance: 9996006130000000,
+        	publicKey: 'bd93add22ab931a279f0ef741b768796afc3756ec697f76bef4e2f634969294d',
+        	unconfirmedSignature: false,
+        	secondSignature: false,
+        	secondPublicKey: '',
+        	multisignatures: [],
+        	u_multisignatures: [],
+        	lockHeight: 0 
+      	} 
+   	}
+
+#### 1.3 根据地址获取账户信息
+接口地址：/api/accounts   
+请求方式：GET   
+支持格式：urlencoded   
+请求参数说明:   
+
+| 参数        | 类型           |必填|  说明 |
+| ------------- |:-------------:| :-------------:|:-------------:|
+| address      | String| Y|账户地址|
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+|account| json  |账户详情 |   
+| latestBlock | json  |该节点最新的区块信息    |   
+|version| json  |版本相关信息 |   
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET http://etm.red:8096/api/accounts?address=A66taz8N3f67dzSULHSUunfPx82J25BirZ
+
+JSON返回示例：  
+	
+	{
+		"success":true,
+		"account":
+		{
+			"address":"A66taz8N3f67dzSULHSUunfPx82J25BirZ",
+			"balance":0,
+			"publicKey":"",
+			"secondSignature":"",
+			"secondPublicKey":"",
+			"multisignatures":"",
+			"u_multisignatures":"",
+			"lockHeight":0,
+			"effectivity":false,
+			"delayAmount":0
+		},
+		"latestBlock":{
+			"height":52674,
+			"timestamp":11458596
+		},
+		"version":{
+			"version":"1.0.0",
+			"build":"development"
+			,"net":"localnet"
+		}
+	}
+
+
+#### 1.4 获取账户余额
+接口地址：/api/accounts/getBalance    
+请求方式：GET   
+支持格式：urlencoded   
+请求参数说明:   
+
+| 参数        | 类型           |必填|  说明 |
+| ------------- |:-------------:| :-------------:|:-------------:|
+| address      | String| Y|账户地址|
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| balance | Integer  |账户余额 |   
+| unconfirmedBalance | Integer  |未确认和已确认的余额之和，该值大于等于balance    |    
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET http://etm.red:8096/api/accounts/getBalance?address=AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX
+
+JSON返回示例：  
+	
+	{
+		"success":true,
+		"balance":911900000000,
+		"unconfirmedBalance":911900000000,
+		"delayAmount":0
+	}
+
+#### 1.5 根据地址获取账户公钥
+接口地址：/api/accounts/getPublickey   
+请求方式：GET   
+支持格式：urlencoded   
+请求说明：只有给别人转过账，db中才会存取公钥，否则是查不到的。 
+请求参数说明:   
+
+| 参数        | 类型           |必填|  说明 |
+| ------------- |:-------------:| :-------------:|:-------------:|
+| address      | String| Y|账户地址|
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| publicKey | String  |公钥 |   
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET http://etm.red:8096/api/accounts/getPublickey?address=AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX
+
+JSON返回示例：  
+	
+	{
+		"success":true,
+		"publicKey":"813a4934192334fdd55f966f25975757b3bc2b866552fa58687e7f8420190961"
+	}
+	
+
+#### 1.6 生成公钥
+接口地址：/api/accounts/generatePublickey   
+请求方式：POST   
+支持格式：JSON    
+请求参数说明:   
+
+| 参数        | 类型           |必填|  说明 |
+| ------------- |:-------------:| :-------------:|:-------------:|
+| secret      | String| Y|账户密钥|
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| publicKey | String  |公钥 |   
+  
+
+请求示例： 
+	
+	//POST请求
+	curl -k -H "Content-Type: application/json" -X POST -d '{"secret":"pepper sleep youth blast vivid circle cross impact zebra neck salmon fee"}' 'http://etm.red:8096/api/accounts/generatePublickey'
+
+JSON返回示例：  
+	
+	{
+		"success":true,
+		"publicKey":"813a4934192334fdd55f966f25975757b3bc2b866552fa58687e7f8420190961"
+	}
+	
+
+#### 1.7 根据地址获取其投票列表
+接口地址：/api/accounts/delegates   
+请求方式：GET   
+支持格式：urlencoded    
+接口说明：必须经过锁仓投票以后才有信息
+请求参数说明:   
+
+| 参数        | 类型           |必填|  说明 |
+| ------------- |:-------------:| :-------------:|:-------------:|
+| address      | String| Y|账户地址|
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| delegates | array  |已投票的受托人详情数组|   
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET http://etm.red:8096/api/accounts/delegates?address=AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX
+
+JSON返回示例：  
+	
+	{
+		"success":true,
+		"delegates":[
+			{
+				"username":"etm_002",
+				"address":"AMowWYG8ND5Yx13Q5ULyYAF63v1rkmdTCC",
+				"publicKey":"a08dc0d7b170a0e12caff0a7faaef952741e65f3585905a5847e4d877d650f07",
+				"vote":43976220,
+				"producedblocks":495,
+				"missedblocks":108,
+				"rate":2,
+				"approval":"0.00",
+				"productivity":"82.08"
+			}
+		]
+	}
+	
+#### 1.8 获取受托人手续费
+接口地址：/api/accounts/delegates/fee   
+请求方式：GET   
+支持格式：urlencoded   
+
+请求参数说明：   
+
+| 参数        | 类型           |必填|  说明 |
+| ------------- |:-------------:| :-------------:|:-------------:|
+| secret      | String| Y|账户密钥| 
+| publicKey      | String| N|账户公钥| 
+| secondSecret      | String| N|账户二级密码| 
+| delegates      | Array | Y|受托人公钥数组，每个公钥前需要加上+或者-号，代表增加/取消对其的投票| 
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| transaction | json  |投票交易详情|   
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET http://etm.red:8096/api/accounts/delegates/fee
+
+JSON返回示例：  
+	
+	{
+		"success":true,
+		"fee":10000000
+	}
+	
+	
+#### 1.9 给受托人投票
+接口地址：/api/accounts/delegates   
+请求方式：PUT    
+支持格式：JSON    
+    
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| fee | Integer  |手续费|   
+  
+
+请求示例： 
+	
+	//put请求
+	curl -k -H "Content-Type: application/json" -X PUT -d '{"secret":"pepper sleep youth blast vivid circle cross impact zebra neck salmon fee","publicKey":"813a4934192334fdd55f966f25975757b3bc2b866552fa58687e7f8420190961","delegates":["+ae28cc3069f4291756168e602a11e5b5d13e546050e3c1d9a09c0311f53a159c"]}' 'http://etm.red:8096/api/accounts/delegates'   
+
+JSON返回示例：  
+	
+	//TODO  这里请求有问题
+	{"success":false,"error":"Number of votes  (2 > 1)."}
+
+
+
+#### 1.10 生成新账户
+接口地址：/api/accounts/new      
+请求方式：GET       
+支持格式：urlencoded    
+    
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| secret | String  |账户密钥|
+| publicKey | String  |账户公钥|
+| privateKey | String  |私钥|
+| address | String  |账户地址|   
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/accounts/new'  
+
+JSON返回示例：  
+	
+	{
+		"success":true,
+		"secret":"snap proof ozone exact write waste scrap account lounge manual next across",
+		"publicKey":"5e975d4b31c741af773b8b53d54f34f4b4f0ea2ab1bf629cdb5bd692192c9a55",
+		"privateKey":"bdf1b1963d5bd26938f15a7ca7d02a6a77054b7d4d353d5618cae1570dbb56485e975d4b31c741af773b8b53d54f34f4b4f0ea2ab1bf629cdb5bd692192c9a55",
+		"address":"APAJi5oU5zffU3y5JDufWiKGyMskrdVAT7"
+	}
+
+	
+#### 1.11  获取账户排行榜前100名
+接口地址：/api/accounts/top     
+请求方式：GET       
+支持格式：urlencoded    
+请求参数说明：如果不加请求参数则返回持币量前100名账户信息
+
+
+| 参数        | 类型           |必填|  说明 |
+| ------------- |:-------------:| :-------------:|:-------------:|
+| limit      | Integer| N|限制结果集个数，最小值：0,最大值：100| 
+| offset      | Integer | N|偏移量，最小值0| 
+
+
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| accounts | json  |账户信息元组，每个元素包含地址、余额、公钥|
+
+  
+
+请求示例： 
+	
+	//get请求
+	//返回前5名账户信息
+	curl -k -X GET 'http://etm.red:8096/api/accounts/top?limit=5&offset=0'    
+
+JSON返回示例：  
+	
+	{
+	"success":true,
+	"accounts":[
+		{
+			"address":"A9mhydu4PJd3KnSbi1p6vwuoBMGcHc4xjr",
+			"balance":9996006130000000,
+			"publicKey":"bd93add22ab931a279f0ef741b768796afc3756ec697f76bef4e2f634969294d"
+		},
+		{
+			"address":"AGKTTewJzJkteWJ9MVEupgCLhgKELsvU7T",
+			"balance":989990000000,
+			"publicKey":"88a2440cefa9d8b1204bd7b8f10f724c163c9fd49ecb9f568ce718ca5b91cc07"
+		},
+		{
+			"address":"A8rJnWDTochZuBc9jhMkPCUXsp8sUQpNDk",
+			"balance":978970000000,
+			"publicKey":"91706b4c02839d154870dfd5cdfd912b6ab53140abba9c7dd54bc3558a43fd77"
+		},
+		{
+			"address":"AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX",
+			"balance":901880000000,
+			"publicKey":"813a4934192334fdd55f966f25975757b3bc2b866552fa58687e7f8420190961"
+		},
+		{
+			"address":"A9SKPdKz9ywBUVnBVmevodcsKdxXc3tXMv",
+			"balance":828680000000,
+			"publicKey":"c460cac02084f544f7eb8506ef368492551805dad6b0031eb091398d37ba0217"
+		}]
+	}
+
+#### 1.12  获取当前链上账户总个数   
+接口地址：/api/accounts/count    
+请求方式：GET       
+支持格式：urlencoded    
+
+
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| count | Integer  |当前链上账户总个数|
+
+  
+
+请求示例： 
+	
+	//get请求
+	//返回前5名账户信息
+	curl -k -X GET 'http://etm.red:8096/api/accounts/count'    
+
+JSON返回示例：  
+	
+	{
+		"success":true,
+		"count":209
+	}
 
 ### 2.账户信息获取
 
