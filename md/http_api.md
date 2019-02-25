@@ -24,9 +24,13 @@
 		* [1.10 生成新账户](#110-生成新账户)
 		* [1.11 获取账户排行榜前100名](#111-获取账户排行榜前100名)
 		* [1.12 获取当前链上账户总个数](#112-获取当前链上账户总个数)
-	* [2.账户信息获取](#2账户信息获取)
-		* [2.1 获取DApp账户信息](#21-获取DApp账户信息)
-	* [3.交易](#3交易)
+	* [2.交易](#2交易)
+		* [2.1 获取交易信息](#21-获取交易信息)
+		* [2.2 根据交易id查看交易详情](#22-根据交易id查看交易详情)
+		* [2.3 根据未确认交易id查看详情](#23-根据未确认交易id查看详情)
+		* [2.4 获取全网未确认的交易详情](#24-获取全网未确认的交易详情)
+		* [2.5 创建交易并广播](#25-创建交易并广播)
+	* [3.区块](#3区块)
 		* [3.1 签名交易](#31-签名交易)
 			* [3.1.1 离线签名](#311-离线签名)
 				* [3.1.1.1 DApp充值](#3111-DApp充值)
@@ -535,48 +539,273 @@ JSON返回示例：
 		"count":209
 	}
 
-### 2.账户信息获取
+### 2.交易
 
-#### 2.1 获取DApp账户信息
+#### 2.1 获取交易信息
 
-接口地址：/api/dapps/dappID/accounts/:address   
+接口地址：/api/transactions   
 请求方式：GET   
 支持格式：urlencode   
+接口说明：如果请求不加参数则会获取全网所有交易   
 请求参数说明：  
   
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
-|address |string | Y   |etm地址    |   
+| and | Integer | N   |取值范围0和1，默认值0。select查询时下面这些条件都是or的关系，and=1时select是and的关系    |   
+| blockId | String | N   |区块id    | 
+| limit | Integer | N   |限制结果集个数，最小值：0,最大值：100    | 
+| type | Integer | N   |交易类型,0:普通转账，1:设置二级密码，2:注册受托人，3:投票，4:多重签名，5:DAPP，6:IN_TRANSFER，7:OUT_TRANSFER   | 
+| orderBy | String | N   |根据表中字段排序，senderPublicKey:desc    | 
+| offset | Integer | N   |偏移量，最小值0    | 
+| senderPublicKey | String | N   |发送者公钥    | 
+| ownerPublicKey | String | N   |拥有者公钥    | 
+| ownerAddress | String | N   | 拥有者地址   | 
+| recipientId | String | N   |接收者地址,最小长度：1    | 
+| senderId | String | N   |发送者地址    | 
+| amount | Integer | N   |金额    | 
+| fee | Integer | N   |手续费   | 
+| uia | Integer | N   |是否uia，0：不是，1：是   | 
+| currency | String | N   |资产名    |   
   
 返回参数说明：   
 
 |名称	|类型   |说明              |   
 |------ |-----  |----              |   
 |success|boolean  |是否成功获得response数据      |   
-|account|dict  |账户详情，包含dapp内该账户拥有的所有资产及余额，是否受托人，额外信息     |   
+| transactions |array  |多个交易详情json构成的列表 |   
+| count |int  |获取到的交易总个数 | 
   
   
 请求示例：   
-```   
-curl -k -H "Content-Type: application/json" -X GET http://localhost:4096/api/dapps/bebe3c57d76a5bbe3954bd7cb4b9e381e8a1ba3c78e183478b4f98b9d532f024/accounts/ANH2RUADqXs6HPbPEZXv4qM8DZfoj4Ry3M && echo   
-```   
+
+ 
+	curl -k -H "Content-Type: application/json" -X http://etm.red:8096/api/transactions?limit=2   
+  
 
 JSON返回示例：   
    
-	{    
-		account: {    
-			balances: [{    
-				currency: "ETM", // dapp内部拥有的代币数（通过自行充值或者他人dapp内转账获得）   
-				balance: "10000000000"  // 100 ETM    
-			}],    
-			extra: null,    
-			isDelegate: false // 是否受托人：否
-		},    
-		success: true    
-	}  
+	{
+		"success":true,
+		"transactions":	
+			[{
+				"id":"f0af7052a760edb104c118d1f6950f597f50a314b872508d9bc7e16f7062219c",
+				"height":1,
+				"blockId":"b8f0e9310ede1fc64fbbcdc7dee0edebdd74490017e5b4261573c14c80de591a",
+				"type":0,
+				"timestamp":0,
+				"senderPublicKey":"e8de2877f5448b3f105fdd059c060f286d4db34226b3c2d9c6e4bbe248072574",
+				"senderId":"ACfVWA1TJ1NbrDHUefjfiaykUezAgfvPZ9",
+				"recipientId":"A9mhydu4PJd3KnSbi1p6vwuoBMGcHc4xjr",
+				"amount":10000000000000000,
+				"fee":0,
+				"signature":"4d7730f81a5ae2679530153d91f6a15fcbcac00469fa4210098d2d2c3fe87d885ad9348ee9fc7680203e1035d91230089c9287056860a01df98ec84a600f180f",
+				"signSignature":"",
+				"signatures":null,
+				"confirmations":252988,
+				"args":null,
+				"message":null,
+				"asset":{}},
+			{
+				"id":"e0070e3ff36b3a77ced5e3b715ddc89bb1ba20199a3267db8a5c99aaac988055",
+				"height":1,
+				"blockId":"b8f0e9310ede1fc64fbbcdc7dee0edebdd74490017e5b4261573c14c80de591a",
+				"type":0,
+				"timestamp":0,
+				"senderPublicKey":"e8de2877f5448b3f105fdd059c060f286d4db34226b3c2d9c6e4bbe248072574",
+				"senderId":"ACfVWA1TJ1NbrDHUefjfiaykUezAgfvPZ9",
+				"recipientId":"ALujNVEVnarsLG2unJmUEshTqmQCFCmoD2",
+				"amount":20000000000,
+				"fee":0,
+				"signature":"b7bf507ca4b693e172d0d1d63a3fe3a4562a0544f55ff436dcd18465a9653f63fe71ee8e8c8169a494cec651172e40787391598cda7ce3d42cff85bd2527be03",
+				"signSignature":"",
+				"signatures":null,
+				"confirmations":252988,
+				"args":null,
+				"message":null,
+				"asset":{}
+			}],
+		"count":468
+	} 
 
 
-### 3.交易
+#### 2.2 根据交易id查看交易详情   
+接口地址：/api/transactions/get    
+请求方式：GET       
+支持格式：urlencoded    
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| Id | String | Y   |未确认交易id   |  
+
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| transactions | json  |未确认交易详情|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/transactions/unconfirmed/get?id=0070e3ff36b3a77ced5e3b715ddc89bb1ba20199a3267db8a5c99aaac9880556'    
+
+JSON返回示例：  
+	
+	{
+		"success":true,
+		"transaction":
+			{
+				"id":"0070e3ff36b3a77ced5e3b715ddc89bb1ba20199a3267db8a5c99aaac9880556",
+				"height":1,
+				"blockId":"b8f0e9310ede1fc64fbbcdc7dee0edebdd74490017e5b4261573c14c80de591a",
+				"type":0,
+				"timestamp":0,
+				"senderPublicKey":"e8de2877f5448b3f105fdd059c060f286d4db34226b3c2d9c6e4bbe248072574",
+				"senderId":"ACfVWA1TJ1NbrDHUefjfiaykUezAgfvPZ9",
+				"recipientId":"ALujNVEVnarsLG2unJmUEshTqmQCFCmoD2",
+				"amount":20000000000,
+				"fee":0,
+				"signature":"b7bf507ca4b693e172d0d1d63a3fe3a4562a0544f55ff436dcd18465a9653f63fe71ee8e8c8169a494cec651172e40787391598cda7ce3d42cff85bd2527be03",
+				"signSignature":"",
+				"signatures":null,
+				"confirmations":253407,
+				"args":null,
+				"message":null,
+				"asset":{}
+			}
+	}
+
+#### 2.3 根据未确认交易id查看详情   
+接口地址：/api/transactions/unconfirmed/get   
+请求方式：GET       
+支持格式：urlencoded    
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| Id | String | Y   |未确认交易id   |  
+
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| transactions | json  |未确认交易详情|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/transactions/unconfirmed/get?id=0070e3ff36b3a77ced5e3b715ddc89bb1ba20199a3267db8a5c99aaac9880556'    
+
+JSON返回示例：  
+	
+	{
+		"success":true,
+		"transaction":
+			{
+				"id":"0070e3ff36b3a77ced5e3b715ddc89bb1ba20199a3267db8a5c99aaac9880556",
+				"height":1,
+				"blockId":"b8f0e9310ede1fc64fbbcdc7dee0edebdd74490017e5b4261573c14c80de591a",
+				"type":0,
+				"timestamp":0,
+				"senderPublicKey":"e8de2877f5448b3f105fdd059c060f286d4db34226b3c2d9c6e4bbe248072574",
+				"senderId":"ACfVWA1TJ1NbrDHUefjfiaykUezAgfvPZ9",
+				"recipientId":"ALujNVEVnarsLG2unJmUEshTqmQCFCmoD2",
+				"amount":20000000000,
+				"fee":0,
+				"signature":"b7bf507ca4b693e172d0d1d63a3fe3a4562a0544f55ff436dcd18465a9653f63fe71ee8e8c8169a494cec651172e40787391598cda7ce3d42cff85bd2527be03",
+				"signSignature":"",
+				"signatures":null,
+				"confirmations":253407,
+				"args":null,
+				"message":null,
+				"asset":{}
+			}
+	}
+	
+#### 2.4 获取全网未确认的交易详情  
+接口地址：/api/transactions/unconfirmed    
+请求方式：GET       
+支持格式：urlencoded  
+接口说明：如果不加参数，则会获取全网所有未确认交易     
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| senderPublicKey | String | N   |发送者公钥  |  
+| address | String | N   | 地址  |  
+
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| transactions | array  |未确认交易列表|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/transactions/unconfirmed'    
+
+JSON返回示例：  
+
+	//全网没有未确认的交易	
+	{
+		"success":true,
+		"transactions":[]
+	}
+	
+#### 2.5 创建交易并广播  
+接口地址：/api/transactions    
+请求方式：PUT       
+支持格式：JSON      
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| secret | String | String   |账户密码  |  
+| amount | Integer | Y   | 金额，最小值：1，最大值：10000000000000000  |  
+| recipientId | String | Y   | 接收者地址,最小长度：1  |
+| publicKey | String | N   | 发送者公钥  |
+| secondSecret | String | N   | 发送者二级密码，最小长度1，最大长度：100  |
+| multisigAccountPublicKey | String | N   | 多重签名账户公钥  |
+
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| transactionId | String  |交易id|
+
+  
+
+请求示例([参考](../utils/transactions.js))： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/transactions/unconfirmed'    
+
+JSON返回示例：  
+
+	//请求成功并返回交易id	
+	{ 
+		success: true,
+		transactionId: '00e7849414cf86fb922a239b38d82022e37cd4caa59bb6f3c4c6d5abbcec9794' 
+	} 
+	//使用钱包查询接受地址账户余额
+	普通转账	A9mhydu4PJd3KnSbi1p6vwuoBMGcHc4xjr	A66taz8N3f67dzSULHSUunfPx82J25BirZ	2019-02-25 14:40:02		555
+
+### 3.区块
 
 #### 3.1 签名交易
 http接口又分为signed和unsigned，他们的区别是交易在本地还是服务端签名，后者需要将密码通过http传输给服务器进行签名。建议使用本地签名（离线签名），这样更安全。
