@@ -2069,22 +2069,488 @@ JSON返回示例：
 	  'version': ''
 	}
 #### 9.2 普通交易
+
+entanmo系统的所有写操作都是通过发起一个交易来完成的。 交易数据通过一个叫做etm-js的库来创建，然后再通过一个POST接口发布出去。   
+
+
 ##### 9.2.1 设置二级密码
+接口地址：/peer/transactions     
+请求方式：POST       
+支持格式：JSON       
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| transaction | json | Y  | etm-js.signature.createSignature生成的交易数据 |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |  
+| transactionId |String  |交易id      |   
+
+  
+
+请求示例（[参考](../utils/normal_transactions.js)）： 
+	
+	//9.2.1 设置二级密码
+	function setSecondPassword() {
+	  let secondPassword = 'test001';
+	  let transaction = etmjs.signature.createSignature(secret, secondPassword);
+	  return JSON.stringify({
+	    "transaction": transaction
+	  })
+	}   
+
+JSON返回示例：  
+	
+	{ 
+		success: true,
+		transactionId: '9cb72093de3b2c9fd3c87d6131f71e948c852a6c43c80611e56a9766087da696' 
+    }
+
 ##### 9.2.2 转账
+接口地址：/peer/transactions     
+请求方式：POST       
+支持格式：JSON         
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| transaction | json | Y  | etm-js.transaction.createTransaction生成的交易数据 |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| transactionId | String  |交易id |
+
+  
+
+请求示例（[参考](../utils/normal_transactions.js)）： 
+	
+	//9.2.2 转账 （转ETM）
+	function transferETM() {
+	  let targetAddress = "APeskjFa4KRR3oHHP7wqFP8tpQxiTrDD9a";
+	  let amount = 100*100000000;
+	  let password1 = 'race forget pause shoe trick first abuse insane hope budget river enough';
+	  let secondPassword  = '';
+	  let message = ''; // 转账备注
+	
+	  // 其中password是在用户登录的时候记录下来的，secondPassword需要每次让用户输入
+	  // 可以通过user.secondPublicKey来判断用户是否有二级密码，如果没有，则不必输入，以下几个交易类型类似
+	  let transaction = etmjs.transaction.createTransaction(targetAddress, amount, message, password1, secondPassword || undefined);
+	
+	  return JSON.stringify({
+	    "transaction": transaction
+	  })
+	}  
+
+JSON返回示例：  
+	
+	{ 
+		success: true,
+		transactionId: '1e35552a2b2ea4ad3426e2482e8c117e4943d77e14a3807bd8a786d4cbf9a95e' 
+	}
+
 ##### 9.2.3 注册受托人
+接口地址：/peer/transactions     
+请求方式：POST       
+支持格式：JSON         
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| transaction | json | Y  | etm-js.delegate.createDelegate生成的交易数据|
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| transactionId | String  |交易id |
+
+  
+
+请求示例： 
+	
+	//9.2.3 注册受托人
+	function registerDelegate() {
+	  let secondPassword  = 'test001';
+	  let userName = 'test001';
+	
+	  let transaction = etmjs.delegate.createDelegate(userName, secret, secondPassword || undefined);
+	  return JSON.stringify({
+	    "transaction": transaction
+	  })
+	}  
+
+JSON返回示例：  
+	
+	//TODO 接口有问题
+	{ 
+		success: false,
+		error: 'Invalid transaction type/fee: 70e21df3b3a348e05cc91a9d3d2e75653925dc2ad212ba5e59a1bec1fd54c798' 
+	}
+
 ##### 9.2.4 投票与取消投票
+接口地址：/peer/transactions     
+请求方式：POST       
+支持格式：JSON         
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| transaction | json | Y  | etm-js.vote.createVote生成的交易数据|
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| transactionId | String  |交易id |
+
+  
+
+请求示例： 
+	
+
+	//9.2.4 投票与取消投票
+	function vote() {
+	  let secondPassword = 'test001';
+	  // 投票内容是一个列表，列表中的每一个元素是一个符号加上所选择的受托人的公钥，符号为+表示投票，符号为-表示取消投票
+	  let voteContent = [
+	    '-ae28cc3069f4291756168e602a11e5b5d13e546050e3c1d9a09c0311f53a159c',
+	    '+a08dc0d7b170a0e12caff0a7faaef952741e65f3585905a5847e4d877d650f07'
+	  ];
+	  let transaction = etmjs.vote.createVote(voteContent, secret, secondPassword || undefined);
+	  return JSON.stringify({
+	    "transaction": transaction
+	  })
+	}  
+
+JSON返回示例：  
+
+	//TODO  一次投几票？	
+	{ 
+		success: true,
+		transactionId: '69b52c38b63711a1a9ee117c27e3a8a775eca6bef5bd0992328fbed5b10ccbd8' 
+	}
+
 ##### 9.2.5 账户锁仓
+接口地址：/peer/transactions     
+请求方式：POST       
+支持格式：JSON   
+请求说明：锁仓后且区块高度未达到锁仓高度，则该账户不能执行如下操作   
+
+|交易类型type	|备注  |  
+|------ |-----  |
+| 0 | 主链ETM转账 |
+| 6 | Dapp充值 |
+| 7 | Dapp提现 |
+| 8 | 存储小文件 |
+| 9 | 发行商注册 |
+| 10 | 资产注册 |
+| 13 | 资发行产 |
+| 14 | 主链uia转账 |
+
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| transaction | json | Y  | etm-js.transaction.createLock生成的交易数据|
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| transactionId | String  |交易id |
+
+  
+
+请求示例： 
+	
+	//9.2.5 锁仓
+	function createLock() {
+	  let height = 344900; // 锁仓高度 要大于主链高度
+	  let secondPassword = 'test001';
+	  // 其中password是在用户登录的时候记录下来的，secondPassword需要每次让用户输入
+	  // 可以通过user.secondPublicKey来判断用户是否有二级密码，如果没有，则不必输入，以下几个交易类型类似
+	  let transaction = etmjs.transaction.createLock(height, secret, secondPassword || undefined);
+	  return JSON.stringify({
+	    "transaction": transaction
+	  })
+	}
+  
+
+JSON返回示例：  
+	
+	{ 
+		success: true,
+		transactionId: 'a9907b367c40244153a82e78343e7663e749937c7351cf4005893dfd87a46628' 
+	}
 
 #### 9.3 UIA相关交易
 ##### 9.3.1 注册资产发行商
+接口地址：/peer/transactions     
+请求方式：POST       
+支持格式：JSON         
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| publicKey | String | Y  | 公钥 |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| accounts | array  |多重签名账户详情|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/multisignatures/accounts?publicKey=911e58e289cf237d08b71e296ba766b1c6fcf9816a415ff38846043135476aaa'   
+
+JSON返回示例：  
+	
+	//TODO 接口有问题
+	{
+		"success":false,
+		"error":"TypeError: Cannot read property 'split' of null"
+	}
+
 ##### 9.3.2 注册资产
+接口地址：/peer/transactions     
+请求方式：POST       
+支持格式：JSON       
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| publicKey | String | Y  | 公钥 |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| accounts | array  |多重签名账户详情|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/multisignatures/accounts?publicKey=911e58e289cf237d08b71e296ba766b1c6fcf9816a415ff38846043135476aaa'   
+
+JSON返回示例：  
+	
+	//TODO 接口有问题
+	{
+		"success":false,
+		"error":"TypeError: Cannot read property 'split' of null"
+	}
+
 ##### 9.3.3 资产设置acl模式
+接口地址：/peer/transactions     
+请求方式：POST       
+支持格式：JSON       
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| publicKey | String | Y  | 公钥 |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| accounts | array  |多重签名账户详情|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/multisignatures/accounts?publicKey=911e58e289cf237d08b71e296ba766b1c6fcf9816a415ff38846043135476aaa'   
+
+JSON返回示例：  
+	
+	//TODO 接口有问题
+	{
+		"success":false,
+		"error":"TypeError: Cannot read property 'split' of null"
+	}
+
 ##### 9.3.4 更新访问控制列表
+接口地址：/peer/transactions     
+请求方式：POST       
+支持格式：JSON       
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| publicKey | String | Y  | 公钥 |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| accounts | array  |多重签名账户详情|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/multisignatures/accounts?publicKey=911e58e289cf237d08b71e296ba766b1c6fcf9816a415ff38846043135476aaa'   
+
+JSON返回示例：  
+	
+	//TODO 接口有问题
+	{
+		"success":false,
+		"error":"TypeError: Cannot read property 'split' of null"
+	}
+
 ##### 9.3.5 资产发行
+接口地址：/peer/transactions     
+请求方式：POST       
+支持格式：JSON     
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| publicKey | String | Y  | 公钥 |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| accounts | array  |多重签名账户详情|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/multisignatures/accounts?publicKey=911e58e289cf237d08b71e296ba766b1c6fcf9816a415ff38846043135476aaa'   
+
+JSON返回示例：  
+	
+	//TODO 接口有问题
+	{
+		"success":false,
+		"error":"TypeError: Cannot read property 'split' of null"
+	}
+
 ##### 9.3.6 资产转账
+接口地址：/peer/transactions     
+请求方式：POST       
+支持格式：JSON      
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| publicKey | String | Y  | 公钥 |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| accounts | array  |多重签名账户详情|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/multisignatures/accounts?publicKey=911e58e289cf237d08b71e296ba766b1c6fcf9816a415ff38846043135476aaa'   
+
+JSON返回示例：  
+	
+	//TODO 接口有问题
+	{
+		"success":false,
+		"error":"TypeError: Cannot read property 'split' of null"
+	}
+
 ##### 9.3.7 资产注销
+接口地址：/peer/transactions     
+请求方式：POST       
+支持格式：JSON       
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| publicKey | String | Y  | 公钥 |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| accounts | array  |多重签名账户详情|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/multisignatures/accounts?publicKey=911e58e289cf237d08b71e296ba766b1c6fcf9816a415ff38846043135476aaa'   
+
+JSON返回示例：  
+	
+	//TODO 接口有问题
+	{
+		"success":false,
+		"error":"TypeError: Cannot read property 'split' of null"
+	}
+
 
 #### 9.4 其它内部通讯安全接口
+接口地址：/peer/transactions     
+请求方式：POST       
+支持格式：JSON      
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| publicKey | String | Y  | 公钥 |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| accounts | array  |多重签名账户详情|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/multisignatures/accounts?publicKey=911e58e289cf237d08b71e296ba766b1c6fcf9816a415ff38846043135476aaa'   
+
+JSON返回示例：  
+	
+	//TODO 接口有问题
+	{
+		"success":false,
+		"error":"TypeError: Cannot read property 'split' of null"
+	}
+
 
 ### 10.用户自定义资产
 #### 10.1 获取全网所有发行商

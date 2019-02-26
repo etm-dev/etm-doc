@@ -20,7 +20,6 @@ let url = 'http://etm.red:8096/api/signatures'
 //设置二级密码的账户
 let secret = 'found razor spring fish surprise liar else argue tongue crouch fatal lucky';
 
-
 //设置二级密码
 function setSignature() {
   return JSON.stringify({
@@ -28,7 +27,6 @@ function setSignature() {
     'secondSecret':'test001'
   });
 }
-
 
 axios.put(url, setSignature()).then(res => {
   console.log(res);
