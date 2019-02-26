@@ -82,7 +82,6 @@
 			*  [9.3.5 资产发行](#935-资产发行)
 			*  [9.3.6 资产转账](#936-资产转账)
 			*  [9.3.7 资产注销](#937-资产注销)
-		* [9.4 其它内部通讯安全接口](#94-其它内部通讯安全接口)
 	* [10.用户自定义资产](#10用户自定义资产)
 		* [10.1 获取全网所有发行商](#101-获取全网所有发行商)
 		* [10.2 查询指定发行商的信息](#102-查询指定发行商的信息)
@@ -2302,28 +2301,34 @@ JSON返回示例：
   
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
-| publicKey | String | Y  | 公钥 |
+| transaction | json | Y  | etm-js.uia.createIssuer根据发行商名字、描述、一级密码、二级密码生成的交易数据|
 
 返回参数说明：   
 
 |名称	|类型   |说明              |   
 |------ |-----  |----              |   
 |success|boolean  |是否成功获得response数据      |   
-| accounts | array  |多重签名账户详情|
+| transactionId | String  |交易id |
 
   
 
 请求示例： 
 	
-	//get请求
-	curl -k -X GET 'http://etm.red:8096/api/multisignatures/accounts?publicKey=911e58e289cf237d08b71e296ba766b1c6fcf9816a415ff38846043135476aaa'   
+	//9.3.1 注册资产发行商  花费100 ETM
+	function registerAssertIssuer() {
+	  let password = 'found razor spring fish surprise liar else argue tongue crouch fatal lucky'
+	  let secondPassword ='test001'
+	  let transaction = etmjs.uia.createIssuer('issuerName', "issuer", password, secondPassword);
+	  return JSON.stringify({
+	    transaction
+	  });
+	} 
 
 JSON返回示例：  
 	
-	//TODO 接口有问题
-	{
-		"success":false,
-		"error":"TypeError: Cannot read property 'split' of null"
+	{ 
+		success: true,
+		transactionId: '2c093b41dbae45a20095dc623359d4cb71975d441b3ca7aaf1d1b5d21cb25dbe' 
 	}
 
 ##### 9.3.2 注册资产
@@ -2334,29 +2339,52 @@ JSON返回示例：
   
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
-| publicKey | String | Y  | 公钥 |
+| transaction | json | Y  | etm-js.uia.createAsset根据资产名字、描述、上限、精度、策略、一级密码、二级密码生成的交易数据|
 
 返回参数说明：   
 
 |名称	|类型   |说明              |   
 |------ |-----  |----              |   
 |success|boolean  |是否成功获得response数据      |   
-| accounts | array  |多重签名账户详情|
+| transactionId | String  |交易id |
 
   
 
 请求示例： 
 	
-	//get请求
-	curl -k -X GET 'http://etm.red:8096/api/multisignatures/accounts?publicKey=911e58e289cf237d08b71e296ba766b1c6fcf9816a415ff38846043135476aaa'   
+	//9.3.2 注册资产 500 ETM
+	function registerAssrt() {
+	  let password = 'found razor spring fish surprise liar else argue tongue crouch fatal lucky'
+	  // 资产名称，发行商名.资产名，唯一标识
+	  let name = 'issuerName.CNY';
+	  let desc = '测试';
+	  // 上限 10亿
+	  let maximum = '100000000000000000';
+	  // 精度，小数点的位数，这里上限是100000000000000000，精度为8，代表资产IssuerName.CNY的最大发行量为1000000000.00000000
+	  let precision = 8;
+	  // 策略
+	  let strategy = '';
+	  // 是否允许注销，默认不允许。0：不允许，1：允许
+	  let allowWriteoff = 0;
+	  // 是否允许白名单，默认不允许。0：不允许，1：允许
+	  let allowWhitelist = 0;
+	  // 是否允许黑名单，默认不允许。0：不允许，1：允许
+	  let allowBlacklist = 0;
+	
+	  let secondPassword ='test001'
+	  // 构造交易数据
+	  let trs = etmjs.uia.createAsset(name, desc, maximum, precision, strategy, allowWriteoff, allowWhitelist, allowBlacklist, password, secondPassword)
+	  return JSON.stringify({
+	    "transaction": trs
+	  })
+	} 
 
 JSON返回示例：  
 	
-	//TODO 接口有问题
-	{
-		"success":false,
-		"error":"TypeError: Cannot read property 'split' of null"
-	}
+	 { 
+	 	success: true,
+	 	transactionId: 'db46dea3f1a5c99d2b4e3186b950f1ee309c95291d4874a8b839f0d26c63d1c9' 
+	 }
 
 ##### 9.3.3 资产设置acl模式
 接口地址：/peer/transactions     
@@ -2366,28 +2394,41 @@ JSON返回示例：
   
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
-| publicKey | String | Y  | 公钥 |
+| transaction | json | Y  | etm-js.uia.createFlags根据资产名、流通状态、黑白名单模式、一级密码、二级密码生成的交易数据|
 
 返回参数说明：   
 
 |名称	|类型   |说明              |   
 |------ |-----  |----              |   
 |success|boolean  |是否成功获得response数据      |   
-| accounts | array  |多重签名账户详情|
+| transactionId | String  |交易id |
 
   
 
 请求示例： 
 	
-	//get请求
-	curl -k -X GET 'http://etm.red:8096/api/multisignatures/accounts?publicKey=911e58e289cf237d08b71e296ba766b1c6fcf9816a415ff38846043135476aaa'   
+	//9.3.3 资产设置acl模式
+	function setAcl() {
+	  let password = 'found razor spring fish surprise liar else argue tongue crouch fatal lucky'
+	  let secondSecret = 'test001'
+	  let currency = 'issuerName.CNY'
+	  // 资产是否注销，1：流通，2：注销
+	  let flagType = 1
+	  // 访问控制列表的类型，0：黑名单， 1：白名单，资产创建后默认为黑名单模式
+	  let flag = 1
+	  let trs = etmjs.uia.createFlags(currency, flagType, flag, password, secondSecret)
+	
+	  return JSON.stringify({
+	    "transaction": trs
+	  })
+	} 
 
 JSON返回示例：  
 	
 	//TODO 接口有问题
-	{
-		"success":false,
-		"error":"TypeError: Cannot read property 'split' of null"
+	{ 
+		success: false,
+		error: 'Whitelist not allowed' 
 	}
 
 ##### 9.3.4 更新访问控制列表
@@ -2398,29 +2439,43 @@ JSON返回示例：
   
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
-| publicKey | String | Y  | 公钥 |
+| transaction | json | Y  | etm-js.uia.createAcl根据资产名字、列表操作方法、黑名单还是白名单、地址列表、一级密码、二级密码生成的交易数据|
 
 返回参数说明：   
 
 |名称	|类型   |说明              |   
 |------ |-----  |----              |   
 |success|boolean  |是否成功获得response数据      |   
-| accounts | array  |多重签名账户详情|
+| transactionId | String  |交易id |
 
   
 
 请求示例： 
 	
-	//get请求
-	curl -k -X GET 'http://etm.red:8096/api/multisignatures/accounts?publicKey=911e58e289cf237d08b71e296ba766b1c6fcf9816a415ff38846043135476aaa'   
+	//9.3.4 更新访问控制列表
+	function updateAcl() {
+	  let password = 'found razor spring fish surprise liar else argue tongue crouch fatal lucky'
+	  let secondSecret = 'test001'
+	  let currency = 'issuerName.CNY'
+	  // '+'表示增加列表， ‘-’表示删除列表
+	  var operator = '+'
+	  // 将生成的交易数据通过post发送给server，把地址列表['A77LPkv5jEkMXAcsQ5iTzUS9rUeLezWxdB']增加到该白名单中，只修改名单列表，不修改acl模式，手续费0.2ETM
+	  var list = ['A77LPkv5jEkMXAcsQ5iTzUS9rUeLezWxdB']
+	  // 访问控制列表的类型，0：黑名单， 1：白名单
+	  var flag =1
+	  var trs = etmjs.uia.createAcl(currency, operator, flag, list, password, secondSecret)
+	  return JSON.stringify({
+	    "transaction": trs
+	  })
+	} 
 
 JSON返回示例：  
 	
 	//TODO 接口有问题
-	{
-		"success":false,
-		"error":"TypeError: Cannot read property 'split' of null"
-	}
+	{ 
+		success: false, 
+		error: 'Whitelist not allowed' 
+	} 
 
 ##### 9.3.5 资产发行
 接口地址：/peer/transactions     
@@ -2430,30 +2485,39 @@ JSON返回示例：
   
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
-| publicKey | String | Y  | 公钥 |
+| transaction | json | Y  | etm-js.uia.createIssuer根据发行商名字、描述、一级密码、二级密码生成的交易数据|
 
 返回参数说明：   
 
 |名称	|类型   |说明              |   
 |------ |-----  |----              |   
 |success|boolean  |是否成功获得response数据      |   
-| accounts | array  |多重签名账户详情|
+| transactionId | String  |交易id |
 
   
 
 请求示例： 
 	
-	//get请求
-	curl -k -X GET 'http://etm.red:8096/api/multisignatures/accounts?publicKey=911e58e289cf237d08b71e296ba766b1c6fcf9816a415ff38846043135476aaa'   
+	//9.3.5 资产发行  0.1 ETM
+	function issueAssert() {
+	  let password = 'found razor spring fish surprise liar else argue tongue crouch fatal lucky'
+	  let currency = 'issuerName.CNY';
+	  let secondSecret = 'test001'
+	  // 本次发行量=真实数量（100）*10**精度（3），所有发行量之和需 <= 上限*精度
+	  //发行1亿
+	  let amount = '10000000000000000'
+	  let trs = etmjs.uia.createIssue(currency, amount, password, secondSecret)
+	  return JSON.stringify({
+	    "transaction": trs
+	  })
+	} 
 
 JSON返回示例：  
 	
-	//TODO 接口有问题
-	{
-		"success":false,
-		"error":"TypeError: Cannot read property 'split' of null"
+	{ 
+		success: true,
+		transactionId: '901ebff4dca989eef66265a86a96a3d34689c045ada327919b49c3a41d7e6b84' 
 	}
-
 ##### 9.3.6 资产转账
 接口地址：/peer/transactions     
 请求方式：POST       
@@ -2462,29 +2526,41 @@ JSON返回示例：
   
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
-| publicKey | String | Y  | 公钥 |
+| transaction | json | Y  | etm-js.uia.createTransfer根据资产名字、数量、接收者地址、一级密码、二级密码生成的交易数据|
 
 返回参数说明：   
 
 |名称	|类型   |说明              |   
 |------ |-----  |----              |   
 |success|boolean  |是否成功获得response数据      |   
-| accounts | array  |多重签名账户详情|
+| transactionId | String  |交易id |
 
   
 
 请求示例： 
 	
-	//get请求
-	curl -k -X GET 'http://etm.red:8096/api/multisignatures/accounts?publicKey=911e58e289cf237d08b71e296ba766b1c6fcf9816a415ff38846043135476aaa'   
+	//9.3.6 发行的资产转账
+	function transferIssueAssert() {
+	  let password = 'found razor spring fish surprise liar else argue tongue crouch fatal lucky'
+	  let currency = 'issuerName.CNY';
+	  let secondSecret = 'test001'
+	  // 本次转账数（10000）=真实数量（10）*10**精度（3），需 <= 当前资产发行总量
+	  let amount = '10000'
+	  // 接收地址，需满足前文定义好的acl规则
+	  let recipientId = 'A9mhydu4PJd3KnSbi1p6vwuoBMGcHc4xjr'
+	  let trs = etmjs.uia.createTransfer(currency, amount, recipientId, password, secondSecret)
+	  return JSON.stringify({
+	    "transaction": trs
+	  })
+	} 
 
 JSON返回示例：  
 	
 	//TODO 接口有问题
-	{
-		"success":false,
-		"error":"TypeError: Cannot read property 'split' of null"
-	}
+	{ 
+		success: false, 
+		error: 'loadAccount : can not found Account' 
+	} 
 
 ##### 9.3.7 资产注销
 接口地址：/peer/transactions     
@@ -2494,62 +2570,43 @@ JSON返回示例：
   
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
-| publicKey | String | Y  | 公钥 |
+| transaction | json | Y  | etm-js.uia.createFlags根据资产名字、注销状态、黑白名单模式、一级密码、二级密码生成的交易数据|
 
 返回参数说明：   
 
 |名称	|类型   |说明              |   
 |------ |-----  |----              |   
 |success|boolean  |是否成功获得response数据      |   
-| accounts | array  |多重签名账户详情|
+| transactionId | String  |交易id |
 
   
 
 请求示例： 
 	
-	//get请求
-	curl -k -X GET 'http://etm.red:8096/api/multisignatures/accounts?publicKey=911e58e289cf237d08b71e296ba766b1c6fcf9816a415ff38846043135476aaa'   
+	//9.3.7 注销资产
+	function destroyAssert() {
+	  let password = 'found razor spring fish surprise liar else argue tongue crouch fatal lucky'
+	  let currency = 'issuerName.CNY';
+	  let secondSecret = 'test001'
+	  // flagType为资产是否注销，1：流通，2：注销
+	  var flagType = 2
+	  // flag为黑、白名单模式
+	  var flag =1
+	  var trs = etmjs.uia.createFlags(currency, flagType, flag, password, secondSecret)
+	
+	  return JSON.stringify({
+	    "transaction": trs
+	  })
+	} 
 
 JSON返回示例：  
 	
 	//TODO 接口有问题
-	{
-		"success":false,
-		"error":"TypeError: Cannot read property 'split' of null"
-	}
+	{ 
+		success: false, 
+		error: 'Writeoff not allowed' 
+	} 
 
-
-#### 9.4 其它内部通讯安全接口
-接口地址：/peer/transactions     
-请求方式：POST       
-支持格式：JSON      
-请求参数说明：  
-  
-|参数	|类型   |必填 |说明              |   
-|------ |-----  |---  |----              |   
-| publicKey | String | Y  | 公钥 |
-
-返回参数说明：   
-
-|名称	|类型   |说明              |   
-|------ |-----  |----              |   
-|success|boolean  |是否成功获得response数据      |   
-| accounts | array  |多重签名账户详情|
-
-  
-
-请求示例： 
-	
-	//get请求
-	curl -k -X GET 'http://etm.red:8096/api/multisignatures/accounts?publicKey=911e58e289cf237d08b71e296ba766b1c6fcf9816a415ff38846043135476aaa'   
-
-JSON返回示例：  
-	
-	//TODO 接口有问题
-	{
-		"success":false,
-		"error":"TypeError: Cannot read property 'split' of null"
-	}
 
 
 ### 10.用户自定义资产
