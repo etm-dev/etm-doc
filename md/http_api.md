@@ -1594,109 +1594,468 @@ JSON返回示例：
 	}
 
 ### 5.节点
-#### 4.10 受托人出块状态查看  
-接口地址：/api/delegates/forging/status     
+#### 5.1 获取本机连接的所有节点信息  
+接口地址：/api/peers     
 请求方式：GET       
-支持格式：urlencoded    
+支持格式：urlencoded   
+接口说明：展示节点只是和本机有连接的节点，并不是全网所有的节点    
 请求参数说明：  
   
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
-| publicKey | String | Y   | 受托人公钥 |
+| state | Integer | N   | 节点状态,0: ,1:,2:,3: //TODO |
+| os | String | N   | 内核版本 |
+| version | String | N   | ETM版本 |
+| limit | Integer | N   | 限制结果集个数，最小值：0,最大值：100 |
+| orderBy | String | N   | 排序 |
+| offset | Integer | N   | 偏移量 |
+| port | Integer | N   | 端口 |
 
 返回参数说明：   
 
 |名称	|类型   |说明              |   
 |------ |-----  |----              |   
 |success|boolean  |是否成功获得response数据      |   
-| fee | Integer  |转账费|
+| peers | array  |节点信息json构成的数组|
+| totalCount | Integer  |当前正在运行的节点个数|
 
   
 
 请求示例： 
 	
 	//get请求
-	curl -k -X GET 'http://etm.red:8096/api/delegates/forging/status?publicKey=a08dc0d7b170a0e12caff0a7faaef952741e65f3585905a5847e4d877d650f07'   
+	curl -k -X GET 'http://etm.red:8096/api/peers?limit=1'   
 
 JSON返回示例：  
 	
+	//由于是单节点运行，所以没有peers
 	{
-		"success":true,
-		"enabled":true
+		"success": true,
+		"count": 0,
+		"peers": []
 	}
-#### 4.10 受托人出块状态查看  
-接口地址：/api/delegates/forging/status     
+	
+#### 5.2 获取本节点版本号等信息  
+接口地址：/api/peers/version     
 请求方式：GET       
 支持格式：urlencoded    
-请求参数说明：  
-  
-|参数	|类型   |必填 |说明              |   
-|------ |-----  |---  |----              |   
-| publicKey | String | Y   | 受托人公钥 |
 
 返回参数说明：   
 
 |名称	|类型   |说明              |   
 |------ |-----  |----              |   
 |success|boolean  |是否成功获得response数据      |   
-| fee | Integer  |转账费|
+| version | String  |版本号|
+| build | timestamp  |构建时间|
+| net | String  |主链或者测试链|
 
   
 
 请求示例： 
 	
 	//get请求
-	curl -k -X GET 'http://etm.red:8096/api/delegates/forging/status?publicKey=a08dc0d7b170a0e12caff0a7faaef952741e65f3585905a5847e4d877d650f07'   
+	curl -k -X GET 'http://etm.red:8096/api/peers/version'   
 
 JSON返回示例：  
 	
 	{
-		"success":true,
-		"enabled":true
+		"success": true,
+		"version": "1.0.0",
+		"build": "development",
+		"net": "localnet"
 	}
-#### 4.10 受托人出块状态查看  
-接口地址：/api/delegates/forging/status     
+	
+#### 5.3 获取指定ip节点信息  
+接口地址：/api/peers/get     
 请求方式：GET       
 支持格式：urlencoded    
 请求参数说明：  
   
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
-| publicKey | String | Y   | 受托人公钥 |
+| ip | String | Y   | 待查询节点ip |
+| port | Integer | Y   | 待查询节点端口，1~65535 |
 
 返回参数说明：   
 
 |名称	|类型   |说明              |   
 |------ |-----  |----              |   
 |success|boolean  |是否成功获得response数据      |   
-| fee | Integer  |转账费|
+| peer | json  |节点数据返回|
 
   
 
 请求示例： 
 	
 	//get请求
-	curl -k -X GET 'http://etm.red:8096/api/delegates/forging/status?publicKey=a08dc0d7b170a0e12caff0a7faaef952741e65f3585905a5847e4d877d650f07'   
+	curl -k -X GET 'http://etm.red:8096/api/peers/get?ip=47.96.68.153&port=8096'   
 
 JSON返回示例：  
 	
 	{
-		"success":true,
-		"enabled":true
+		"success":true
 	}
 
-### 5.自定义合约接口调用
-参看demo中的[helloworld](demo.md)
-合约中部分代码：
-	
-	xxxx//功能
-	
-	xxxx//功能
+### 6.同步和加载
+#### 6.1 查看本地区块链加载状态  
+接口地址：/api/loader/status     
+请求方式：GET       
+支持格式：urlencoded    
 
-http接口调用方式：
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| loaded | boolean  |是否加载|
+| blocksCount | Integer  |//TODO|
+
+  
+
+请求示例： 
 	
-	xxx
-	xxx
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/loader/status'   
+
+JSON返回示例：  
+	
+	{
+		"success": true,
+		"loaded": true,
+		"blocksCount": 0
+	}
+#### 6.2 查看区块同步信息  
+接口地址：/api/loader/status/sync     
+请求方式：GET       
+支持格式：urlencoded    
+
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| height | Integer  |区块高度|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/loader/status/sync'   
+
+JSON返回示例：  
+	
+	{
+		"success": true,
+		"syncing": false,
+		"blocks": 0,
+		"height": 327158
+	}
+
+### 7.二级密码
+#### 7.1 设置二级密码
+接口地址：/api/signatures     
+请求方式：PUT       
+支持格式：JSON       
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| secret | String | Y   | 账户密码 |
+| publicKey | String | N   | 公钥 |
+| secondSecret | String | Y   | 账户二级密码，最小长度：1，最大长度：100 |
+| multisigAccountPublicKey | String | N   | 多重签名账户公钥 |
+
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| transaction | json  |设置二级密码产生的交易详情|
+
+  
+
+请求示例([参考](../utils/signatures.js))： 
+	
+	//主链
+	let url = 'http://etm.red:8096/api/signatures'
+	//侧链
+	
+	//设置二级密码的账户
+	let secret = 'found razor spring fish surprise liar else argue tongue crouch fatal lucky';
+	
+	//设置二级密码
+	function setSignature() {
+	  return JSON.stringify({
+	    'secret':secret,
+	    'secondSecret':'test001'
+	  });
+	}
+	
+	axios.put(url, setSignature()).then(res => {
+	  console.log(res);
+	}).catch(err => {
+	  console.error(err);
+	}) 
+
+JSON返回示例：  
+	
+	{
+		success: true,
+		transaction: {
+			type: 1,//设置二级密码密码的交易类型为1  
+			amount: 0,
+			senderPublicKey: '88a2440cefa9d8b1204bd7b8f10f724c163c9fd49ecb9f568ce718ca5b91cc07',
+			requesterPublicKey: null,
+			timestamp: 11804694,
+			asset: [Object],
+			recipientId: null,
+			signature: '11c3e36df365d07e422a9c288f9dc993db8d2d13fb4caef45dbd7598dad748332194bbeff0d255ea7e9944b9ebfd65259ec94dcfab129a9c43710d4558e54207',
+			id: '7674ad2bcfe4a569f13fd679a244c0116be804817905f47a76338149fe2f0fe3',
+			fee: 500000000,//设置二级密码密码的手续费为5ETM
+			senderId: 'AGKTTewJzJkteWJ9MVEupgCLhgKELsvU7T'
+		}
+	}
+#### 7.2 获取二级密码设置的手续费
+接口地址：/api/signatures/fee     
+请求方式：GET       
+支持格式：urlencoded   
+
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| fee | Integer  |手续费|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/signatures/fee'   
+
+JSON返回示例：  
+	
+	{
+		"success": true,
+		"fee": 500000000 //5ETM
+	}
+
+### 8.多重签名
+#### 8.1 设置普通账户为多重签名账户
+//TODO 该接口没有验证成功，没有设置成功，主要是因为还需要其他人签名，如何签名？
+接口地址：/api/multisignatures     
+请求方式：PUT       
+支持格式：JSON
+接口说明：返回结果只是生成交易id，还需要其他人签名后该账户才能成功设置成多重签名账户。注册多重签名账户后任意一笔转账都需要多人签名，签名最少个数为min的值（含交易发起人自身）      
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| secret | String | Y   | 账户密码 |
+| publicKey | String | N   | 公钥 |
+| secondSecret | String | N   | 账户二级密码，最小长度：1，最大长度：100 |
+| min | Integer | Y   | 多重签名交易账户的任意一笔转账都需要多人签名的最少个数，如果是注册多重签名账户操作，这该值不生效（此时需要所有人都签名）。最小值：2，最大值：16,该值需要小于keysgroup.length+1 |
+| lifetime | Integer | Y   | 多重签名交易的最大挂起时间，最小值：1，最大值：24，暂时不生效//TODO |
+| keysgroup | array | Y   | 其它签名人的公钥数组，每个公钥前需要加上+或者-号，代表增加/删除多重签名账户，数组最小长度：1，数组最大长度：10 |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| transactionId | String  |多重签名交易的id|
+
+  
+
+请求示例([参考](../utils/multisignatures.js))： 
+	
+	//第一步 设置多重签名密码
+	function setMultisignature() {
+	  return JSON.stringify({
+	    'secret':secret,
+	    'min':2,
+	    'lifetime':1,
+	    'keysgroup':['+813a4934192334fdd55f966f25975757b3bc2b866552fa58687e7f8420190961']
+	  });
+	}
+	
+	
+	axios.put(url, setMultisignature()).then(res => {
+	  console.log(res);
+	}).catch(err => {
+	  console.error(err);
+	})   
+
+JSON返回示例：  
+	
+	{ 
+		success: true,
+		//返回结果只是生成交易id，还需要其他人签名后该账户才能成功设置成多重签名账户
+		transactionId: '355ce9527e074e661b4b7cbb01496d5574693c9ead25b904484e0c83564c5646' 
+	   }
+#### 8.2 非交易发起人对交易进行多重签名
+接口地址：/api/multisignatures/sign     
+请求方式：POST       
+支持格式：JSON      
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| secret | String | Y   | 账户密码|
+| secondSecret | String | N   | 二级密码|
+| publicKey | String | N   | 公钥 |
+| transactionId | String | Y   | 交易id （请见8.1 返回结果） |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| transactionId | String  |多重签名交易id|
+
+  
+
+请求示例（[参考](../utils/multisignatures.js)）： 
+	
+	//第二步  非交易发起人对设置多重签名交易进行签名
+	function signatureMu() {
+	  return JSON.stringify({
+	    'secret':'pepper sleep youth blast vivid circle cross impact zebra neck salmon fee',
+	    'transactionId':'355ce9527e074e661b4b7cbb01496d5574693c9ead25b904484e0c83564c5646'
+	  });
+	}  
+
+JSON返回示例：  
+	
+	{ 
+		success: false,
+  		error: 'Transaction not found'
+  	}
+  	
+#### 8.3 根据公钥获取挂起的多重签名交易详情
+接口地址：/api/multisignatures/pending     
+请求方式：GET       
+支持格式：urlencoded    
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| publicKey | String | Y  | 公钥 |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| transactions | array  |交易json组成的数组|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/multisignatures/pending?publicKey=911e58e289cf237d08b71e296ba766b1c6fcf9816a415ff38846043135476aaa'   
+
+JSON返回示例：  
+	
+	//TODO此接口有问题
+	{
+		"success":true,
+		"transactions":[]
+	}
+	
+#### 8.4 获取多重签名账户信息
+接口地址：/api/multisignatures/accounts     
+请求方式：GET       
+支持格式：urlencoded     
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| publicKey | String | Y  | 公钥 |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| accounts | array  |多重签名账户详情|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/multisignatures/accounts?publicKey=911e58e289cf237d08b71e296ba766b1c6fcf9816a415ff38846043135476aaa'   
+
+JSON返回示例：  
+	
+	//TODO 接口有问题
+	{
+		"success":false,
+		"error":"TypeError: Cannot read property 'split' of null"
+	}
+
+### 9.点对点传输
+#### 9.1 说明
+/peer相关的api，在请求时都需要设置一个header
+	
+	axios.defaults.headers = {
+	  'Content-Type': 'application/json',
+	  'magic': 'personal',//测试链  根据链参数填写
+	  'version': ''
+	}
+#### 9.2 普通交易
+##### 9.2.1 设置二级密码
+##### 9.2.1 转账
+##### 9.2.1 注册受托人
+##### 9.2.1 投票&取消投票
+##### 9.2.1 账户锁仓
+
+#### 9.3 UIA相关交易
+##### 9.3.1 注册资产发行商
+##### 9.3.2 注册资产
+##### 9.3.3 资产设置acl模式
+##### 9.3.4 更新访问控制列表
+##### 9.3.5 资产发行
+##### 9.3.6 资产转账
+##### 9.3.7 资产注销
+
+#### 9.4 其它内部通讯安全接口
+
+### 10.用户自定义资产
+#### 10.1 设置二级密码
+#### 10.2 获取二级密码设置手续费
+#### 10.3 设置二级密码
+#### 10.4 获取二级密码设置手续费
+#### 10.5 设置二级密码
+#### 10.6 获取二级密码设置手续费
+#### 10.7 设置二级密码
+#### 10.8 获取二级密码设置手续费
+#### 10.9 设置二级密码
+#### 10.10 获取二级密码设置手续费
+#### 10.11 设置二级密码
+#### 10.12 获取二级密码设置手续费
+##### 10.12.1 注册资产发行商
+##### 10.12.2 注册资产
+##### 10.12.3 更新资产访问控制列表
+##### 10.12.4 资产发行
+##### 10.12.5 资产转账
+##### 10.12.6 更新黑白名单
+
+### 11.存储
+#### 11.1 设置二级密码
+##### 11.1.1 上传数据(直接上传)
+##### 11.1.2 上传数据(签名后再上传)
+#### 11.2 根据交易id查询存储的数据-1
+#### 11.3 根据交易id查询存储的数据-2
+
 	
 -----------
 下一章：[实际demo](./demo.md)
