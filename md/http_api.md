@@ -31,24 +31,27 @@
 		* [2.4 获取全网未确认的交易详情](#24-获取全网未确认的交易详情)
 		* [2.5 创建交易并广播](#25-创建交易并广播)
 	* [3.区块](#3区块)
-		* [3.1 签名交易](#31-签名交易)
-			* [3.1.1 离线签名](#311-离线签名)
-				* [3.1.1.1 DApp充值](#3111-DApp充值)
-				* [3.1.1.2 DApp提现](#3112-DApp提现)
-				* [3.1.1.3 DApp内部转账](#3113-DApp内部转账)
-				* [3.1.1.4 DApp设置昵称](#3114-DApp设置昵称)
-			* [3.1.2 服务器签名](#312-服务器签名)
-				* [3.1.2.1 DApp充值](#3121-DApp充值)
-				* [3.1.2.2 DApp提现](#3122-DApp提现)
-				* [3.1.2.3 DApp内部转账](#3123-DApp内部转账)
-				* [3.1.2.4 DApp设置昵称](#3124-DApp设置昵称)
-		* [3.2 获取未确认的交易](#32-获取未确认的交易)
-		* [3.3 获取已确认的交易](#33-获取已确认的交易)
-		* [3.4 根据交易id获取交易详情](#34-根据交易id获取交易详情)
-		* [3.5 根据条件查询交易详情](#35-根据条件查询交易详情)
-	* [4.合约信息获取](#4合约信息获取)
-		* [4.1 获取所有智能合约](#41-获取所有智能合约)
-	* [5.自定义合约接口调用](#5自定义合约接口调用)
+		* [3.1 获取指定区块的详情](#31-获取指定区块的详情)
+		* [3.2 获取区块数据](#32-获取区块数据)
+		* [3.3 获取区块链高度](#33-获取区块链高度)
+		* [3.4 获取普通转账手续费](#34-获取普通转账手续费)
+		* [3.5 获取里程碑](#35-获取里程碑)
+		* [3.6 查看单个区块奖励](#36-查看单个区块奖励)
+		* [3.7 获取代币当前供应值](#37-获取代币当前供应值)
+		* [3.8 区块链状态](#38-区块链状态)
+		* [3.9 获取指定区块的交易信息](#39-获取指定区块的交易信息)
+	* [4.受托人delegates](#4受托人delegates)
+		* [4.1 获取受托人总个数](#41-获取受托人总个数)
+		* [4.2 根据受托人公钥查看哪些人为其投了票](#42-根据受托人公钥查看哪些人为其投了票)
+		* [4.3 根据公钥或者用户名获取受托人详情](#43-根据公钥或者用户名获取受托人详情)
+		* [4.4 获取受托人列表](#44-获取受托人列表)
+		* [4.5 获取受托人设置的转账费](#45-获取受托人设置的转账费)
+		* [4.6 根据公钥查看其出块情况](#46-根据公钥查看其出块情况)
+		* [4.7 注册受托人](#47-注册受托人)
+		* [4.8 受托人开启出块](#48-受托人开启出块)
+		* [4.9 受托人关闭出块](#49-受托人关闭出块)
+		* [4.10 受托人出块状态查看](#410-受托人出块状态查看)
+	* [5.节点](#5节点)
 
 ### 1.账户系统
 通过http请求进行账户（account）的相关操作。  
@@ -773,7 +776,7 @@ JSON返回示例：
   
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
-| secret | String | String   |账户密码  |  
+| secret | String | Y   |账户密码  |  
 | amount | Integer | Y   | 金额，最小值：1，最大值：10000000000000000  |  
 | recipientId | String | Y   | 接收者地址,最小长度：1  |
 | publicKey | String | N   | 发送者公钥  |
@@ -792,8 +795,20 @@ JSON返回示例：
 
 请求示例([参考](../utils/transactions.js))： 
 	
-	//get请求
-	curl -k -X GET 'http://etm.red:8096/api/transactions/unconfirmed'    
+	//此方式不安全，可以查考./issueAssert.js中transferETM()
+	function createTransaction() {
+	  return JSON.stringify({
+	    'secret':secret,
+	    'amount':55500000000,
+	    'recipientId':'A66taz8N3f67dzSULHSUunfPx82J25BirZ',
+	  });
+	}
+	
+	axios.put(url, createTransaction()).then(res => {
+	  console.log(res);
+	}).catch(err => {
+	  console.error(err);
+	})    
 
 JSON返回示例：  
 
@@ -807,513 +822,868 @@ JSON返回示例：
 
 ### 3.区块
 
-#### 3.1 签名交易
-http接口又分为signed和unsigned，他们的区别是交易在本地还是服务端签名，后者需要将密码通过http传输给服务器进行签名。建议使用本地签名（离线签名），这样更安全。
-##### 3.1.1 离线签名
-/peer相关的api，在请求时都需要设置一个header  
-
- - key为magic，testnet value:594fe0f3, mainnet value:5f5b3cf5  
- - key为version，value为 ' ' 
-
-etm系统的所有写操作都是通过发起一个交易来完成的。    
-交易数据通过一个叫做etm-js的库来创建，然后再通过一个POST接口发布出去。    
-POST接口规格如下：
-
-|事项   |说明  |
-|---    |---   |
-|接口地址|/peer/transactions  |
-|payload|etm-js创建出来的交易数据  |
-|请求方式|post/put等 |
-|支持格式|json |
-###### 3.1.1.1 DApp充值
-接口地址：/peer/transactions  
-请求方式：POST   
-支持格式：json   
-备注：充值时在主链发生type=6的交易（intransfer），dapp内部会自动调用编号为1的智能合约进行dapp内部充值   	
-请求参数说明：
-
-|名称	|类型   |必填 |说明              |
-|------ |-----  |---  |----              |   
-|transaction|json|Y|etmJS.transfer.createInTransfer生成的交易数据|
-
+#### 3.1 获取指定区块的详情  
+接口地址：/api/blocks/get    
+请求方式：GET       
+支持格式：urlencoded      
+请求参数说明：  
   
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| id | String | 参数3选1   |区块id  |  
+| height | Integer | 参数3选1   | 区块高度  |  
+| hash | String | 参数3选1   | 区块hash  |
+
+
 返回参数说明：   
 
 |名称	|类型   |说明              |   
 |------ |-----  |----              |   
 |success|boolean  |是否成功获得response数据      |   
-|transactionId|string  |交易id      |   
+| block | json  |区块详情|
+
   
-请求示例：   
-	   
-	var etmJS = require('etm-js');    
-	var dappid = "bebe3c57d76a5bbe3954bd7cb4b9e381e8a1ba3c78e183478b4f98b9d532f024";  
-	var currency = "ETM";  
-	var amount = 10*100000000 ;  
-	var secret = "found knife gather faith wrestle private various fame cover response security predict";  
-	var secondSecret = "";
-	var transaction = etmJS.transfer.createInTransfer(dappid, currency, amount, secret, secondSecret || undefined);  
-	 
-	console.log(JSON.stringify(transaction));    
-	{"type":6,"amount":1000000000,"fee":10000000,"recipientId":null,"senderPublicKey":"2856bdb3ed4c9b34fd2bba277ffd063a00f703113224c88c076c0c58310dbec4","timestamp":39721503,"asset":{"inTransfer":{"dappId":"bebe3c57d76a5bbe3954bd7cb4b9e381e8a1ba3c78e183478b4f98b9d532f024","currency":"ETM"}},"signature":"8cefc8fa933e4d5e8699828dc8cd5d1b4737ffa82175c744fd681bad0b1a6b68526e0783e85d7979f894fc38850bd2ed0a983ce3cb3f5d16b68fd37dfb9dfb0a","id":"4b580f8f61f4586920a4c0d37b6fad21daf3453fe9ccc5426c2cae7a263c160c"}  // type=6表示dapp充值,这里的type指主链的交易类型，非dapp合约编号  
+
+请求示例： 
 	
-	// 将上面生成的“充值”交易数据通过post提交给etm server
-	curl -H "Content-Type: application/json" -H "magic:594fe0f3" -H "version:''" -k -X POST -d '{"transaction":{"type":6,"amount":1000000000,"fee":10000000,"recipientId":null,"senderPublicKey":"2856bdb3ed4c9b34fd2bba277ffd063a00f703113224c88c076c0c58310dbec4","timestamp":39721503,"asset":{"inTransfer":{"dappId":"bebe3c57d76a5bbe3954bd7cb4b9e381e8a1ba3c78e183478b4f98b9d532f024","currency":"ETM"}},"signature":"8cefc8fa933e4d5e8699828dc8cd5d1b4737ffa82175c744fd681bad0b1a6b68526e0783e85d7979f894fc38850bd2ed0a983ce3cb3f5d16b68fd37dfb9dfb0a","id":"4b580f8f61f4586920a4c0d37b6fad21daf3453fe9ccc5426c2cae7a263c160c"}}' http://localhost:4096/peer/transactions && echo    
-	
-	   
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/blocks/get?height=1'    
 
-JSON返回示例：   
-	  
-	{    
-		"success": true,    
-		"transactionId": "4b580f8f61f4586920a4c0d37b6fad21daf3453fe9ccc5426c2cae7a263c160c"    
-	}  
+JSON返回示例：  
 
-###### 3.1.1.2 DApp提现
-接口地址：/api/dapps/dappID/transactions/signed  
-请求方式：PUT   
-支持格式：json   
-请求参数说明：  
-  
-|名称	|类型   |必填 |说明              |   
-|------ |-----  |---  |----              |   
-|dappID|string|Y|dapp的id  |
-|transaction|json|Y|etmJS.dapp.createInnerTransaction生成的交易数据|  
-
-  
-返回参数说明：   
-
-|名称	|类型   |说明              |   
-|------ |-----  |----              |   
-|success|boolean  |是否成功获得response数据      |   
-|transactionId|string  |提币交易id      |   
-  
-请求示例：   
-   
-	var etmJS = require('etm-js');   
-	var fee = String(0.1 * 100000000);  
-	var type = 2;  
-	var options = {fee: fee, type: type, args: '["CCTime.XCT", "100000000"]'};  
-	var secret = "elite brush pave enable history risk ankle shrimp debate witness ski trend";  
-	var transaction = etmJS.dapp.createInnerTransaction(options, secret);  
-	 
-	console.log(JSON.stringify(transaction));    
-	{"fee":"10000000","timestamp":40384202,"senderPublicKey":"aa4e4ac1336a1e9db1ee5ce537a59d3fcb0f068cb4b25aac9f48e0e8bc6259c9","type":2,"args":"[\"CCTime.XCT\", \"100000000\"]","signature":"05dba744705fd1dbc1854b415392364cdbae11778671be8eb5fdbce57855a87b3dde5bf2d0219059411253fb304497758422c8d1546ec45eb5521b4a6577d507"}
-	
-	// 将上面生成的“提现”交易数据通过post提交给etm server  
-	curl -H "Content-Type: application/json" -H "magic:594fe0f3" -H "version:''" -k -X PUT -d '{"transaction":{"fee":"10000000","timestamp":40384202,"senderPublicKey":"aa4e4ac1336a1e9db1ee5ce537a59d3fcb0f068cb4b25aac9f48e0e8bc6259c9","type":2,"args":"[\"CCTime.XCT\", \"100000000\"]","signature":"05dba744705fd1dbc1854b415392364cdbae11778671be8eb5fdbce57855a87b3dde5bf2d0219059411253fb304497758422c8d1546ec45eb5521b4a6577d507"}}' http://45.32.22.78:4096/api/dapps/d352263c517195a8b612260971c7af869edca305bb64b471686323817e57b2c1/transactions/signed && echo    
-  
-
-JSON返回示例：   
-	 
-	{    
-		"success": true,    
-		"transactionId": "8bcae742206bf236214b9972efaca0bbe29f3703b4055a14cc8b095546880dc4"    
-	}  
-
-###### 3.1.1.3 DApp内部转账
-接口地址：/api/dapps/dappID/transactions/signed  
-请求方式：PUT   
-支持格式：json   
-请求参数说明：  
-  
-|名称	|类型   |必填 |说明              |   
-|------ |-----  |---  |----              |   
-|dappID|string|Y|dapp的id  |
-|transaction|json|Y|etmJS.dapp.createInnerTransaction生成的交易数据|  
-
-  
-返回参数说明：   
-
-|名称	|类型   |说明              |   
-|------ |-----  |----              |   
-|success|boolean  |是否成功获得response数据      |   
-|transactionId|string  |内部转账交易id      |   
-  
-请求示例：   
-   
-	var etmJS = require('etm-js');   
-	var fee = String(0.1 * 100000000);  
-	var type = 3;  
-	var options = {fee: fee, type: type, args: '["CCTime.XCT", "100000000", "A6H9rawJ7qvE2rKwQfdtBHdeYVehB8gFzC"]'};  
-	var secret = "elite brush pave enable history risk ankle shrimp debate witness ski trend";  
-	var transaction = etmJS.dapp.createInnerTransaction(options, secret);  
-	 
-	console.log(JSON.stringify(transaction));    
-	{"fee":"10000000","timestamp":40387708,"senderPublicKey":"aa4e4ac1336a1e9db1ee5ce537a59d3fcb0f068cb4b25aac9f48e0e8bc6259c9","type":3,"args":"[\"CCTime.XCT\", \"100000000\", \"A6H9rawJ7qvE2rKwQfdtBHdeYVehB8gFzC\"]","signature":"e2364534b8c4b0735a85c68ba17fddf5321fc48af04d483ad05531d4993058eaa35ff44d913a03b6d7278890ff7f42435f8313e08ce70c523dfc256b4de9e303"}  
-	
-	// 将上面生成的“转账”交易数据通过post提交给etm server  
-	curl -H "Content-Type: application/json" -H "magic:594fe0f3" -H "version:''" -k -X PUT -d '{"transaction":{"fee":"10000000","timestamp":40387708,"senderPublicKey":"aa4e4ac1336a1e9db1ee5ce537a59d3fcb0f068cb4b25aac9f48e0e8bc6259c9","type":3,"args":"[\"CCTime.XCT\", \"100000000\", \"A6H9rawJ7qvE2rKwQfdtBHdeYVehB8gFzC\"]","signature":"e2364534b8c4b0735a85c68ba17fddf5321fc48af04d483ad05531d4993058eaa35ff44d913a03b6d7278890ff7f42435f8313e08ce70c523dfc256b4de9e303"}}'  http://45.32.22.78:4096/api/dapps/d352263c517195a8b612260971c7af869edca305bb64b471686323817e57b2c1/transactions/signed && echo    
-  
-
-JSON返回示例：   
-  
-	{    
-		"success": true,    
-		"transactionId": "e2687a471ac2ddbbdd919266e58b0b652c55f74402b27be850d767fa44162c79"    
-	}  
-
-###### 3.1.1.4 DApp设置昵称
-接口地址：/api/dapps/dappID/transactions/signed  
-请求方式：PUT   
-支持格式：json   
-请求参数说明：  
-  
-|名称	|类型   |必填 |说明              |   
-|------ |-----  |---  |----              |   
-|dappID|string|Y|dapp的id  |
-|transaction|json|Y|etmJS.dapp.createInnerTransaction生成的交易数据|  
-
-  
-返回参数说明：   
-
-|名称	|类型   |说明              |   
-|------ |-----  |----              |   
-|success|boolean  |是否成功获得response数据      |   
-|transactionId|string  |设置昵称的交易id      |   
-  
-请求示例：   
-	  
-	var etmJS = require('etm-js');   
-	var fee = String(0.1 * 100000000);  
-	var type = 4;  
-	var options = {fee: fee, type: type, args: '["Nickname"]'};  // Nickname即昵称
-	var secret = "elite brush pave enable history risk ankle shrimp debate witness ski trend";  
-	var transaction = etmJS.dapp.createInnerTransaction(options, secret);  
-	 
-	console.log(JSON.stringify(transaction));    
-	{"fee":"10000000","timestamp":40388287,"senderPublicKey":"aa4e4ac1336a1e9db1ee5ce537a59d3fcb0f068cb4b25aac9f48e0e8bc6259c9","type":4,"args":"[\"Nickname\"]","signature":"be08cdb2f4d1a0f2f2e5b02e33e67fdf43e403703ce35cb42a2dc7338c7a352adca56dc61e3be0fedc1727c1adc0101f1a9e1a3e67ac0623602bf872deb80802"}
-	
-	curl -H "Content-Type: application/json" -H "magic:594fe0f3" -H "version:''" -k -X PUT -d '{"transaction":{"fee":"10000000","timestamp":40388287,"senderPublicKey":"aa4e4ac1336a1e9db1ee5ce537a59d3fcb0f068cb4b25aac9f48e0e8bc6259c9","type":4,"args":"[\"Nickname\"]","signature":"be08cdb2f4d1a0f2f2e5b02e33e67fdf43e403703ce35cb42a2dc7338c7a352adca56dc61e3be0fedc1727c1adc0101f1a9e1a3e67ac0623602bf872deb80802"}}' http://45.32.22.78:4096/api/dapps/d352263c517195a8b612260971c7af869edca305bb64b471686323817e57b2c1/transactions/signed && echo    
-
-
-JSON返回示例：   
- 
-	{    
-		"success": true,    
-		"transactionId": "7teae742206bf236214b9972efaca0bbe29f3703b4055a14cc8b095546880dc4"    
-	}  
-
-
-##### 3.1.2 服务器签名
-###### 3.1.2.1 DApp充值
-###### 3.1.2.2 DApp提现
-接口地址：/api/dapps/dappId/transactions/unsigned    
-请求方式：PUT   
-支持格式：json   
-请求参数说明：  
-  
-|名称	|类型   |必填 |说明              |   
-|------ |-----  |---  |----              |   
-|secret|string|Y|etm密码 |  
-|fee|string|Y|交易手续费,目前固定为10000000  |  
-|type|integer|Y|智能合约编号 |  
-|args|json字符串数组|Y|对应合约编号需要传入的参数 |
-
-  
-返回参数说明：   
-
-|名称	|类型   |说明              |   
-|------ |-----  |----              |   
-|success|boolean  |是否成功获得response数据      |   
-|transactionId|string  |提现交易id      |   
-  
-请求示例：   
- 
-	curl -H "Content-Type: application/json" -H "magic:594fe0f3" -H "version:''" -k -X PUT -d  '{"secret":"elite brush pave enable history risk ankle shrimp debate witness ski trend","fee":"10000000","type":2,"args":"[\"CCTime.XCT\",\"100000000\"]"}' 'http://45.32.22.78:4096/api/dapps/d352263c517195a8b612260971c7af869edca305bb64b471686323817e57b2c1/transactions/unsigned' && echo  
-
-
-
-JSON返回示例：   
-  
-	{    
-		"success": true,    
-		"transactionId": "f59d365cbc8ea29f5d3798af795dc66dbdda00e2f1ae6677d5c7239180f3e98a"    
-	}  
-
-###### 3.1.2.3 DApp内部转账
-接口地址：/api/dapps/dappId/transactions/unsigned    
-请求方式：PUT   
-支持格式：json   
-请求参数说明：  
-  
-|名称	|类型   |必填 |说明              |   
-|------ |-----  |---  |----              |   
-|secret|string|Y|etm密码 |  
-|fee|string|Y|交易手续费,目前固定为10000000  |  
-|type|integer|Y|智能合约编号 |  
-|args|json字符串数组|Y|对应合约编号需要传入的参数 |
-
-  
-返回参数说明：   
-
-|名称	|类型   |说明              |   
-|------ |-----  |----              |   
-|success|boolean  |是否成功获得response数据      |   
-|transactionId|string  |内部转账交易id      |   
-  
-请求示例：   
-	  
-	curl -H "Content-Type: application/json" -H "magic:594fe0f3" -H "version:''" -k -X PUT -d  '{"secret":"elite brush pave enable history risk ankle shrimp debate witness ski trend","fee":"10000000","type":3,"args":"[\"CCTime.XCT\",\"1000000000\",\"ADimyhJa99XFzVrbnTYsCqPB4TKQNdjCWw\"]"}' 'http://45.32.22.78:4096/api/dapps/d352263c517195a8b612260971c7af869edca305bb64b471686323817e57b2c1/transactions/unsigned' && echo   
-	
-  
-
-JSON返回示例：   
-	  
-	{    
-		"success": true,    
-		"transactionId": "96d886b7d724e6a00cc8c52c24b674ec8a9fc7fd8145a326bf69983fdc74a006"    
-	}  
-
-###### 3.1.2.4 DApp设置昵称
-接口地址：/api/dapps/dappId/transactions/unsigned    
-请求方式：PUT   
-支持格式：json   
-请求参数说明：  
-  
-|名称	|类型   |必填 |说明              |   
-|------ |-----  |---  |----              |   
-|secret|string|Y|etm密码 |  
-|fee|string|Y|交易手续费,目前固定为10000000  |  
-|type|integer|Y|智能合约编号 |  
-|args|json字符串数组|Y|对应合约编号需要传入的参数，这里是昵称 |
-
-  
-返回参数说明：   
-
-|名称	|类型   |说明              |   
-|------ |-----  |----              |   
-|success|boolean  |是否成功获得response数据      |   
-|transactionId|string  |设置昵称交易id      |   
-  
-请求示例：   
-	   
-	curl -H "Content-Type: application/json" -H "magic:594fe0f3" -H "version:''" -k -X PUT -d  '{"secret":"minor borrow display rebel depart core buzz right distance avocado immense push","fee":"10000000","type":4,"args":"[\"zhenxi\"]"}' 'http://45.32.22.78:4096/api/dapps/d352263c517195a8b612260971c7af869edca305bb64b471686323817e57b2c1/transactions/unsigned' && echo  
-	   
-
-JSON返回示例：   
-	   
-	{    
-		"success": true,    
-		"transactionId": "7b5d9d13cf718ee28efde6bae85fbefbcd0eca3d6c0c6fff1421a1102d730669"    
-	}  
-
-#### 3.2 获取未确认的交易
-接口地址：/api/dapps/dappID/transactions/unconfirmed    
-请求方式：GET   
-支持格式：urlencode   
-
-返回参数说明：   
-
-|名称	|类型   |说明              |   
-|------ |-----  |----              |   
-|success|boolean  |是否成功获得response数据      |   
-|transactions|array  |未确认交易列表      |   
-
-  
-请求示例：   
-	  
-	curl -k -X GET http://localhost:4096/api/dapps/bebe3c57d76a5bbe3954bd7cb4b9e381e8a1ba3c78e183478b4f98b9d532f024/transactions/unconfirmed && echo   
-	   
-
-JSON返回示例：   
-	  
-	{    
-		"transactions": [],    
-		"success": true    
-	}  
-
-#### 3.3 获取已确认的交易
-接口地址：/api/dapps/dappID/transactions   
-请求方式：GET   
-支持格式：urlencode   
-请求参数说明：  
-  
-|名称	|类型   |必填 |说明              |   
-|------ |-----  |---  |----              |   
-|senderId |string |N |发送者地址 |  
-|type |interger |N |合约编号 |  
-|limit |interger |N    |限制返回的条数,默认值是100    |   
-|offset |interger |N |偏移量 |  
-
-
-返回参数说明：   
-
-|名称	|类型   |说明              |   
-|------ |-----  |----              |   
-|success|boolean  |是否成功获得response数据      |   
-|transactions|array  |交易列表      |   
-|count|integer  |符合查询条件的总交易条数      |   
-  
-请求示例：   
-	   
-	curl -k -X GET http://localhost:4096/api/dapps/bebe3c57d76a5bbe3954bd7cb4b9e381e8a1ba3c78e183478b4f98b9d532f024/transactions?senderId=AJTGR8EGsprrF7r63D2XLDftGAKUu1Ucjn && echo   
-	  
-
-JSON返回示例：   
- 
 	{
-	    "transactions": [{
-	        "id": "b12b144b3dbb76b70cd62f97e3d3b0606d97c0f402bba1fb973dd2d3ab604a16",
-	        "timestamp": 0,
-	        "senderId": "AJTGR8EGsprrF7r63D2XLDftGAKUu1Ucjn",
-	        "senderPublicKey": "27823f51a3dddd475943fb8142380d2f8722b0f6c651f6ac37930b63666c7803",
-	        "fee": "0",
-	        "signature": "22739bb762ff0135a0c4199507e3c45a8615c467bfeb4efa5110802033959698588e39b76d037445e02959ee67b483ac4d24f12304181f4955871cdcd28e3001",
-	        "type": 3,
-	        "args": "[\"CNY\",\"100000000000000\",\"A8QCwz5Vs77UGX9YqBg9kJ6AZmsXQBC8vj\"]",
-	        "height": 1
-	    }],
-	    "count": 1,
-	    "success": true
-	}   
-
-#### 3.4 根据交易id获取交易详情
-接口地址：/api/dapps/dappID/transactions/:id   
-请求方式：GET   
-支持格式：urlencode   
+		"success":true,
+		"block":
+		{
+			"id":"b8f0e9310ede1fc64fbbcdc7dee0edebdd74490017e5b4261573c14c80de591a",
+			"version":0,
+			"timestamp":0,
+			"height":1,
+			"previousBlock":null,
+			"numberOfTransactions":405,
+			"totalAmount":10000000000000000,
+			"totalFee":0,
+			"reward":0,
+			"payloadLength":58419,
+			"payloadHash":"855b2b1b71f9c7ef07503587ab4be73904d67615f26840f88dcb7a625ccea593",
+			"generatorPublicKey":"e8de2877f5448b3f105fdd059c060f286d4db34226b3c2d9c6e4bbe248072574",
+			"blockSignature":"6e7b7eaefbee6b04d7bfea9680a0dcf22025d60a6dacb8d49370489a947327b164e8c0530764dd125549396c38958d2c1fe0fb5fea5e5dd259d4390f76d10c0a",
+			"confirmations":255755,
+			"generatorId":"ACfVWA1TJ1NbrDHUefjfiaykUezAgfvPZ9",
+			"totalForged":0
+		}
+	}
+	
+#### 3.2 获取区块数据  
+接口地址：/api/blocks     
+请求方式：GET       
+支持格式：urlencoded   
+接口说明：不加参数则获取全网区块详情        
 请求参数说明：  
   
-|名称	|类型   |必填 |说明              |   
+|参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
-|id |string |Y    |交易id    |   
+| limit | Integer | N   | 限制结果集个数，最小值：0,最大值：100  |
+| orderBy | String | N   | 根据表中字段排序，如height:desc  |
+| offset | Integer | N   | 偏移量，最小值0  |
+| generatorPublicKey | String | N   | 区块生成者公钥  |
+| totalAmount | Integer | N   | 交易总额，最小值：0，最大值：10000000000000000  |
+| totalFee | Integer | N   | 手续费总额，最小值：0，最大值：10000000000000000 |
+| reward | Integer | N   | 奖励金额，最小值：0  |
+| previousBlock | String | N   | 上一个区块  |
+| height | Integer | N   | 区块高度  |
+
 
 返回参数说明：   
 
 |名称	|类型   |说明              |   
 |------ |-----  |----              |   
 |success|boolean  |是否成功获得response数据      |   
-|transaction|dict  |该交易id对应的交易详情      |   
-  
-  
-请求示例：   
-	   
-	curl -k -X GET http://localhost:4096/api/dapps/bebe3c57d76a5bbe3954bd7cb4b9e381e8a1ba3c78e183478b4f98b9d532f024/transactions/7088c67edd43326276453b833727677df6f312271b824564a6a934371265f0dc && echo     
+| blocks | array  |由区块详情json串构成的数组|
+| count | Integer  |区块高度|
 
-
-JSON返回示例：   
   
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/blocks?limit=2&offset=0&orderBy=height:desc'    
+
+JSON返回示例：  
+
 	{
-		"transaction": {
-			"id": "7088c67edd43326276453b833727677df6f312271b824564a6a934371265f0dc",
-			"timestamp": 39709980,
-			"senderId": "ADYGpYHmgkbukqByZ2JzwFXZM6wYfMXCaR",
-			"senderPublicKey": "55ad778a8ff0ce4c25cb7a45735c9e55cf1daca110cfddee30e789cb07c8c9f3",
-			"fee": "0",
-			"signature": "bd51295c3373da2a92c77b6a96a0edbda75cdcde5fd7824ff326c366ed0ec5778e1d02e7d9c280a219d6c815d9bfdbc2d03bb960a0f5d8d35458e4bda87d6104",
-			"type": 1,
-			"args": "[\"ETM\",\"10000000000\",\"2f1db0014483ffef85289e086af321e374944668dd7fb4f156c70609276ed903\",\"ANH2RUADqXs6HPbPEZXv4qM8DZfoj4Ry3M\"]",
-			"height": 637
-		},
-		"success": true
+		"success": true,
+		"blocks": [{
+			"id": "72b9c4af34e63e93b854e9d94b41ab5e7a67e3d3af312a248e7c223f7dc437aa",
+			"version": 0,
+			"timestamp": 11732653,
+			"height": 256220,
+			"previousBlock": "e6eb62c1b6c0296dbe769bd99f7a422e5544d410324e7fb62bcab27df80f6859",
+			"numberOfTransactions": 0,
+			"totalAmount": 0,
+			"totalFee": 0,
+			"reward": 600000000,
+			"payloadLength": 0,
+			"payloadHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+			"generatorPublicKey": "371be464bb1e4477f988bc5f5a81796ba614eea542a4a87331f0694d9b68ec98",
+			"blockSignature": "6748006bab77779af5f9c90123a09240ae6cc64a87c929a83ade2e473073a3bc0832a2bec7cc7e787f6f7823dc40f7ccb95ac19d299d383b99a117ffd80ee70e",
+			"confirmations": 1,
+			"generatorId": "ACPzoaPra4TiehLcfkFjBaXryukKoJk8o7",
+			"totalForged": 600000000
+		}, {
+			"id": "e6eb62c1b6c0296dbe769bd99f7a422e5544d410324e7fb62bcab27df80f6859",
+			"version": 0,
+			"timestamp": 11732652,
+			"height": 256219,
+			"previousBlock": "0d0fab09ad1b4c358972aa1408207ddca495841fdcd2906e497e8b15d2b40733",
+			"numberOfTransactions": 0,
+			"totalAmount": 0,
+			"totalFee": 0,
+			"reward": 600000000,
+			"payloadLength": 0,
+			"payloadHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+			"generatorPublicKey": "8fe285c30fba9c0c2b335da357940d2f9f37099391224b0501be8f0111cc2a86",
+			"blockSignature": "60ab5703508b0781af94ae243b896350d0f7839559d1fe343da1450c92908a607fdb2600e77a6759bda95343e5bfb3cca47279159951d1d1ce1b115ac1a2f206",
+			"confirmations": 2,
+			"generatorId": "ACtpsr2WiTZSvhtinfYgy63AoNiRBSxWVP",
+			"totalForged": 600000000
+		}],
+		"count": 256220
+	}
+	
+#### 3.3 获取区块链高度  
+接口地址：/api/blocks/getHeight     
+请求方式：GET       
+支持格式：urlencoded      
+
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| height | Integer  |区块高度|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/blocks/getheight'    
+
+JSON返回示例：  
+
+	{
+		"success": true,
+		"height": 256414
+	}
+	
+#### 3.4 获取普通转账手续费  
+接口地址：/api/blocks/getFee     
+请求方式：GET       
+支持格式：urlencoded      
+
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| fee | Integer  |交易手续费|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/blocks/getfee'    
+
+JSON返回示例：  
+
+	{
+		"success": true,
+		"fee": 10000000
 	}
 
-#### 3.5 根据条件查询交易详情
+#### 3.5 获取里程碑  
+接口地址：/api/blocks/getMilestone     
+请求方式：GET       
+支持格式：urlencoded      
 
-接口地址：/api/dapps/dappID/transfers   
-请求方式：GET   
-支持格式：urlencode   
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| milestone | Integer  |里程碑|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/blocks/getMilestone'    
+
+JSON返回示例：  
+
+	{
+		"success": true,
+		"milestone": 0
+	}
+
+#### 3.6 查看单个区块奖励 
+接口地址：/api/blocks/getReward     
+请求方式：GET       
+支持格式：urlencoded      
+
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| reward | Integer  |区块奖励，包含受托人奖励和手续费|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/blocks/getReward'    
+
+JSON返回示例：  
+
+	{
+		"success": true,
+		"reward": 600000000
+	}
+
+
+#### 3.7 获取代币当前供应值 
+接口地址：/api/blocks/getSupply     
+请求方式：GET       
+支持格式：urlencoded      
+
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| supply | Integer  |全网代币数|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/blocks/getSupply'    
+
+JSON返回示例：  
+
+	{
+		"success": true,
+		"supply": 10153984000000000
+	}
+
+
+#### 3.8 区块链状态 
+接口地址：/api/blocks/getStatus     
+请求方式：GET       
+支持格式：urlencoded      
+
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| height | Integer  |区块高度|
+| fee | Integer  |交易手续费|
+| milestone | Integer  |里程碑|
+| reward | Integer  |奖励|
+| supply | Integer  |全网代币数|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/blocks/getStatus'    
+
+JSON返回示例：  
+
+	{
+		"success": true,
+		"height": 256851,
+		"fee": 10000000,
+		"milestone": 0,
+		"reward": 600000000,
+		"supply": 10154105200000000
+	}
+
+#### 3.9 获取指定区块的交易信息  
+接口地址：/api/blocks/full     
+请求方式：GET       
+支持格式：urlencoded      
 请求参数说明：  
   
-|名称	|类型   |必填 |说明              |   
+|参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
-|ownerId |string |N |发送者地址，ownerId和currency必须有一个或者两个都存在 | 
-|currency |string |N |代币名称，ownerId和currency必须有一个或者两个都存在 | 
-|limit |interger |N    |限制返回的条数,默认值是10    |   
-|offset |interger |N |偏移量，默认0 |    
+| id | String | 2选1   | 区块id |
+| height | Integer | 2选1   | 区块高度 |
 
 返回参数说明：   
 
 |名称	|类型   |说明              |   
 |------ |-----  |----              |   
 |success|boolean  |是否成功获得response数据      |   
-|transfers|array  |符合查询条件的交易列表      |   
-|count|integer  |符合查询条件的条数      |   
-  
-请求示例：   
-	   
-	curl -k -X GET http://localhost:4096/api/dapps/bebe3c57d76a5bbe3954bd7cb4b9e381e8a1ba3c78e183478b4f98b9d532f024/transfers?ownerid=ADYGpYHmgkbukqByZ2JzwFXZM6wYfMXCaR && echo     
-	   
+| block | json  |区块数据|
 
-JSON返回示例：   
-	  
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/blocks/full?height=1'    
+
+JSON返回示例：  
+
 	{
-		"count": 1,
-		"transfers": [{
-			"tid": "b12b144b3dbb76b70cd62f97e3d3b0606d97c0f402bba1fb973dd2d3ab604a16",
-			"senderId": "AJTGR8EGsprrF7r63D2XLDftGAKUu1Ucjn",
-			"recipientId": "A8QCwz5Vs77UGX9YqBg9kJ6AZmsXQBC8vj",
-			"currency": "CNY",
-			"amount": "100000000000000",
-			"t_timestamp": 0,
-			"t_type": 3,
-			"t_height": 1
-		}],
-		"success": true
-	} 
+		"success": true,
+		"block": {
+			"id": "b8f0e9310ede1fc64fbbcdc7dee0edebdd74490017e5b4261573c14c80de591a",
+			"version": 0,
+			"timestamp": 0,
+			"height": 1,
+			"previousBlock": "",
+			"numberOfTransactions": 405,
+			"totalAmount": 10000000000000000,
+			"totalFee": 0,
+			"reward": 0,
+			"payloadLength": 58419,
+			"payloadHash": "855b2b1b71f9c7ef07503587ab4be73904d67615f26840f88dcb7a625ccea593",
+			"generatorPublicKey": "e8de2877f5448b3f105fdd059c060f286d4db34226b3c2d9c6e4bbe248072574",
+			"blockSignature": "6e7b7eaefbee6b04d7bfea9680a0dcf22025d60a6dacb8d49370489a947327b164e8c0530764dd125549396c38958d2c1fe0fb5fea5e5dd259d4390f76d10c0a",
+			"generatorId": "ACfVWA1TJ1NbrDHUefjfiaykUezAgfvPZ9",
+			"totalForged": 0,
+			"generationSignature": "0000000000000000000000000000000000000000000000000000000000000000",
+			"transactions": [{
+				"id": "f0af7052a760edb104c118d1f6950f597f50a314b872508d9bc7e16f7062219c",
+				"height": 1,
+				...
 
 
-### 4.合约信息获取
-接口地址：/api/dapps/dappID/contracts   
-请求方式：GET   
-支持格式：urlencode   
-  
+
+
+### 4.受托人delegates
+#### 4.1 获取受托人总个数  
+接口地址：/api/delegates/count     
+请求方式：GET       
+支持格式：urlencoded      
+
+
+
 返回参数说明：   
 
 |名称	|类型   |说明              |   
 |------ |-----  |----              |   
 |success|boolean  |是否成功获得response数据      |   
-|contracts|array  |每个元素都是一个字典，由合约编号、合约名字组成，其中core开头的合约为每个dapp通用的内置合约      |   
+| count | Integer  |受托人总个数|
 
-    
-请求示例：   
-	
-	curl -k -H "Content-Type: application/json" -X GET http://192.168.2.115:4096/api/dapps/bebe3c57d76a5bbe3954bd7cb4b9e381e8a1ba3c78e183478b4f98b9d532f024/contracts && echo   
   
 
-JSON返回示例：   
-	  
-	{    
-		contracts: [{    
-			type: "1",    
-			name: "core.deposit" // 系统内置合约，充值(从主链往dapp内进行资产充值)，普通用户不能直接调用（受托人可以调用但不能通过其它节点的校验），当主链有type=9（intransfer）的交易类型发生时会自动调用该智能合约进行dapp充值    
-		},    
-		{    
-			type: "2",    
-			name: "core.withdrawal" // 系统内置合约，提现(将资产从dapp内转出到主链上)      
-		},    
-		{    
-			type: "3",    
-			name: "core.transfer" // 系统内置合约，dapp内部转账，包括ETM和UIA    
-		},    
-		{    
-			type: "4",    
-			name: "core.setNickname" // 系统内置合约，dapp内给地址设置昵称   
-		},    
-		{    
-			type: "1000",    
-			name: "cctime.postArticle" // dapp自定义合约，发布文章   
-		},    
-		{    
-			type: "1001",    
-			name: "cctime.postComment" // dapp自定义合约，发布评论       
-		},    
-		{    
-			type: "1002",    
-			name: "cctime.voteArticle" // dapp自定义合约，给文章进行投票       
-		},    
-		{    
-			type: "1003",    
-			name: "cctime.likeComment" // dapp自定义合约，对评论进行打赏       
-		},    
-		{    
-			type: "1004",    
-			name: "cctime.report" // dapp自定义合约，举报文章      
-		}],    
-		success: true    
-	}     
+请求示例： 
 	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/delegates/count'    
 
+JSON返回示例：  
+
+	{
+		"success":true,
+		"count":101
+	}
+
+	
+#### 4.2 根据受托人公钥查看哪些人为其投了票  
+接口地址：/api/delegates/voters     
+请求方式：GET       
+支持格式：urlencoded      
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| publicKey | String | Y   | 受托人公钥 |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| accounts | array  |账户json串组成的数组|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/delegates/voters?publicKey=a08dc0d7b170a0e12caff0a7faaef952741e65f3585905a5847e4d877d650f07'    
+
+JSON返回示例：  
+
+	{
+		"success": true,
+		"accounts": [{
+			"username": "",
+			"address": "AArvV1RBaWW4AZcwas15wUA3DQiBoKxZk7",
+			"publicKey": "76cab33bb890ec3c59151e16b2e78a4339c4fdf4bf7f9d9f921ec7c2f1c112bf",
+			"balance": 101151812,
+			"weight": 66.5551839464883
+		}, {
+			"username": "",
+			"address": "AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX",
+			"publicKey": "813a4934192334fdd55f966f25975757b3bc2b866552fa58687e7f8420190961",
+			"balance": 421780000000,
+			"weight": 33.44481605351171
+		}]
+	}
+
+#### 4.3 根据公钥或者用户名获取受托人详情  
+接口地址：/api/delegates/get     
+请求方式：GET       
+支持格式：urlencoded   
+接口说明：通过公钥或者用户名获取受托人信息   
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| publicKey | String | 2选1   | 受托人公钥 |
+| username | String | 2选1   | 受托人用户名 |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| delegate | json  |委托人详情|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/delegates/get?publicKey=a08dc0d7b170a0e12caff0a7faaef952741e65f3585905a5847e4d877d650f07'  
+	curl -k -X GET 'http://etm.red:8096/api/delegates/get?username=etm_002'    
+
+JSON返回示例：  
+	
+	//返回结果是一致的
+	{
+		"success": true,
+		"delegate": {
+			"username": "etm_002",
+			"isDelegate": 1,
+			"address": "AMowWYG8ND5Yx13Q5ULyYAF63v1rkmdTCC",
+			"publicKey": "a08dc0d7b170a0e12caff0a7faaef952741e65f3585905a5847e4d877d650f07",
+			"balance": 1544697425722,
+			"vote": 66870772,
+			"producedblocks": 2574,
+			"missedblocks": 178,
+			"fees": 897425722,
+			"rewards": 1543800000000,
+			"rate": 1,
+			"approval": 1.66,
+			"productivity": 93.53,
+			"forged": "1544697425722"
+		}
+	}
+
+#### 4.4 获取受托人列表  
+接口地址：/api/delegates     
+请求方式：GET       
+支持格式：urlencoded   
+接口说明：如果不加参数则会返回全网受托人列表   
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| address | String | N   | 受托人地址 |
+| limit | Integer | N   | 限制返回结果数据集的个数 |
+| offset | Integer | N   | 偏移量，最小值：0 |
+| orderBy | String | N   | 排序字段:排序规则，如:desc |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| delegates | array  |受托人详情列表|
+
+  
+
+请求示例： 
+	
+	//get请求
+	//按照得票率降序排序，取出前2名   
+	curl -k -X GET 'http://etm.red:8096/api/delegates?orderby=approval:desc&limit=2'   
+
+JSON返回示例：  
+	
+	{
+		"success": true,
+		"delegates": [{
+			"username": "etm_002",
+			"isDelegate": 1,
+			"address": "AMowWYG8ND5Yx13Q5ULyYAF63v1rkmdTCC",
+			"publicKey": "a08dc0d7b170a0e12caff0a7faaef952741e65f3585905a5847e4d877d650f07",
+			"balance": 1545297425722,
+			"vote": 66870772,
+			"producedblocks": 2575,
+			"missedblocks": 178,
+			"fees": 897425722,
+			"rewards": 1544400000000,
+			"rate": 1,
+			"approval": 1.66,
+			"productivity": 93.53,
+			"forged": "1545297425722"
+		}, {
+			"username": "etm_001",
+			"isDelegate": 1,
+			"address": "A9gkb1WnCEG93rkqieRdnuzjjdkVcViSCj",
+			"publicKey": "ae28cc3069f4291756168e602a11e5b5d13e546050e3c1d9a09c0311f53a159c",
+			"balance": 1569298019864,
+			"vote": 49460151,
+			"producedblocks": 2615,
+			"missedblocks": 168,
+			"fees": 898019864,
+			"rewards": 1568400000000,
+			"rate": 2,
+			"approval": 1.23,
+			"productivity": 93.96,
+			"forged": "1569298019864"
+		}],
+		"totalCount": 101
+	}
+
+#### 4.5 获取受托人设置的转账费  
+接口地址：/api/delegates/fee     
+请求方式：GET       
+支持格式：urlencoded    
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| publicKey | String | Y   | 受托人公钥 |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| fee | Integer  |转账费|
+
+  
+
+请求示例： 
+	
+	//get请求
+	//按照得票率降序排序，取出前2名   
+	curl -k -X GET 'http://etm.red:8096/api/delegates/fee?publicKey= a08dc0d7b170a0e12caff0a7faaef952741e65f3585905a5847e4d877d650f07'   
+
+JSON返回示例：  
+	
+	{
+		"success":true,
+		"fee":10000000
+	}
+
+#### 4.6 根据公钥查看其出块情况  
+接口地址：/api/delegates/forging/getForgedByAccount     
+请求方式：GET       
+支持格式：urlencoded    
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| generatorPublicKey | String | Y   | 区块生成者公钥 |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| fees | Integer  |收取的手续费|
+| rewards | Integer  |已获得的奖励|
+| forged | Integer  |出块获得的总奖励|
+
+  
+
+请求示例： 
+	
+	//get请求
+	//按照得票率降序排序，取出前2名   
+	curl -k -X GET 'http://etm.red:8096/api/delegates/forging/getForgedByAccount?generatorPublicKey=a08dc0d7b170a0e12caff0a7faaef952741e65f3585905a5847e4d877d650f07'   
+
+JSON返回示例：  
+	
+	{
+		"success": true,
+		"fees": 897425722,
+		"rewards": 1546800000000,
+		"forged": 1547697425722
+	}
+	
+#### 4.7 注册受托人  
+接口地址：/api/delegates     
+请求方式：PUT       
+支持格式：JSON    
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| secret | String | Y   | 账户密码 |
+| publicKey | String | N   | 公钥 |
+| secondSecret | String | N   | 账户二级密码，最小长度：1，最大长度：100 |
+| username | String | N   | 受托人名字 |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| transaction | json  |注册受托人交易详情|
+
+  
+
+请求示例([参考](../utils/delegate.js))： 
+	
+	//注册受托人
+	function registerDelegate() {
+	  return JSON.stringify({
+	    'secret':secret,
+	    'username':'delegate_001'
+	  });
+	}
+	
+	axios.put(url, registerDelegate()).then(res => {
+	  console.log(res);
+	}).catch(err => {
+	  console.error(err);
+	})   
+
+JSON返回示例：  
+	
+	{
+		success: true,
+		transaction: {
+			type: 2,
+			amount: 100000000000,
+			senderPublicKey: 'bd93add22ab931a279f0ef741b768796afc3756ec697f76bef4e2f634969294d',
+			requesterPublicKey: null,
+			timestamp: 11735247,
+			asset: [Object],
+			recipientId: 'A4MFB3MaPd355ug19GYPMSakCAWKbLjDTb',
+			signature: '3ba7eaa5b2996e21c5dbb5fea4b2cb629cb7f45939d74cf89acf740afb72e1db07d8d7b85a2438c047ef25c19e8e5848bc64147628cc3185df6569f0f2422d05',
+			id: '544fb942393255e025c6a354333f6c62e6fefe08de364472dc502f2324900129',
+			fee: 10000000,
+			senderId: 'A9mhydu4PJd3KnSbi1p6vwuoBMGcHc4xjr'
+		}
+	}
+	//查看钱包受托人
+	102	delegate_001	A9mhydu4PJd3KnSbi1p6vwuoBMGcHc4xjr 0	0    0
+
+#### 4.8 受托人开启出块  
+接口地址：/api/delegates/forging/enable     
+请求方式：POST       
+支持格式：JSON    
+请求说明：url必须是受托人所在服务器   
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| secret | String | Y   | 账户密码 |
+| publicKey | String | N   | 受托人公钥 |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| address | String  |受托人地址|
+
+  
+
+请求示例： 
+	
+	//POST请求
+	//请在节点服务器上运行此代码  
+	curl -k -H "Content-Type: application/json" -X POST -d '{"secret":"race forget pause shoe trick first abuse insane hope budget river enough"}' 'http://localhost:8096/api/delegates/forging/enable'   
+
+JSON返回示例：  
+	
+	{
+		"success": true,
+		"address": "A9mhydu4PJd3KnSbi1p6vwuoBMGcHc4xjr"
+	}
+	
+#### 4.9 受托人关闭出块  
+接口地址：/api/delegates/forging/disable     
+请求方式：POST       
+支持格式：JSON    
+请求说明：url必须是受托人所在服务器    
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| secret | String | Y   | 账户密码 |
+| publicKey | String | N   | 受托人公钥 |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| address | String  |受托人地址|
+
+  
+
+请求示例： 
+	
+	//post请求   
+	curl -k -H "Content-Type: application/json" -X POST -d '{"secret":"race forget pause shoe trick first abuse insane hope budget river enough"}' 'http://localhost:8096/api/delegates/forging/disable'   
+
+JSON返回示例：  
+	
+	{
+		"success": true,
+		"address": "A9mhydu4PJd3KnSbi1p6vwuoBMGcHc4xjr"
+	}
+	
+	
+#### 4.10 受托人出块状态查看  
+接口地址：/api/delegates/forging/status     
+请求方式：GET       
+支持格式：urlencoded    
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| publicKey | String | Y   | 受托人公钥 |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| fee | Integer  |转账费|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/delegates/forging/status?publicKey=a08dc0d7b170a0e12caff0a7faaef952741e65f3585905a5847e4d877d650f07'   
+
+JSON返回示例：  
+	
+	{
+		"success":true,
+		"enabled":true
+	}
+
+### 5.节点
+#### 4.10 受托人出块状态查看  
+接口地址：/api/delegates/forging/status     
+请求方式：GET       
+支持格式：urlencoded    
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| publicKey | String | Y   | 受托人公钥 |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| fee | Integer  |转账费|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/delegates/forging/status?publicKey=a08dc0d7b170a0e12caff0a7faaef952741e65f3585905a5847e4d877d650f07'   
+
+JSON返回示例：  
+	
+	{
+		"success":true,
+		"enabled":true
+	}
+#### 4.10 受托人出块状态查看  
+接口地址：/api/delegates/forging/status     
+请求方式：GET       
+支持格式：urlencoded    
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| publicKey | String | Y   | 受托人公钥 |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| fee | Integer  |转账费|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/delegates/forging/status?publicKey=a08dc0d7b170a0e12caff0a7faaef952741e65f3585905a5847e4d877d650f07'   
+
+JSON返回示例：  
+	
+	{
+		"success":true,
+		"enabled":true
+	}
+#### 4.10 受托人出块状态查看  
+接口地址：/api/delegates/forging/status     
+请求方式：GET       
+支持格式：urlencoded    
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| publicKey | String | Y   | 受托人公钥 |
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| fee | Integer  |转账费|
+
+  
+
+请求示例： 
+	
+	//get请求
+	curl -k -X GET 'http://etm.red:8096/api/delegates/forging/status?publicKey=a08dc0d7b170a0e12caff0a7faaef952741e65f3585905a5847e4d877d650f07'   
+
+JSON返回示例：  
+	
+	{
+		"success":true,
+		"enabled":true
+	}
 
 ### 5.自定义合约接口调用
 参看demo中的[helloworld](demo.md)
