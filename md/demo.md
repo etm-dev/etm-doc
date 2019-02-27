@@ -4,9 +4,9 @@
 如果大家对dapp还不甚了解 ，请查看[合约开发](./smart_contract.md),该章节讲解了合约模版各个文件的作用，以及开发者需要关注的模块，其实entanmo官方为开发者考虑了非常多，合约开发者只需要关注业务逻辑即可。
 
 ### 初识dapp
-详细样例请参考[domain](../example/domain/README.md),此样子仅供参考，只为更方便的为大家讲解entanmo dapp的使用。
+详细样例请参考[hello world](../example/helloworld),此例子仅供参考，只为更方便的为大家讲解entanmo dapp的使用。
 
-**注：假设大家都会发布dapp，如果大家还不会请查看前面章节**
+**注：学到这里，开发者们应该已经可以熟练的发布Dapp**
 
 #### 1.配置及路由 
 **我们从哪里开始呢？**
@@ -16,17 +16,15 @@
 	module.exports = async function () {
 		//...
 		
-		//这里是注册了两个合约接口，接口需要1000，1001
-	  	app.registerContract(1000, 'domain.register')
-	  	app.registerContract(1001, 'domain.set_ip')
-
+		//注册合约方法
+  		app.registerContract(1000, 'helloworld.hello')
   		//....
 	}
 
-很显然，可以看到两个注册的接口（并不是合约）。
+很显然，可以看到注册的接口（并不是合约）。
 
 
-然后可以查看interface目录下的[domain.js](../example/domain/interface/domain.js) ,这里定义了路由访问规则。
+然后可以查看interface目录下的[helloworld.js](../example/helloworld/interface/helloworld.js) ,这里定义了路由访问规则。
 
 	app.route.get('/domain/:address',  async function (req) {
 	  let result = await app.model.Domain.findOne({

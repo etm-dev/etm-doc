@@ -1439,7 +1439,6 @@ JSON返回示例：
 请求示例： 
 	
 	//get请求
-	//按照得票率降序排序，取出前2名   
 	curl -k -X GET 'http://etm.red:8096/api/delegates/fee?publicKey= a08dc0d7b170a0e12caff0a7faaef952741e65f3585905a5847e4d877d650f07'   
 
 JSON返回示例：  
@@ -1473,7 +1472,6 @@ JSON返回示例：
 请求示例： 
 	
 	//get请求
-	//按照得票率降序排序，取出前2名   
 	curl -k -X GET 'http://etm.red:8096/api/delegates/forging/getForgedByAccount?generatorPublicKey=a08dc0d7b170a0e12caff0a7faaef952741e65f3585905a5847e4d877d650f07'   
 
 JSON返回示例：  
