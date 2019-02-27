@@ -101,12 +101,6 @@
 			* [10.12.4 资产发行](#10124-资产发行)
 			* [10.12.5 资产转账](#10125-资产转账)
 			* [10.12.6 更新黑白名单](#10126-更新黑白名单)
-	* [11.存储](#11存储)
-		* [11.1 上传数据](#1011-上传数据)
-			* [11.1.1 直接上传数据](#1111-直接上传数据) 
-			* [11.1.2 签名后上传数据](#1112-签名后上传数据)
-		* [11.2 根据交易id查询存储的数据1](#1012-根据交易id查询存储的数据1)
-		* [11.3 根据交易id查询存储的数据2](#1013-根据交易id查询存储的数据2)
 
 
 ### 1.账户系统
@@ -2521,7 +2515,8 @@ JSON返回示例：
 ##### 9.3.6 资产转账
 接口地址：/peer/transactions     
 请求方式：POST       
-支持格式：JSON      
+支持格式：JSON   
+请求说明：对比参考 [10.12.5 资产转账](#10125-资产转账)   
 请求参数说明：  
   
 |参数	|类型   |必填 |说明              |   
@@ -2611,30 +2606,758 @@ JSON返回示例：
 
 ### 10.用户自定义资产
 #### 10.1 获取全网所有发行商
-#### 10.2 查询指定发行商的信息
-#### 10.3 查看指定发行商的资产
-#### 10.4 获取全网所有资产信息
-#### 10.5 获取指定资产信息
-#### 10.6 获取指定资产的访问控制列表
-#### 10.7 获取指定账户所有uia的余额
-#### 10.8 获取指定账户所有资产相关操作记录
-#### 10.9 获取指定账户指定资产的余额
-#### 10.10 获取指定账户指定资产转账记录
-#### 10.11 获取指定资产转账记录
-#### 10.12 资产创建相关
-##### 10.12.1 注册资产发行商
-##### 10.12.2 注册资产
-##### 10.12.3 更新资产访问控制列表
-##### 10.12.4 资产发行
-##### 10.12.5 资产转账
-##### 10.12.6 更新黑白名单
+接口地址：/api/uia/issuers     
+请求方式：GET       
+支持格式：urlencoded       
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| limit | Integer | N  | 限制结果集个数，最小值：0,最大值：100|
+| offset | Integer | N  | 偏移量，最小值0|
 
-### 11.存储
-#### 11.1 上传数据
-##### 11.1.1 直接上传数据
-##### 11.1.2 签名后上传数据
-#### 11.2 根据交易id查询存储的数据1
-#### 11.3 根据交易id查询存储的数据2
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| issuers | array  |查找的发行商|
+| count | integer  |发行商总个数|
+
+  
+
+请求示例： 
+	
+	//get 请求
+	http://etm.red:8096/api/uia/issuers?offset=0&limit=5 
+
+JSON返回示例：  
+	
+	{
+		"success": true,
+		"issuers": [{
+			"name": "RAY",
+			"desc": "issuer",
+			"issuerId": "AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX"
+		}, {
+			"name": "issuerName",
+			"desc": "issuer",
+			"issuerId": "AGKTTewJzJkteWJ9MVEupgCLhgKELsvU7T"
+		}],
+		"count": 2
+	}
+
+
+#### 10.2 查询指定发行商的信息
+接口地址：/api/uia/issuers/:name     
+请求方式：GET       
+支持格式：urlencoded       
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| name | String | Y  | 可以为发行商名称或ETM账户地址|
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| issuers | array  |包含发行商名字、描述、id(地址)|
+
+  
+
+请求示例： 
+	
+	//get 请求
+	http://etm.red:8096/api/uia/issuers/RAY 
+
+JSON返回示例：  
+	
+	{
+		"success": true,
+		"issuer": {
+			"name": "RAY",
+			"desc": "issuer",
+			"issuerId": "AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX"
+		}
+	}
+	
+#### 10.3 查看指定发行商的资产
+接口地址：/api/uia/issuers/:name/assets     
+请求方式：GET       
+支持格式：urlencoded       
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| name | String | Y  | 可以为发行商名称或ETM账户地址|
+| limit | Integer | N  | 限制结果集个数，最小值：0,最大值：100|
+| offset | Integer | N  | 偏移量，最小值0|
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| assets | array  |每个元素是一个字典，每个字典是一个资产详情，包含资产名字、描述、上限（最大发行量=真实发行量*10**精度）、精度、策略、当前发行量、发行高度、发行商id，acl模式（0：黑名单，1：白名单）、是否注销|
+| count | integer  |该发行商注册的资产总个数（包含已注销的）|
+
+  
+
+请求示例： 
+	
+	//get 请求
+	http://etm.red:8096/api/uia/issuers/RAY/assets
+
+JSON返回示例：  
+	
+	{
+		"success": true,
+		"assets": [{
+			"name": "RAY.CNY",
+			"desc": "测试",
+			"maximum": "100000000000000000",
+			"precision": 8,
+			"strategy": "",
+			"quantity": "10000000000000000",
+			"height": 1777,
+			"issuerId": "AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX",
+			"acl": 0,
+			"writeoff": 0,
+			"allowWriteoff": 0,
+			"allowWhitelist": 0,
+			"allowBlacklist": 0,
+			"maximumShow": "1000000000",
+			"quantityShow": "100000000"
+		}],
+		"count": 1
+	}
+	
+#### 10.4 获取全网所有资产信息
+接口地址：/api/uia/assets   
+请求方式：GET       
+支持格式：urlencoded       
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| limit | Integer | N  | 限制结果集个数，最小值：0,最大值：100|
+| offset | Integer | N  | 偏移量，最小值0|
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| assets | array  |每个元素是一个字典，每个字典是一个资产详情，包含资产名字、描述、上限、精度、策略、当前发行量、发行高度、发行商id，acl、是否注销|
+| count | integer  |所有资产的个数|
+
+  
+
+请求示例： 
+	
+	//get 请求
+	http://etm.red:8096/api/uia/assets
+
+JSON返回示例：  
+		
+	{
+		"success": true,
+		"assets": [{
+			"name": "RAY.CNY",
+			"desc": "测试",
+			"maximum": "100000000000000000",
+			"precision": 8,
+			"strategy": "",
+			"quantity": "10000000000000000",
+			"height": 1777,
+			"issuerId": "AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX",
+			"acl": 0,
+			"writeoff": 0,
+			"allowWriteoff": 0,
+			"allowWhitelist": 0,
+			"allowBlacklist": 0,
+			"maximumShow": "1000000000",
+			"quantityShow": "100000000"
+		}, {
+			"name": "issuerName.CNY",
+			"desc": "测试",
+			"maximum": "100000000000000000",
+			"precision": 8,
+			"strategy": "",
+			"quantity": "10000000000000000",
+			"height": 345640,
+			"issuerId": "AGKTTewJzJkteWJ9MVEupgCLhgKELsvU7T",
+			"acl": 0,
+			"writeoff": 0,
+			"allowWriteoff": 0,
+			"allowWhitelist": 0,
+			"allowBlacklist": 0,
+			"maximumShow": "1000000000",
+			"quantityShow": "100000000"
+		}],
+		"count": 2
+	}
+
+#### 10.5 获取指定资产信息
+接口地址：/api/uia/assets/:name   
+请求方式：GET       
+支持格式：urlencoded       
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| name | String | Y  | 资产名|
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| asset | json  |包含资产名字、描述、上限、精度、策略、当前发行量、发行高度、发行商id，acl、是否注销|
+
+  
+
+请求示例： 
+	
+	//get 请求
+	http://etm.red:8096/api/uia/assets/RAY.CNY
+
+JSON返回示例：  
+		
+	{
+		"success": true,
+		"asset": {
+			"name": "RAY.CNY",
+			"desc": "测试",
+			"maximum": "100000000000000000",
+			"precision": 8,
+			"strategy": "",
+			"quantity": "10000000000000000",
+			"height": 1777,
+			"issuerId": "AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX",
+			"acl": 0,
+			"writeoff": 0,
+			"allowWriteoff": 0,
+			"allowWhitelist": 0,
+			"allowBlacklist": 0,
+			"maximumShow": "1000000000",
+			"quantityShow": "100000000"
+		}
+	}
+
+#### 10.6 获取指定资产的访问控制列表
+接口地址：/api/uia/assets/:name/acl/flag   
+请求方式：GET       
+支持格式：urlencoded       
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| name | String | Y  | 资产名|
+| flag | boolen | Y  | 取值0和1，0表示黑名单，1表示白名单|
+| limit | Integer | N  | 限制结果集个数，最小值：0,最大值：100|
+| offset | Integer | N  | 偏移量，最小值0|
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| list | array  |符合规则的账户列表|
+| count | integer  |符合规则账户总数|
+  
+
+请求示例： 
+	
+	//get 请求
+	http://etm.red:8096/api/uia/assets/RAY.CNY/acl/1
+	http://etm.red:8096/api/uia/assets/RAY.CNY/acl/0
+
+JSON返回示例：  
+		
+	//TODO 这里肯定有问题 发行的资产默认全部都是黑名单中的，需要设置acl
+	//flag = 1	
+	{
+		"success": true,
+		"list": [],
+		"count": 0
+	}
+	//flag = 0 
+	{
+		"success": true,
+		"list": [],
+		"count": 0
+	}
+
+
+#### 10.7 获取指定账户所有uia的余额
+接口地址：/api/uia/balances/:address   
+请求方式：GET       
+支持格式：urlencoded       
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| address | String | Y  | 账户地址|
+| limit | Integer | N  | 限制结果集个数，最小值：0,最大值：100|
+| offset | Integer | N  | 偏移量，最小值0|
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| balances | array  |拥有的资产详情列表，每个元素是一个资产，包含资产名、余额、上限、精度、当前发行量、是否注销（0：未注销，1：已注销）|
+| count | integer  |当前该地址拥有的资产个数|
+  
+
+请求示例： 
+	
+	//get 请求
+	http://etm.red:8096/api/uia/balances/AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX
+
+JSON返回示例：  
+		
+	{
+		"success": true,
+		"balances": [{
+			"currency": "RAY.CNY",
+			"balance": "9998000000000000",
+			"maximum": "100000000000000000",
+			"precision": 8,
+			"quantity": "10000000000000000",
+			"writeoff": 0,
+			"allowWriteoff": 0,
+			"allowWhitelist": 0,
+			"allowBlacklist": 0,
+			"maximumShow": "1000000000",
+			"quantityShow": "100000000",
+			"balanceShow": "99980000"
+		}],
+		"count": 1
+	}
+
+
+#### 10.8 获取指定账户所有资产相关操作记录
+接口地址：/api/uia/transactions/my/:address   
+请求方式：GET       
+支持格式：urlencoded  
+请求说明：包含发行商创建以及资产创建、发行、转账等        
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| address | String | Y  | 账户地址|
+| limit | Integer | N  | 限制结果集个数，最小值：0,最大值：100|
+| offset | Integer | N  | 偏移量，最小值0|
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| transactions | array  |交易列表，每个元素是一个字典代表一次交易，包含交易id、区块高度、区块id、交易类型、时间戳、发送者公钥、发送者id、接收者id（系统为空，如资产注册）、交易数量（资产交易都为0）、手续费0.1ETM、签名、多重签名、确认数、资产信息（包含发行商id、发行商名字、描述）、交易id|
+| count | integer  |资产交易总个数|
+  
+
+请求示例： 
+	
+	//get 请求
+	http://etm.red:8096/api/uia/my/transactions/AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX
+
+JSON返回示例：  
+		
+	//TODO接口不存在	
+	{
+		"success":false,
+		"error":"API endpoint not found"
+	}
+	//应该出现的结果
+	{
+		"success": true,
+		"transactions": [{
+			"id": "12372526051670720162",   // 交易id
+			"height": "286",    // 交易所在区块高度
+			"blockId": "14863181420651287815",  // 交易所在区块id
+			"type": 9,  // 交易类型，9代表注册发行商
+			"timestamp": 17597873,  // 交易时间，距离创世块的offset
+			"senderPublicKey": "d39d6f26869067473d685da742339d1a9117257fe14b3cc7261e3f2ed5a339e3",  // 交易发起者公钥
+			"senderId": "AKKHPvQb2A119LNicCQWLZQDFxhGVEY57a",   // 交易发起者id
+			"recipientId": "",  //  接收者id，如果是系统则为空
+			"amount": 0,    //  交易数量，如果是资产或者XAS则为非0，否则为0
+			"fee": 10000000,    // 交易费
+			"signature": "6a1e66387f610de5a89489105697082037b82bff4fb6f95f9786304176efe59f7d41e8fe9c5501e1b0b34a47e957a38e10e940fdb180f8ebcaf0ac062a63c601", // 交易签名
+			"signSignature": "",    // 二级签名，有二级密码时才有
+			"signatures": null, // 多重签名，使用多重签名账户时才有
+			"confirmations": "155998",  // 交易确认数
+			"asset": {
+				"uiaIssuer": {
+					"transactionId": "12372526051670720162",    // 交易id
+					"name": "zhenxi",   // 发行商名字
+					"desc": "注册资产发行商-测试"   // 发行商描述
+				}
+			},
+			"t_id": "12372526051670720162"  // 交易id
+		},
+		{
+			"id": "17308768226103450697",
+			"height": "371",
+			"blockId": "244913990990213995",
+			"type": 9,
+			"timestamp": 17598730,
+			"senderPublicKey": "7bd645f9626820d390311fb28dc30875e8bd26cce2d04ba2809df82e84088020",
+			"senderId": "AEVWQWAq3TEJkCPSDxXMP2uCRrL2xbQnsy",
+			"recipientId": "",
+			"amount": 0,
+			"fee": 10000000,
+			"signature": "6ea76ff6f58f1bc99d6b40ece45e371948db58a68f6fa41e13b34ff86bbf1f0bea53d6afe982562392861727f879205efc7d1342f6e963028985e243a94e5507",
+			"signSignature": "",
+			"signatures": null,
+			"confirmations": "155913",
+			"asset": {
+				"uiaIssuer": {
+					"transactionId": "17308768226103450697",
+					"name": "speedtest",
+					"desc": "speedtest"
+				}
+			},
+			"t_id": "17308768226103450697"
+		}],
+		"count": 58
+	}	
+	
+#### 10.9 获取指定账户指定资产的余额
+接口地址：/api/uia/balances/:address/:currency   
+请求方式：GET       
+支持格式：urlencoded        
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| address | String | Y  | 账户地址|
+| currency | String | Y  | 资产名字|
+| limit | Integer | N  | 限制结果集个数，最小值：0,最大值：100|
+| offset | Integer | N  | 偏移量，最小值0|
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| balances | array  |包含资产名、余额、最大发行量、精度、当前发行量、是否注销|
+  
+
+请求示例： 
+	
+	//get 请求
+	http://etm.red:8096/api/uia/balances/AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX/RAY.CNY
+
+JSON返回示例：  
+		
+	{
+		"success": true,
+		"balance": {
+			"currency": "RAY.CNY",
+			"balance": "9998000000000000",
+			"maximum": "100000000000000000",
+			"precision": 8,
+			"quantity": "10000000000000000",
+			"writeoff": 0,
+			"allowWriteoff": 0,
+			"allowWhitelist": 0,
+			"allowBlacklist": 0,
+			"maximumShow": "1000000000",
+			"quantityShow": "100000000",
+			"balanceShow": "99980000"
+		}
+	}
+
+
+#### 10.10 获取指定账户指定资产转账记录
+接口地址：/api/uia/transactions/my/:address/:currency   
+请求方式：GET       
+支持格式：urlencoded        
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| address | String | Y  | 账户地址|
+| currency | String | Y  | 资产名字|
+| limit | Integer | N  | 限制结果集个数，最小值：0,最大值：100|
+| offset | Integer | N  | 偏移量，最小值0|
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| transactions | array  |交易列表，每个元素是一个字典代表一次交易，包含交易id、区块高度、区块id、交易类型、时间戳、发送者公钥、发送者id、接收者id（系统为空，如资产注册）、交易数量（资产交易都为0）、手续费0.1ETM、签名、多重签名、确认数、资产信息（包含发行商id、发行商名字、描述）、交易id|
+| count | integer  |资产交易总个数|   
+
+请求示例： 
+	
+	//get 请求
+	http://etm.red:8096/api/uia/transactions/my/AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX/RAY.CNY
+JSON返回示例：  
+		
+	//TODO  应该是有交易的	
+	{
+		"success":true,
+		"transactions":[],
+		"count":0
+	}
+	
+	//应该出现的结果
+	{
+		"success": true,
+		"transactions": [{
+			"id": "d6102fc30931e4dc449811cbbab705fd64bc79b09de703e8172f7bdd90835abc",
+			"height": "173109",
+			"blockId": "baa23acd566780e338436b48e4eb79a87d3bdd67caeb3812a663da8f77ae87d9",
+			"type": 14,
+			"timestamp": 19481489,
+			"senderPublicKey": "fafcd01f6b813fdeb3c086e60bc7fa9bfc8ef70ae7be47ce0ac5d06e7b1a8575",
+			"senderId": "16358246403719868041",
+			"recipientId": "AKKHPvQb2A119LNicCQWLZQDFxhGVEY57a",
+			"amount": 0,
+			"fee": 10000000,
+			"signature": "77789071a2ad6d407b9d1e0d654a9deb6d85340a3d2a13d786030e26ac773b4e9b5f052589958d2b8553ae5fc9449496946b5c225e0baa723e7ddecbd89f060a",
+			"signSignature": "f0d4a000aae3dd3fa48a92f792d4318e41e3b56cdbaf98649261ae34490652b87645326a432d5deb69f771c133ee4b67d2d22789197be34249e6f7f0c30c1705",
+			"signatures": null,
+			"confirmations": "90853",
+			"asset": {
+				"uiaTransfer": {
+					"transactionId": "d6102fc30931e4dc449811cbbab705fd64bc79b09de703e8172f7bdd90835abc",
+					"currency": "IssuerName.CNY",
+					"amount": "10000",
+					"amountShow": "10"
+				}
+			},
+			"t_id": "d6102fc30931e4dc449811cbbab705fd64bc79b09de703e8172f7bdd90835abc"
+		}],
+		"count": 15
+	}
+
+
+#### 10.11 获取指定资产转账记录
+接口地址：/api/uia/transactions/my/:address/:currency   
+请求方式：GET       
+支持格式：urlencoded        
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| address | String | Y  | 账户地址|
+| currency | String | Y  | 资产名字|
+| limit | Integer | N  | 限制结果集个数，最小值：0,最大值：100|
+| offset | Integer | N  | 偏移量，最小值0|
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| transactions | array  |交易列表，每个元素是一个字典代表一次交易，包含交易id、区块高度、区块id、交易类型、时间戳、发送者公钥、发送者id、接收者id（系统为空，如资产注册）、交易数量（资产交易都为0）、手续费0.1ETM、签名、多重签名、确认数、资产信息（包含发行商id、发行商名字、描述）、交易id|
+| count | integer  |资产交易总个数|   
+
+请求示例： 
+	
+	//get 请求
+	http://etm.red:8096/api/uia/transactions/RAY.CNY
+JSON返回示例：  
+		
+	//TODO  应该是有交易的	
+	{
+		"success":true,
+		"transactions":[],
+		"count":0
+	}
+	
+	//应该出现的结果
+	{
+		success: true,
+		transactions: [{
+			id: "a1ff79e3f37fd73b41abd293c22171ac7760160ad457e55f028e7a8b527651d3",
+			height: "43",
+			blockId: "b16b87e79b47edffdc2fd93bd1de70cbe3541684d5dbf8dc1d292903275e03dc",
+			type: 14,
+			timestamp: 39167334,
+			senderPublicKey: "2856bdb3ed4c9b34fd2bba277ffd063a00f703113224c88c076c0c58310dbec4",
+			senderId: "ANH2RUADqXs6HPbPEZXv4qM8DZfoj4Ry3M",
+			recipientId: "AMzDw5BmZ39we18y7Ty9VW79eL9k7maZPH",
+			amount: 0,
+			fee: 10000000,
+			signature: "a4e6b0e2c265e0d601fdfc9e82d971e7908457383835b801c725cdaac01bd619a435344241c64247599255f43a43b6576e1da3a357eac5bbd7058e013a8aa60e",
+			signSignature: "",
+			signatures: null,
+			confirmations: "809",
+			args: null,
+			message: "",
+			asset: {
+				uiaTransfer: {
+					transactionId: "a1ff79e3f37fd73b41abd293c22171ac7760160ad457e55f028e7a8b527651d3",
+					currency: "absorb.YLB",
+					amount: "200000000",
+					amountShow: "2",
+					precision: 8
+				}
+			}
+		},
+		{
+			id: "7cf50223e12b6eb51096353a066befcf2ef862bdd4d4eddcba28a79aa0249af9",
+			height: "809",
+			blockId: "278b096893bc028bb79692faec02de8c2f367804485b71f14e46027f3dd3000c",
+			type: 14,
+			timestamp: 39182041,
+			senderPublicKey: "b33b5fc45640cfc414981985bf92eef962c08c53e1a34f90dab039e985bb5fab",
+			senderId: "AMzDw5BmZ39we18y7Ty9VW79eL9k7maZPH",
+			recipientId: "1",
+			amount: 0,
+			fee: 10000000,
+			signature: "560bd31a4efe103ef9bd92f52cae5cf5a3b2aeb90fc83298498ff4126705e0433f751169bc32a3a7cfe894c7d8586d7182ebc790f2311daf9f02b881dc2aca0e",
+			signSignature: "",
+			signatures: null,
+			confirmations: "43",
+			args: null,
+			message: "",
+			asset: {
+				uiaTransfer: {
+					transactionId: "7cf50223e12b6eb51096353a066befcf2ef862bdd4d4eddcba28a79aa0249af9",
+					currency: "absorb.YLB",
+					amount: "100000000",
+					amountShow: "1",
+					precision: 8
+				}
+			}
+		}],
+		count: 2
+	}
+
+
+#### 10.12 资产创建相关
+接口地址：/api/uia/transactions/my/:address/:currency   
+请求方式：GET       
+支持格式：urlencoded        
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| address | String | Y  | 账户地址|
+| currency | String | Y  | 资产名字|
+| limit | Integer | N  | 限制结果集个数，最小值：0,最大值：100|
+| offset | Integer | N  | 偏移量，最小值0|
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| transactions | array  |交易列表，每个元素是一个字典代表一次交易，包含交易id、区块高度、区块id、交易类型、时间戳、发送者公钥、发送者id、接收者id（系统为空，如资产注册）、交易数量（资产交易都为0）、手续费0.1ETM、签名、多重签名、确认数、资产信息（包含发行商id、发行商名字、描述）、交易id|
+| count | integer  |资产交易总个数|   
+
+请求示例： 
+	
+	//get 请求
+	http://etm.red:8096/api/uia/transactions/RAY.CNY
+JSON返回示例：  
+		
+	//TODO  应该是有交易的	
+	{
+		"success":true,
+		"transactions":[],
+		"count":0
+	}
+
+##### 10.12.1 注册资产发行商
+对比参考 [9.3 UIA相关交易](#93-UIA相关交易) 
+##### 10.12.2 注册资产
+对比参考 [9.3 UIA相关交易](#93-UIA相关交易) 
+##### 10.12.3 更新资产访问控制列表
+对比参考 [9.3 UIA相关交易](#93-UIA相关交易) 
+##### 10.12.4 资产发行
+对比参考 [9.3 UIA相关交易](#93-UIA相关交易) 
+##### 10.12.5 资产转账
+接口地址：/api/uia/transfers   
+请求方式：PUT       
+支持格式：json        
+请求参数说明：  
+  
+|参数	|类型   |必填 |说明              |   
+|------ |-----  |---  |----              |   
+| secret | String | Y  | 账户密码|
+| currency | String | Y  | 资产名字|
+| amount | String | Y  | 转账金额，最大长度50|
+| recipientId | String | Y  | 接收地址，最小长度1|
+| publicKey | String | N  | 发送者公钥，格式必须符合公钥格式|
+| secondSecret | String | N  | 发送者二级密码，最小长度1，最大长度：100|
+| multisigAccountPublicKey | String | N  | 多签账户公钥，格式必须符合公钥格式|
+| message | String | N  | 转账备注，最大长度256|
+
+返回参数说明：   
+
+|名称	|类型   |说明              |   
+|------ |-----  |----              |   
+|success|boolean  |是否成功获得response数据      |   
+| transactionId | String  |交易id|
+
+请求示例([参考](../utils/normal_transactions.js))： 
+	
+	//10.12.5 转账 pepper sleep youth blast vivid circle cross impact zebra neck salmon fee
+	//url: etm.red:8096/api/uia/transfers
+	function transferIssueAssert2() {
+	  let password = 'pepper sleep youth blast vivid circle cross impact zebra neck salmon fee'
+	  let currency = 'RAY.CNY';
+	  let recipientId = 'A9mhydu4PJd3KnSbi1p6vwuoBMGcHc4xjr'
+	  let amount ='1000000000'
+	
+	  return JSON.stringify({
+	    "secret": password,
+	    "amount":amount,
+	    "recipientId":recipientId,
+	    "currency":currency,
+	    "secondSecret":"test001"
+	  })
+	}
+	axios.put('http://etm.red:8096/api/uia/transfers', transferIssueAssert2()).then(res => {
+	  console.log(res);
+	}).catch(err => {
+	  console.error(err);
+	})
+
+JSON返回示例：  
+		
+	{ 
+		success: true,
+		transactionId: '118b19b3c48d3660434b3016df08f94ef49458a800cbf4e7da6ae7ecc72b3a82' 
+	}
+	//查询转账信息
+	http://etm.red:8096/api/uia/balances/A9mhydu4PJd3KnSbi1p6vwuoBMGcHc4xjr
+	//结果
+	{
+		"success": true,
+		"balances": [{
+			"currency": "RAY.CNY",
+			"balance": "1000000000",
+			"maximum": "100000000000000000",
+			"precision": 8,
+			"quantity": "10000000000000000",
+			"writeoff": 0,
+			"allowWriteoff": 0,
+			"allowWhitelist": 0,
+			"allowBlacklist": 0,
+			"maximumShow": "1000000000",
+			"quantityShow": "100000000",
+			"balanceShow": "10"
+		}],
+		"count": 1
+	}
+	
+##### 10.12.6 更新黑白名单
+	//TODO 没有接口
+
+
 
 	
 -----------

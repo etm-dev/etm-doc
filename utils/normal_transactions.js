@@ -190,8 +190,30 @@ function destroyAssert() {
   })
 }
 
-axios.post(url, destroyAssert()).then(res => {
+//10.12.5 转账 pepper sleep youth blast vivid circle cross impact zebra neck salmon fee
+//url: etm.red:8096/api/uia/transfers
+function transferIssueAssert2() {
+  let password = 'pepper sleep youth blast vivid circle cross impact zebra neck salmon fee'
+  let currency = 'RAY.CNY';
+  let recipientId = 'A9mhydu4PJd3KnSbi1p6vwuoBMGcHc4xjr'
+  let amount ='1000000000'
+
+  return JSON.stringify({
+    "secret": password,
+    "amount":amount,
+    "recipientId":recipientId,
+    "currency":currency,
+    "secondSecret":"test001"
+  })
+}
+axios.put('http://etm.red:8096/api/uia/transfers', transferIssueAssert2()).then(res => {
   console.log(res);
 }).catch(err => {
   console.error(err);
 })
+
+// axios.post(url, destroyAssert()).then(res => {
+//   console.log(res);
+// }).catch(err => {
+//   console.error(err);
+// })
