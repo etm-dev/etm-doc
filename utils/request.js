@@ -6,8 +6,8 @@ let url = 'http://etm.red:8096/api/dapps/4149dcbd54c461aebfb2ff1e61be2b4619df9f7
 
 let transaction = etmJS.dapp.createInnerTransaction({
   fee: `0`,
-  type: 1013,
-  args: JSON.stringify(["I9jvC_35ZlWV",1,"transactionId"])
+  type: 1015,
+  args: JSON.stringify(["AGWefmsaAhnqx75xhucqjk8Ah2fqDG3Q4P"])
 }, secret)
 axios.put(url, {
   transaction
