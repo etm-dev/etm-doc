@@ -14,11 +14,12 @@ axios.defaults.headers = {
   'version': ''
 }
 //主链
-let url = 'http://etm.red:8096/peer/transactions'
+let url = 'http://etm.red:8097/peer/transactions'
 //侧链
-let dappUrl = 'http://etm.red:8096/api/dapps/5929ee23ea77968a7ec686c124ed3bad43c096e5b38a54eb7ab72ef7b635900d/transactions/signed'
-let dappid = "5929ee23ea77968a7ec686c124ed3bad43c096e5b38a54eb7ab72ef7b635900d";
+let dappUrl = 'http://etm.red:8097/api/dapps/5929ee23ea77968a7ec686c124ed3bad43c096e5b38a54eb7ab72ef7b635900d/transactions/signed'
+let dappid = "316f6db205f3c05c9a524e01017141aeb97909558ba360861c85d6fdeb291c50";
 
+//A9mhydu4PJd3KnSbi1p6vwuoBMGcHc4xjr
 let password = 'race forget pause shoe trick first abuse insane hope budget river enough';
 let secondPassword = '';
 
@@ -74,6 +75,21 @@ function issueAssert() {
   })
 }
 
+//转代币
+//lend slab grocery amused silly lift elevator toe subway float night chef
+//AJtYXzZrbGtRUvNrmKj6m2KtKRPHf6Akgy
+function transferAsset() {
+  let currency = issuerName + '.' + assertName;
+  // 本次转账数（10000）=真实数量（10）*10**精度（3），需 <= 当前资产发行总量
+  let amount = '10000000000';
+  // 接收地址，需满足前文定义好的acl规则
+  let recipientId = 'AJtYXzZrbGtRUvNrmKj6m2KtKRPHf6Akgy'
+  var trs = etmjs.uia.createTransfer(currency, amount, recipientId,'',password, secondPassword)
+  return JSON.stringify({
+    "transaction": trs
+  })
+}
+
 //第四步 向dapp（侧链充值代币），只有向dapp充值了的代币，才能使用  0.1 ETM
 function chargeIntoDapp() {
   /**充值到侧链**/
@@ -88,9 +104,13 @@ function chargeIntoDapp() {
 //第五步 dapp内部转币
 //curl -H "Content-Type: application/json" -H "magic:20190130" -H "version:''" -k -X PUT -d '{"transaction":`+JSON.stringify(trs7) + `}' 'http://39.98.65.187:4096/api/dapps/2a2969e7a5d9e1a4dbd03887ed335313d1271b1b9ea46436bd754894f521ad6b/transactions/signed' && echo
 function dappInnerTransfer() {
-  let fee = String(0.1*100000000);
+  let fee = String(0.1 * 100000000);
   let type = 3;
-  let options = {fee: fee, type: type, args: [issuerName + '.' + assertName, "100000000", "APeskjFa4KRR3oHHP7wqFP8tpQxiTrDD9a"]};
+  let options = {
+    fee: fee,
+    type: type,
+    args: [issuerName + '.' + assertName, "100000000", "APeskjFa4KRR3oHHP7wqFP8tpQxiTrDD9a"]
+  };
   let trs = etmjs.dapp.createInnerTransaction(options, password);
   return JSON.stringify({
     "transaction": trs
@@ -100,10 +120,10 @@ function dappInnerTransfer() {
 //转ETM
 function transferETM() {
 
-  let targetAddress = "APeskjFa4KRR3oHHP7wqFP8tpQxiTrDD9a";
-  let amount = 100*100000000;
-  let password1 = 'race forget pause shoe trick first abuse insane hope budget river enough';
-  let secondPassword  = '';
+  let targetAddress = "A9mhydu4PJd3KnSbi1p6vwuoBMGcHc4xjr";
+  let amount = 100 * 100000000;
+  let password1 = 'foot profit decorate orient quit goose upon curve coast warm income manual';
+  let secondPassword = '';
   let message = ''; // 转账备注
 
   // 其中password是在用户登录的时候记录下来的，secondPassword需要每次让用户输入
@@ -120,7 +140,6 @@ function transferETM() {
 // }).catch(err => {
 //   console.error(err);
 // })
-
 
 
 //请分别注释各个步骤，然后依次执行
@@ -143,6 +162,14 @@ function transferETM() {
 //只有在第二步执行完成后并且等待区块确认了，才能执行第三步
 //第三步 发行代币
 // axios.post(url, issueAssert()).then(res => {
+//   console.log(res);
+// }).catch(err => {
+//   console.error(err);
+// })
+
+//只有在第三步执行完成后并且等待区块确认了，才能执行第三步
+// 转账
+// axios.post(url, transferAsset()).then(res => {
 //   console.log(res);
 // }).catch(err => {
 //   console.error(err);
