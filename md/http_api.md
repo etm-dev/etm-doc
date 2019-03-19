@@ -1,6 +1,6 @@
-# 远程接口	
+# 远程接口
 
-开发DApp应该分为智能合约开发、前端界面开发。本小节主要讲述了前端界面如何调用合约接口，重点关注[5.自定义合约接口调用](#5自定义合约接口调用)，因为大家的dapp功能各异，只有学习到了如何调用自定义的接口，大家调用起合约来才能得心应手。
+开发DApp应该分为智能合约开发、前端界面开发。本小节主要讲述了前端界面如何调用合约接口，重点关注[11.自定义合约接口调用](#11自定义合约接口调用)，因为大家的dapp功能各异，只有学习到了如何调用自定义的接口，大家调用起合约来才能得心应手。
 
 **构建请求过程：**   
 1. 构造请求数据，用户数据按照entanmo提供的接口规则，通过程序生成签名，生成请求数据集合；   
@@ -101,6 +101,9 @@
 			* [10.12.4 资产发行](#10124-资产发行)
 			* [10.12.5 资产转账](#10125-资产转账)
 			* [10.12.6 更新黑白名单](#10126-更新黑白名单)
+	* [11.自定义合约接口调用](#11自定义合约接口调用)
+		* [11.1 获取信息](#111-获取信息)
+		* [11.2 修改信息](#112-修改信息)
 
 
 ### 1.账户系统
@@ -119,7 +122,7 @@
 | ------------- |:-------------:| :-------------:|:-------------:|
 | publicKey      | String| Y|账户公钥|
 
-	
+
 返回参数说明:   
 
 | 参数        | 类型           |说明|
@@ -128,8 +131,8 @@
 | account      | json      | 账户信息|
 
 请求示例：
-	
-	
+
+
 	//安全登录  推荐
 	function safeLogin() {
 	  let publicKey = etmjs.crypto.getKeys(secret).publicKey; //根据密码生成公钥
@@ -143,11 +146,11 @@
 	  console.error(err);
 	})
 
-JSON返回示例： 
+JSON返回示例：
 
 	{ 	
 		success: true,
-     	account:{	
+     	account:{
       		address: 'A9mhydu4PJd3KnSbi1p6vwuoBMGcHc4xjr',
         	unconfirmedBalance: 9996006130000000,
         	balance: 9996006130000000,
@@ -157,18 +160,18 @@ JSON返回示例：
         	secondPublicKey: '',
         	multisignatures: [],
         	u_multisignatures: [],
-        	lockHeight: 0 
+        	lockHeight: 0
     	}
     	latestBlock: { height: 52372, timestamp: 11457690 },
-     	version: { version: '1.0.0', build: 'development', net: 'localnet' } 
+     	version: { version: '1.0.0', build: 'development', net: 'localnet' }
     }
 
 
 #### 1.2 不加密直接登录
-接口地址：/api/accounts/open/	
+接口地址：/api/accounts/open/
 请求方式：POST
 支持格式：JSON
-接口备注：将密码传入到server端，根据生成的地址去查询账户信息。不推荐在公网坏境使用！	
+接口备注：将密码传入到server端，根据生成的地址去查询账户信息。不推荐在公网坏境使用！
 请求参数说明：
 
 
@@ -200,10 +203,10 @@ JSON返回示例：
 
 JSON返回示例：
 
-	{ 
+	{
 		success: true,
      	account:
-      	{ 
+      	{
       		address: 'A9mhydu4PJd3KnSbi1p6vwuoBMGcHc4xjr',
         	unconfirmedBalance: 9996006130000000,
         	balance: 9996006130000000,
@@ -213,8 +216,8 @@ JSON返回示例：
         	secondPublicKey: '',
         	multisignatures: [],
         	u_multisignatures: [],
-        	lockHeight: 0 
-      	} 
+        	lockHeight: 0
+      	}
    	}
 
 #### 1.3 根据地址获取账户信息
@@ -236,13 +239,13 @@ JSON返回示例：
 | latestBlock | json  |该节点最新的区块信息    |   
 |version| json  |版本相关信息 |   
 
-请求示例： 
-	
+请求示例：
+
 	//get请求
 	curl -k -X GET http://etm.red:8096/api/accounts?address=A66taz8N3f67dzSULHSUunfPx82J25BirZ
 
 JSON返回示例：  
-	
+
 	{
 		"success":true,
 		"account":
@@ -288,13 +291,13 @@ JSON返回示例：
 | balance | Integer  |账户余额 |   
 | unconfirmedBalance | Integer  |未确认和已确认的余额之和，该值大于等于balance    |    
 
-请求示例： 
-	
+请求示例：
+
 	//get请求
 	curl -k -X GET http://etm.red:8096/api/accounts/getBalance?address=AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX
 
 JSON返回示例：  
-	
+
 	{
 		"success":true,
 		"balance":911900000000,
@@ -306,7 +309,7 @@ JSON返回示例：
 接口地址：/api/accounts/getPublickey   
 请求方式：GET   
 支持格式：urlencoded   
-请求说明：只有给别人转过账，db中才会存取公钥，否则是查不到的。 
+请求说明：只有给别人转过账，db中才会存取公钥，否则是查不到的。
 请求参数说明:   
 
 | 参数        | 类型           |必填|  说明 |
@@ -319,20 +322,20 @@ JSON返回示例：
 |------ |-----  |----              |   
 |success|boolean  |是否成功获得response数据      |   
 | publicKey | String  |公钥 |   
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET http://etm.red:8096/api/accounts/getPublickey?address=AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX
 
 JSON返回示例：  
-	
+
 	{
 		"success":true,
 		"publicKey":"813a4934192334fdd55f966f25975757b3bc2b866552fa58687e7f8420190961"
 	}
-	
+
 
 #### 1.6 生成公钥
 接口地址：/api/accounts/generatePublickey   
@@ -350,20 +353,20 @@ JSON返回示例：
 |------ |-----  |----              |   
 |success|boolean  |是否成功获得response数据      |   
 | publicKey | String  |公钥 |   
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//POST请求
 	curl -k -H "Content-Type: application/json" -X POST -d '{"secret":"pepper sleep youth blast vivid circle cross impact zebra neck salmon fee"}' 'http://etm.red:8096/api/accounts/generatePublickey'
 
 JSON返回示例：  
-	
+
 	{
 		"success":true,
 		"publicKey":"813a4934192334fdd55f966f25975757b3bc2b866552fa58687e7f8420190961"
 	}
-	
+
 
 #### 1.7 根据地址获取其投票列表
 接口地址：/api/accounts/delegates   
@@ -382,15 +385,15 @@ JSON返回示例：
 |------ |-----  |----              |   
 |success|boolean  |是否成功获得response数据      |   
 | delegates | array  |已投票的受托人详情数组|   
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET http://etm.red:8096/api/accounts/delegates?address=AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX
 
 JSON返回示例：  
-	
+
 	{
 		"success":true,
 		"delegates":[
@@ -407,7 +410,7 @@ JSON返回示例：
 			}
 		]
 	}
-	
+
 #### 1.8 获取受托人手续费
 接口地址：/api/accounts/delegates/fee   
 请求方式：GET   
@@ -417,10 +420,10 @@ JSON返回示例：
 
 | 参数        | 类型           |必填|  说明 |
 | ------------- |:-------------:| :-------------:|:-------------:|
-| secret      | String| Y|账户密钥| 
-| publicKey      | String| N|账户公钥| 
-| secondSecret      | String| N|账户二级密码| 
-| delegates      | Array | Y|受托人公钥数组，每个公钥前需要加上+或者-号，代表增加/取消对其的投票| 
+| secret      | String| Y|账户密钥|
+| publicKey      | String| N|账户公钥|
+| secondSecret      | String| N|账户二级密码|
+| delegates      | Array | Y|受托人公钥数组，每个公钥前需要加上+或者-号，代表增加/取消对其的投票|
 
 返回参数说明：   
 
@@ -428,26 +431,26 @@ JSON返回示例：
 |------ |-----  |----              |   
 |success|boolean  |是否成功获得response数据      |   
 | transaction | json  |投票交易详情|   
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET http://etm.red:8096/api/accounts/delegates/fee
 
 JSON返回示例：  
-	
+
 	{
 		"success":true,
 		"fee":10000000
 	}
-	
-	
+
+
 #### 1.9 给受托人投票
 接口地址：/api/accounts/delegates   
 请求方式：PUT    
 支持格式：JSON    
-    
+
 
 返回参数说明：   
 
@@ -455,15 +458,15 @@ JSON返回示例：
 |------ |-----  |----              |   
 |success|boolean  |是否成功获得response数据      |   
 | fee | Integer  |手续费|   
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//put请求
 	curl -k -H "Content-Type: application/json" -X PUT -d '{"secret":"pepper sleep youth blast vivid circle cross impact zebra neck salmon fee","publicKey":"813a4934192334fdd55f966f25975757b3bc2b866552fa58687e7f8420190961","delegates":["+ae28cc3069f4291756168e602a11e5b5d13e546050e3c1d9a09c0311f53a159c"]}' 'http://etm.red:8096/api/accounts/delegates'   
 
 JSON返回示例：  
-	
+
 	//TODO  这里请求有问题
 	{"success":false,"error":"Number of votes  (2 > 1)."}
 
@@ -473,7 +476,7 @@ JSON返回示例：
 接口地址：/api/accounts/new      
 请求方式：GET       
 支持格式：urlencoded    
-    
+
 
 返回参数说明：   
 
@@ -484,15 +487,15 @@ JSON返回示例：
 | publicKey | String  |账户公钥|
 | privateKey | String  |私钥|
 | address | String  |账户地址|   
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/accounts/new'  
 
 JSON返回示例：  
-	
+
 	{
 		"success":true,
 		"secret":"snap proof ozone exact write waste scrap account lounge manual next across",
@@ -501,7 +504,7 @@ JSON返回示例：
 		"address":"APAJi5oU5zffU3y5JDufWiKGyMskrdVAT7"
 	}
 
-	
+
 #### 1.11 获取账户排行榜前100名
 接口地址：/api/accounts/top     
 请求方式：GET       
@@ -511,8 +514,8 @@ JSON返回示例：
 
 | 参数        | 类型           |必填|  说明 |
 | ------------- |:-------------:| :-------------:|:-------------:|
-| limit      | Integer| N|限制结果集个数，最小值：0,最大值：100| 
-| offset      | Integer | N|偏移量，最小值0| 
+| limit      | Integer| N|限制结果集个数，最小值：0,最大值：100|
+| offset      | Integer | N|偏移量，最小值0|
 
 
 
@@ -523,16 +526,16 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | accounts | json  |账户信息元组，每个元素包含地址、余额、公钥|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	//返回前5名账户信息
 	curl -k -X GET 'http://etm.red:8096/api/accounts/top?limit=5&offset=0'    
 
 JSON返回示例：  
-	
+
 	{
 	"success":true,
 	"accounts":[
@@ -577,16 +580,16 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | count | Integer  |当前链上账户总个数|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	//返回前5名账户信息
 	curl -k -X GET 'http://etm.red:8096/api/accounts/count'    
 
 JSON返回示例：  
-	
+
 	{
 		"success":true,
 		"count":209
@@ -601,45 +604,45 @@ JSON返回示例：
 支持格式：urlencode   
 接口说明：如果请求不加参数则会获取全网所有交易   
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | and | Integer | N   |取值范围0和1，默认值0。select查询时下面这些条件都是or的关系，and=1时select是and的关系    |   
-| blockId | String | N   |区块id    | 
-| limit | Integer | N   |限制结果集个数，最小值：0,最大值：100    | 
-| type | Integer | N   |交易类型,0:普通转账，1:设置二级密码，2:注册受托人，3:投票，4:多重签名，5:DAPP，6:IN_TRANSFER，7:OUT_TRANSFER   | 
-| orderBy | String | N   |根据表中字段排序，senderPublicKey:desc    | 
-| offset | Integer | N   |偏移量，最小值0    | 
-| senderPublicKey | String | N   |发送者公钥    | 
-| ownerPublicKey | String | N   |拥有者公钥    | 
-| ownerAddress | String | N   | 拥有者地址   | 
-| recipientId | String | N   |接收者地址,最小长度：1    | 
-| senderId | String | N   |发送者地址    | 
-| amount | Integer | N   |金额    | 
-| fee | Integer | N   |手续费   | 
-| uia | Integer | N   |是否uia，0：不是，1：是   | 
+| blockId | String | N   |区块id    |
+| limit | Integer | N   |限制结果集个数，最小值：0,最大值：100    |
+| type | Integer | N   |交易类型,0:普通转账，1:设置二级密码，2:注册受托人，3:投票，4:多重签名，5:DAPP，6:IN_TRANSFER，7:OUT_TRANSFER   |
+| orderBy | String | N   |根据表中字段排序，senderPublicKey:desc    |
+| offset | Integer | N   |偏移量，最小值0    |
+| senderPublicKey | String | N   |发送者公钥    |
+| ownerPublicKey | String | N   |拥有者公钥    |
+| ownerAddress | String | N   | 拥有者地址   |
+| recipientId | String | N   |接收者地址,最小长度：1    |
+| senderId | String | N   |发送者地址    |
+| amount | Integer | N   |金额    |
+| fee | Integer | N   |手续费   |
+| uia | Integer | N   |是否uia，0：不是，1：是   |
 | currency | String | N   |资产名    |   
-  
+
 返回参数说明：   
 
 |名称	|类型   |说明              |   
 |------ |-----  |----              |   
 |success|boolean  |是否成功获得response数据      |   
 | transactions |array  |多个交易详情json构成的列表 |   
-| count |int  |获取到的交易总个数 | 
-  
-  
+| count |int  |获取到的交易总个数 |
+
+
 请求示例：   
 
- 
+
 	curl -k -H "Content-Type: application/json" -X http://etm.red:8096/api/transactions?limit=2   
-  
+
 
 JSON返回示例：   
-   
+
 	{
 		"success":true,
-		"transactions":	
+		"transactions":
 			[{
 				"id":"f0af7052a760edb104c118d1f6950f597f50a314b872508d9bc7e16f7062219c",
 				"height":1,
@@ -678,7 +681,7 @@ JSON返回示例：
 				"asset":{}
 			}],
 		"count":468
-	} 
+	}
 
 
 #### 2.2 根据交易id查看交易详情   
@@ -686,7 +689,7 @@ JSON返回示例：
 请求方式：GET       
 支持格式：urlencoded    
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | Id | String | Y   |未确认交易id   |  
@@ -699,15 +702,15 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | transactions | json  |未确认交易详情|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/transactions/unconfirmed/get?id=0070e3ff36b3a77ced5e3b715ddc89bb1ba20199a3267db8a5c99aaac9880556'    
 
 JSON返回示例：  
-	
+
 	{
 		"success":true,
 		"transaction":
@@ -737,7 +740,7 @@ JSON返回示例：
 请求方式：GET       
 支持格式：urlencoded    
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | Id | String | Y   |未确认交易id   |  
@@ -750,15 +753,15 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | transactions | json  |未确认交易详情|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/transactions/unconfirmed/get?id=0070e3ff36b3a77ced5e3b715ddc89bb1ba20199a3267db8a5c99aaac9880556'    
 
 JSON返回示例：  
-	
+
 	{
 		"success":true,
 		"transaction":
@@ -782,14 +785,14 @@ JSON返回示例：
 				"asset":{}
 			}
 	}
-	
+
 #### 2.4 获取全网未确认的交易详情  
 接口地址：/api/transactions/unconfirmed    
 请求方式：GET       
 支持格式：urlencoded  
 接口说明：如果不加参数，则会获取全网所有未确认交易     
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | senderPublicKey | String | N   |发送者公钥  |  
@@ -803,27 +806,27 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | transactions | array  |未确认交易列表|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/transactions/unconfirmed'    
 
 JSON返回示例：  
 
-	//全网没有未确认的交易	
+	//全网没有未确认的交易
 	{
 		"success":true,
 		"transactions":[]
 	}
-	
+
 #### 2.5 创建交易并广播  
 接口地址：/api/transactions    
 请求方式：PUT       
 支持格式：JSON      
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | secret | String | Y   |账户密码  |  
@@ -841,10 +844,10 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | transactionId | String  |交易id|
 
-  
 
-请求示例([参考](../utils/transactions.js))： 
-	
+
+请求示例([参考](../utils/transactions.js))：
+
 	//此方式不安全，可以查考./issueAssert.js中transferETM()
 	function createTransaction() {
 	  return JSON.stringify({
@@ -853,7 +856,7 @@ JSON返回示例：
 	    'recipientId':'A66taz8N3f67dzSULHSUunfPx82J25BirZ',
 	  });
 	}
-	
+
 	axios.put(url, createTransaction()).then(res => {
 	  console.log(res);
 	}).catch(err => {
@@ -862,11 +865,11 @@ JSON返回示例：
 
 JSON返回示例：  
 
-	//请求成功并返回交易id	
-	{ 
+	//请求成功并返回交易id
+	{
 		success: true,
-		transactionId: '00e7849414cf86fb922a239b38d82022e37cd4caa59bb6f3c4c6d5abbcec9794' 
-	} 
+		transactionId: '00e7849414cf86fb922a239b38d82022e37cd4caa59bb6f3c4c6d5abbcec9794'
+	}
 	//使用钱包查询接受地址账户余额
 	普通转账	A9mhydu4PJd3KnSbi1p6vwuoBMGcHc4xjr	A66taz8N3f67dzSULHSUunfPx82J25BirZ	2019-02-25 14:40:02		555
 
@@ -877,7 +880,7 @@ JSON返回示例：
 请求方式：GET       
 支持格式：urlencoded      
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | id | String | 参数3选1   |区块id  |  
@@ -892,10 +895,10 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | block | json  |区块详情|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/blocks/get?height=1'    
 
@@ -923,14 +926,14 @@ JSON返回示例：
 			"totalForged":0
 		}
 	}
-	
+
 #### 3.2 获取区块数据  
 接口地址：/api/blocks     
 请求方式：GET       
 支持格式：urlencoded   
 接口说明：不加参数则获取全网区块详情        
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | limit | Integer | N   | 限制结果集个数，最小值：0,最大值：100  |
@@ -952,10 +955,10 @@ JSON返回示例：
 | blocks | array  |由区块详情json串构成的数组|
 | count | Integer  |区块高度|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/blocks?limit=2&offset=0&orderBy=height:desc'    
 
@@ -1000,7 +1003,7 @@ JSON返回示例：
 		}],
 		"count": 256220
 	}
-	
+
 #### 3.3 获取区块链高度  
 接口地址：/api/blocks/getHeight     
 请求方式：GET       
@@ -1014,10 +1017,10 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | height | Integer  |区块高度|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/blocks/getheight'    
 
@@ -1027,7 +1030,7 @@ JSON返回示例：
 		"success": true,
 		"height": 256414
 	}
-	
+
 #### 3.4 获取普通转账手续费  
 接口地址：/api/blocks/getFee     
 请求方式：GET       
@@ -1041,10 +1044,10 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | fee | Integer  |交易手续费|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/blocks/getfee'    
 
@@ -1068,10 +1071,10 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | milestone | Integer  |里程碑|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/blocks/getMilestone'    
 
@@ -1082,7 +1085,7 @@ JSON返回示例：
 		"milestone": 0
 	}
 
-#### 3.6 查看单个区块奖励 
+#### 3.6 查看单个区块奖励
 接口地址：/api/blocks/getReward     
 请求方式：GET       
 支持格式：urlencoded      
@@ -1095,10 +1098,10 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | reward | Integer  |区块奖励，包含受托人奖励和手续费|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/blocks/getReward'    
 
@@ -1110,7 +1113,7 @@ JSON返回示例：
 	}
 
 
-#### 3.7 获取代币当前供应值 
+#### 3.7 获取代币当前供应值
 接口地址：/api/blocks/getSupply     
 请求方式：GET       
 支持格式：urlencoded      
@@ -1123,10 +1126,10 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | supply | Integer  |全网代币数|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/blocks/getSupply'    
 
@@ -1138,7 +1141,7 @@ JSON返回示例：
 	}
 
 
-#### 3.8 区块链状态 
+#### 3.8 区块链状态
 接口地址：/api/blocks/getStatus     
 请求方式：GET       
 支持格式：urlencoded      
@@ -1155,10 +1158,10 @@ JSON返回示例：
 | reward | Integer  |奖励|
 | supply | Integer  |全网代币数|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/blocks/getStatus'    
 
@@ -1178,7 +1181,7 @@ JSON返回示例：
 请求方式：GET       
 支持格式：urlencoded      
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | id | String | 2选1   | 区块id |
@@ -1191,10 +1194,10 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | block | json  |区块数据|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/blocks/full?height=1'    
 
@@ -1242,10 +1245,10 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | count | Integer  |受托人总个数|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/delegates/count'    
 
@@ -1256,13 +1259,13 @@ JSON返回示例：
 		"count":101
 	}
 
-	
+
 #### 4.2 根据受托人公钥查看哪些人为其投了票  
 接口地址：/api/delegates/voters     
 请求方式：GET       
 支持格式：urlencoded      
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | publicKey | String | Y   | 受托人公钥 |
@@ -1274,10 +1277,10 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | accounts | array  |账户json串组成的数组|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/delegates/voters?publicKey=a08dc0d7b170a0e12caff0a7faaef952741e65f3585905a5847e4d877d650f07'    
 
@@ -1306,7 +1309,7 @@ JSON返回示例：
 支持格式：urlencoded   
 接口说明：通过公钥或者用户名获取受托人信息   
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | publicKey | String | 2选1   | 受托人公钥 |
@@ -1319,16 +1322,16 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | delegate | json  |委托人详情|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/delegates/get?publicKey=a08dc0d7b170a0e12caff0a7faaef952741e65f3585905a5847e4d877d650f07'  
 	curl -k -X GET 'http://etm.red:8096/api/delegates/get?username=etm_002'    
 
 JSON返回示例：  
-	
+
 	//返回结果是一致的
 	{
 		"success": true,
@@ -1356,7 +1359,7 @@ JSON返回示例：
 支持格式：urlencoded   
 接口说明：如果不加参数则会返回全网受托人列表   
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | address | String | N   | 受托人地址 |
@@ -1371,16 +1374,16 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | delegates | array  |受托人详情列表|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	//按照得票率降序排序，取出前2名   
 	curl -k -X GET 'http://etm.red:8096/api/delegates?orderby=approval:desc&limit=2'   
 
 JSON返回示例：  
-	
+
 	{
 		"success": true,
 		"delegates": [{
@@ -1422,7 +1425,7 @@ JSON返回示例：
 请求方式：GET       
 支持格式：urlencoded    
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | publicKey | String | Y   | 受托人公钥 |
@@ -1434,15 +1437,15 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | fee | Integer  |转账费|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/delegates/fee?publicKey= a08dc0d7b170a0e12caff0a7faaef952741e65f3585905a5847e4d877d650f07'   
 
 JSON返回示例：  
-	
+
 	{
 		"success":true,
 		"fee":10000000
@@ -1453,7 +1456,7 @@ JSON返回示例：
 请求方式：GET       
 支持格式：urlencoded    
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | generatorPublicKey | String | Y   | 区块生成者公钥 |
@@ -1467,28 +1470,28 @@ JSON返回示例：
 | rewards | Integer  |已获得的奖励|
 | forged | Integer  |出块获得的总奖励|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/delegates/forging/getForgedByAccount?generatorPublicKey=a08dc0d7b170a0e12caff0a7faaef952741e65f3585905a5847e4d877d650f07'   
 
 JSON返回示例：  
-	
+
 	{
 		"success": true,
 		"fees": 897425722,
 		"rewards": 1546800000000,
 		"forged": 1547697425722
 	}
-	
+
 #### 4.7 注册受托人  
 接口地址：/api/delegates     
 请求方式：PUT       
 支持格式：JSON    
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | secret | String | Y   | 账户密码 |
@@ -1503,10 +1506,10 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | transaction | json  |注册受托人交易详情|
 
-  
 
-请求示例([参考](../utils/delegate.js))： 
-	
+
+请求示例([参考](../utils/delegate.js))：
+
 	//注册受托人
 	function registerDelegate() {
 	  return JSON.stringify({
@@ -1514,7 +1517,7 @@ JSON返回示例：
 	    'username':'delegate_001'
 	  });
 	}
-	
+
 	axios.put(url, registerDelegate()).then(res => {
 	  console.log(res);
 	}).catch(err => {
@@ -1522,7 +1525,7 @@ JSON返回示例：
 	})   
 
 JSON返回示例：  
-	
+
 	{
 		success: true,
 		transaction: {
@@ -1548,7 +1551,7 @@ JSON返回示例：
 支持格式：JSON    
 请求说明：url必须是受托人所在服务器   
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | secret | String | Y   | 账户密码 |
@@ -1561,28 +1564,28 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | address | String  |受托人地址|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//POST请求
 	//请在节点服务器上运行此代码  
 	curl -k -H "Content-Type: application/json" -X POST -d '{"secret":"race forget pause shoe trick first abuse insane hope budget river enough"}' 'http://localhost:8096/api/delegates/forging/enable'   
 
 JSON返回示例：  
-	
+
 	{
 		"success": true,
 		"address": "A9mhydu4PJd3KnSbi1p6vwuoBMGcHc4xjr"
 	}
-	
+
 #### 4.9 受托人关闭出块  
 接口地址：/api/delegates/forging/disable     
 请求方式：POST       
 支持格式：JSON    
 请求说明：url必须是受托人所在服务器    
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | secret | String | Y   | 账户密码 |
@@ -1595,27 +1598,27 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | address | String  |受托人地址|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//post请求   
 	curl -k -H "Content-Type: application/json" -X POST -d '{"secret":"race forget pause shoe trick first abuse insane hope budget river enough"}' 'http://localhost:8096/api/delegates/forging/disable'   
 
 JSON返回示例：  
-	
+
 	{
 		"success": true,
 		"address": "A9mhydu4PJd3KnSbi1p6vwuoBMGcHc4xjr"
 	}
-	
-	
+
+
 #### 4.10 受托人出块状态查看  
 接口地址：/api/delegates/forging/status     
 请求方式：GET       
 支持格式：urlencoded    
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | publicKey | String | Y   | 受托人公钥 |
@@ -1627,15 +1630,15 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | fee | Integer  |转账费|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/delegates/forging/status?publicKey=a08dc0d7b170a0e12caff0a7faaef952741e65f3585905a5847e4d877d650f07'   
 
 JSON返回示例：  
-	
+
 	{
 		"success":true,
 		"enabled":true
@@ -1648,7 +1651,7 @@ JSON返回示例：
 支持格式：urlencoded   
 接口说明：展示节点只是和本机有连接的节点，并不是全网所有的节点    
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | state | Integer | N   | 节点状态,0: ,1:,2:,3: //TODO |
@@ -1667,22 +1670,22 @@ JSON返回示例：
 | peers | array  |节点信息json构成的数组|
 | totalCount | Integer  |当前正在运行的节点个数|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/peers?limit=1'   
 
 JSON返回示例：  
-	
+
 	//由于是单节点运行，所以没有peers
 	{
 		"success": true,
 		"count": 0,
 		"peers": []
 	}
-	
+
 #### 5.2 获取本节点版本号等信息  
 接口地址：/api/peers/version     
 请求方式：GET       
@@ -1697,28 +1700,28 @@ JSON返回示例：
 | build | timestamp  |构建时间|
 | net | String  |主链或者测试链|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/peers/version'   
 
 JSON返回示例：  
-	
+
 	{
 		"success": true,
 		"version": "1.0.0",
 		"build": "development",
 		"net": "localnet"
 	}
-	
+
 #### 5.3 获取指定ip节点信息  
 接口地址：/api/peers/get     
 请求方式：GET       
 支持格式：urlencoded    
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | ip | String | Y   | 待查询节点ip |
@@ -1731,15 +1734,15 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | peer | json  |节点数据返回|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/peers/get?ip=47.96.68.153&port=8096'   
 
 JSON返回示例：  
-	
+
 	{
 		"success":true
 	}
@@ -1759,15 +1762,15 @@ JSON返回示例：
 | loaded | boolean  |是否加载|
 | blocksCount | Integer  |//TODO|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/loader/status'   
 
 JSON返回示例：  
-	
+
 	{
 		"success": true,
 		"loaded": true,
@@ -1786,15 +1789,15 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | height | Integer  |区块高度|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/loader/status/sync'   
 
 JSON返回示例：  
-	
+
 	{
 		"success": true,
 		"syncing": false,
@@ -1808,7 +1811,7 @@ JSON返回示例：
 请求方式：PUT       
 支持格式：JSON       
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | secret | String | Y   | 账户密码 |
@@ -1824,17 +1827,17 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | transaction | json  |设置二级密码产生的交易详情|
 
-  
 
-请求示例([参考](../utils/signatures.js))： 
-	
+
+请求示例([参考](../utils/signatures.js))：
+
 	//主链
 	let url = 'http://etm.red:8096/api/signatures'
 	//侧链
-	
+
 	//设置二级密码的账户
 	let secret = 'found razor spring fish surprise liar else argue tongue crouch fatal lucky';
-	
+
 	//设置二级密码
 	function setSignature() {
 	  return JSON.stringify({
@@ -1842,15 +1845,15 @@ JSON返回示例：
 	    'secondSecret':'test001'
 	  });
 	}
-	
+
 	axios.put(url, setSignature()).then(res => {
 	  console.log(res);
 	}).catch(err => {
 	  console.error(err);
-	}) 
+	})
 
 JSON返回示例：  
-	
+
 	{
 		success: true,
 		transaction: {
@@ -1880,15 +1883,15 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | fee | Integer  |手续费|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/signatures/fee'   
 
 JSON返回示例：  
-	
+
 	{
 		"success": true,
 		"fee": 500000000 //5ETM
@@ -1902,7 +1905,7 @@ JSON返回示例：
 支持格式：JSON
 接口说明：返回结果只是生成交易id，还需要其他人签名后该账户才能成功设置成多重签名账户。注册多重签名账户后任意一笔转账都需要多人签名，签名最少个数为min的值（含交易发起人自身）      
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | secret | String | Y   | 账户密码 |
@@ -1919,10 +1922,10 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | transactionId | String  |多重签名交易的id|
 
-  
 
-请求示例([参考](../utils/multisignatures.js))： 
-	
+
+请求示例([参考](../utils/multisignatures.js))：
+
 	//第一步 设置多重签名密码
 	function setMultisignature() {
 	  return JSON.stringify({
@@ -1932,8 +1935,8 @@ JSON返回示例：
 	    'keysgroup':['+813a4934192334fdd55f966f25975757b3bc2b866552fa58687e7f8420190961']
 	  });
 	}
-	
-	
+
+
 	axios.put(url, setMultisignature()).then(res => {
 	  console.log(res);
 	}).catch(err => {
@@ -1941,18 +1944,18 @@ JSON返回示例：
 	})   
 
 JSON返回示例：  
-	
-	{ 
+
+	{
 		success: true,
 		//返回结果只是生成交易id，还需要其他人签名后该账户才能成功设置成多重签名账户
-		transactionId: '355ce9527e074e661b4b7cbb01496d5574693c9ead25b904484e0c83564c5646' 
+		transactionId: '355ce9527e074e661b4b7cbb01496d5574693c9ead25b904484e0c83564c5646'
 	   }
 #### 8.2 非交易发起人对交易进行多重签名
 接口地址：/api/multisignatures/sign     
 请求方式：POST       
 支持格式：JSON      
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | secret | String | Y   | 账户密码|
@@ -1967,10 +1970,10 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | transactionId | String  |多重签名交易id|
 
-  
 
-请求示例（[参考](../utils/multisignatures.js)）： 
-	
+
+请求示例（[参考](../utils/multisignatures.js)）：
+
 	//第二步  非交易发起人对设置多重签名交易进行签名
 	function signatureMu() {
 	  return JSON.stringify({
@@ -1980,18 +1983,18 @@ JSON返回示例：
 	}  
 
 JSON返回示例：  
-	
-	{ 
+
+	{
 		success: false,
   		error: 'Transaction not found'
   	}
-  	
+
 #### 8.3 根据公钥获取挂起的多重签名交易详情
 接口地址：/api/multisignatures/pending     
 请求方式：GET       
 支持格式：urlencoded    
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | publicKey | String | Y  | 公钥 |
@@ -2003,27 +2006,27 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | transactions | array  |交易json组成的数组|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/multisignatures/pending?publicKey=911e58e289cf237d08b71e296ba766b1c6fcf9816a415ff38846043135476aaa'   
 
 JSON返回示例：  
-	
+
 	//TODO此接口有问题
 	{
 		"success":true,
 		"transactions":[]
 	}
-	
+
 #### 8.4 获取多重签名账户信息
 接口地址：/api/multisignatures/accounts     
 请求方式：GET       
 支持格式：urlencoded     
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | publicKey | String | Y  | 公钥 |
@@ -2035,15 +2038,15 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | accounts | array  |多重签名账户详情|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get请求
 	curl -k -X GET 'http://etm.red:8096/api/multisignatures/accounts?publicKey=911e58e289cf237d08b71e296ba766b1c6fcf9816a415ff38846043135476aaa'   
 
 JSON返回示例：  
-	
+
 	//TODO 接口有问题
 	{
 		"success":false,
@@ -2053,7 +2056,7 @@ JSON返回示例：
 ### 9.点对点传输
 #### 9.1 说明
 /peer相关的api，在请求时都需要设置一个header
-	
+
 	axios.defaults.headers = {
 	  'Content-Type': 'application/json',
 	  'magic': 'personal',//测试链  根据链参数填写
@@ -2069,7 +2072,7 @@ entanmo系统的所有写操作都是通过发起一个交易来完成的。 交
 请求方式：POST       
 支持格式：JSON       
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | transaction | json | Y  | etm-js.signature.createSignature生成的交易数据 |
@@ -2081,10 +2084,10 @@ entanmo系统的所有写操作都是通过发起一个交易来完成的。 交
 |success|boolean  |是否成功获得response数据      |  
 | transactionId |String  |交易id      |   
 
-  
 
-请求示例（[参考](../utils/normal_transactions.js)）： 
-	
+
+请求示例（[参考](../utils/normal_transactions.js)）：
+
 	//9.2.1 设置二级密码
 	function setSecondPassword() {
 	  let secondPassword = 'test001';
@@ -2095,10 +2098,10 @@ entanmo系统的所有写操作都是通过发起一个交易来完成的。 交
 	}   
 
 JSON返回示例：  
-	
-	{ 
+
+	{
 		success: true,
-		transactionId: '9cb72093de3b2c9fd3c87d6131f71e948c852a6c43c80611e56a9766087da696' 
+		transactionId: '9cb72093de3b2c9fd3c87d6131f71e948c852a6c43c80611e56a9766087da696'
     }
 
 ##### 9.2.2 转账
@@ -2106,7 +2109,7 @@ JSON返回示例：
 请求方式：POST       
 支持格式：JSON         
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | transaction | json | Y  | etm-js.transaction.createTransaction生成的交易数据 |
@@ -2118,10 +2121,10 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | transactionId | String  |交易id |
 
-  
 
-请求示例（[参考](../utils/normal_transactions.js)）： 
-	
+
+请求示例（[参考](../utils/normal_transactions.js)）：
+
 	//9.2.2 转账 （转ETM）
 	function transferETM() {
 	  let targetAddress = "APeskjFa4KRR3oHHP7wqFP8tpQxiTrDD9a";
@@ -2129,21 +2132,21 @@ JSON返回示例：
 	  let password1 = 'race forget pause shoe trick first abuse insane hope budget river enough';
 	  let secondPassword  = '';
 	  let message = ''; // 转账备注
-	
+
 	  // 其中password是在用户登录的时候记录下来的，secondPassword需要每次让用户输入
 	  // 可以通过user.secondPublicKey来判断用户是否有二级密码，如果没有，则不必输入，以下几个交易类型类似
 	  let transaction = etmjs.transaction.createTransaction(targetAddress, amount, message, password1, secondPassword || undefined);
-	
+
 	  return JSON.stringify({
 	    "transaction": transaction
 	  })
 	}  
 
 JSON返回示例：  
-	
-	{ 
+
+	{
 		success: true,
-		transactionId: '1e35552a2b2ea4ad3426e2482e8c117e4943d77e14a3807bd8a786d4cbf9a95e' 
+		transactionId: '1e35552a2b2ea4ad3426e2482e8c117e4943d77e14a3807bd8a786d4cbf9a95e'
 	}
 
 ##### 9.2.3 注册受托人
@@ -2151,7 +2154,7 @@ JSON返回示例：
 请求方式：POST       
 支持格式：JSON         
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | transaction | json | Y  | etm-js.delegate.createDelegate生成的交易数据|
@@ -2163,15 +2166,15 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | transactionId | String  |交易id |
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//9.2.3 注册受托人
 	function registerDelegate() {
 	  let secondPassword  = 'test001';
 	  let userName = 'test001';
-	
+
 	  let transaction = etmjs.delegate.createDelegate(userName, secret, secondPassword || undefined);
 	  return JSON.stringify({
 	    "transaction": transaction
@@ -2179,11 +2182,11 @@ JSON返回示例：
 	}  
 
 JSON返回示例：  
-	
+
 	//TODO 接口有问题
-	{ 
+	{
 		success: false,
-		error: 'Invalid transaction type/fee: 70e21df3b3a348e05cc91a9d3d2e75653925dc2ad212ba5e59a1bec1fd54c798' 
+		error: 'Invalid transaction type/fee: 70e21df3b3a348e05cc91a9d3d2e75653925dc2ad212ba5e59a1bec1fd54c798'
 	}
 
 ##### 9.2.4 投票与取消投票
@@ -2191,7 +2194,7 @@ JSON返回示例：
 请求方式：POST       
 支持格式：JSON         
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | transaction | json | Y  | etm-js.vote.createVote生成的交易数据|
@@ -2203,10 +2206,10 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | transactionId | String  |交易id |
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 
 	//9.2.4 投票与取消投票
 	function vote() {
@@ -2224,10 +2227,10 @@ JSON返回示例：
 
 JSON返回示例：  
 
-	//TODO  一次投几票？	
-	{ 
+	//TODO  一次投几票？
+	{
 		success: true,
-		transactionId: '69b52c38b63711a1a9ee117c27e3a8a775eca6bef5bd0992328fbed5b10ccbd8' 
+		transactionId: '69b52c38b63711a1a9ee117c27e3a8a775eca6bef5bd0992328fbed5b10ccbd8'
 	}
 
 ##### 9.2.5 账户锁仓
@@ -2248,7 +2251,7 @@ JSON返回示例：
 | 14 | 主链uia转账 |
 
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | transaction | json | Y  | etm-js.transaction.createLock生成的交易数据|
@@ -2260,10 +2263,10 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | transactionId | String  |交易id |
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//9.2.5 锁仓
 	function createLock() {
 	  let height = 344900; // 锁仓高度 要大于主链高度
@@ -2275,13 +2278,13 @@ JSON返回示例：
 	    "transaction": transaction
 	  })
 	}
-  
+
 
 JSON返回示例：  
-	
-	{ 
+
+	{
 		success: true,
-		transactionId: 'a9907b367c40244153a82e78343e7663e749937c7351cf4005893dfd87a46628' 
+		transactionId: 'a9907b367c40244153a82e78343e7663e749937c7351cf4005893dfd87a46628'
 	}
 
 #### 9.3 UIA相关交易
@@ -2290,7 +2293,7 @@ JSON返回示例：
 请求方式：POST       
 支持格式：JSON         
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | transaction | json | Y  | etm-js.uia.createIssuer根据发行商名字、描述、一级密码、二级密码生成的交易数据|
@@ -2302,10 +2305,10 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | transactionId | String  |交易id |
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//9.3.1 注册资产发行商  花费100 ETM
 	function registerAssertIssuer() {
 	  let password = 'found razor spring fish surprise liar else argue tongue crouch fatal lucky'
@@ -2314,13 +2317,13 @@ JSON返回示例：
 	  return JSON.stringify({
 	    transaction
 	  });
-	} 
+	}
 
 JSON返回示例：  
-	
-	{ 
+
+	{
 		success: true,
-		transactionId: '2c093b41dbae45a20095dc623359d4cb71975d441b3ca7aaf1d1b5d21cb25dbe' 
+		transactionId: '2c093b41dbae45a20095dc623359d4cb71975d441b3ca7aaf1d1b5d21cb25dbe'
 	}
 
 ##### 9.3.2 注册资产
@@ -2328,7 +2331,7 @@ JSON返回示例：
 请求方式：POST       
 支持格式：JSON       
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | transaction | json | Y  | etm-js.uia.createAsset根据资产名字、描述、上限、精度、策略、一级密码、二级密码生成的交易数据|
@@ -2340,10 +2343,10 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | transactionId | String  |交易id |
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//9.3.2 注册资产 500 ETM
 	function registerAssrt() {
 	  let password = 'found razor spring fish surprise liar else argue tongue crouch fatal lucky'
@@ -2362,20 +2365,20 @@ JSON返回示例：
 	  let allowWhitelist = 0;
 	  // 是否允许黑名单，默认不允许。0：不允许，1：允许
 	  let allowBlacklist = 0;
-	
+
 	  let secondPassword ='test001'
 	  // 构造交易数据
 	  let trs = etmjs.uia.createAsset(name, desc, maximum, precision, strategy, allowWriteoff, allowWhitelist, allowBlacklist, password, secondPassword)
 	  return JSON.stringify({
 	    "transaction": trs
 	  })
-	} 
+	}
 
 JSON返回示例：  
-	
-	 { 
+
+	 {
 	 	success: true,
-	 	transactionId: 'db46dea3f1a5c99d2b4e3186b950f1ee309c95291d4874a8b839f0d26c63d1c9' 
+	 	transactionId: 'db46dea3f1a5c99d2b4e3186b950f1ee309c95291d4874a8b839f0d26c63d1c9'
 	 }
 
 ##### 9.3.3 资产设置acl模式
@@ -2383,7 +2386,7 @@ JSON返回示例：
 请求方式：POST       
 支持格式：JSON       
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | transaction | json | Y  | etm-js.uia.createFlags根据资产名、流通状态、黑白名单模式、一级密码、二级密码生成的交易数据|
@@ -2395,10 +2398,10 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | transactionId | String  |交易id |
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//9.3.3 资产设置acl模式
 	function setAcl() {
 	  let password = 'found razor spring fish surprise liar else argue tongue crouch fatal lucky'
@@ -2409,18 +2412,18 @@ JSON返回示例：
 	  // 访问控制列表的类型，0：黑名单， 1：白名单，资产创建后默认为黑名单模式
 	  let flag = 1
 	  let trs = etmjs.uia.createFlags(currency, flagType, flag, password, secondSecret)
-	
+
 	  return JSON.stringify({
 	    "transaction": trs
 	  })
-	} 
+	}
 
 JSON返回示例：  
-	
+
 	//TODO 接口有问题
-	{ 
+	{
 		success: false,
-		error: 'Whitelist not allowed' 
+		error: 'Whitelist not allowed'
 	}
 
 ##### 9.3.4 更新访问控制列表
@@ -2428,7 +2431,7 @@ JSON返回示例：
 请求方式：POST       
 支持格式：JSON       
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | transaction | json | Y  | etm-js.uia.createAcl根据资产名字、列表操作方法、黑名单还是白名单、地址列表、一级密码、二级密码生成的交易数据|
@@ -2440,10 +2443,10 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | transactionId | String  |交易id |
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//9.3.4 更新访问控制列表
 	function updateAcl() {
 	  let password = 'found razor spring fish surprise liar else argue tongue crouch fatal lucky'
@@ -2459,22 +2462,22 @@ JSON返回示例：
 	  return JSON.stringify({
 	    "transaction": trs
 	  })
-	} 
+	}
 
 JSON返回示例：  
-	
+
 	//TODO 接口有问题
-	{ 
-		success: false, 
-		error: 'Whitelist not allowed' 
-	} 
+	{
+		success: false,
+		error: 'Whitelist not allowed'
+	}
 
 ##### 9.3.5 资产发行
 接口地址：/peer/transactions     
 请求方式：POST       
 支持格式：JSON     
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | transaction | json | Y  | etm-js.uia.createIssuer根据发行商名字、描述、一级密码、二级密码生成的交易数据|
@@ -2486,10 +2489,10 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | transactionId | String  |交易id |
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//9.3.5 资产发行  0.1 ETM
 	function issueAssert() {
 	  let password = 'found razor spring fish surprise liar else argue tongue crouch fatal lucky'
@@ -2502,13 +2505,13 @@ JSON返回示例：
 	  return JSON.stringify({
 	    "transaction": trs
 	  })
-	} 
+	}
 
 JSON返回示例：  
-	
-	{ 
+
+	{
 		success: true,
-		transactionId: '901ebff4dca989eef66265a86a96a3d34689c045ada327919b49c3a41d7e6b84' 
+		transactionId: '901ebff4dca989eef66265a86a96a3d34689c045ada327919b49c3a41d7e6b84'
 	}
 ##### 9.3.6 资产转账
 接口地址：/peer/transactions     
@@ -2516,7 +2519,7 @@ JSON返回示例：
 支持格式：JSON   
 请求说明：对比参考 [10.12.5 资产转账](#10125-资产转账)   
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | transaction | json | Y  | etm-js.uia.createTransfer根据资产名字、数量、接收者地址、一级密码、二级密码生成的交易数据|
@@ -2528,10 +2531,10 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | transactionId | String  |交易id |
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//9.3.6 发行的资产转账
 	function transferIssueAssert() {
 	  let password = 'found razor spring fish surprise liar else argue tongue crouch fatal lucky'
@@ -2545,22 +2548,22 @@ JSON返回示例：
 	  return JSON.stringify({
 	    "transaction": trs
 	  })
-	} 
+	}
 
 JSON返回示例：  
-	
+
 	//TODO 接口有问题
-	{ 
-		success: false, 
-		error: 'loadAccount : can not found Account' 
-	} 
+	{
+		success: false,
+		error: 'loadAccount : can not found Account'
+	}
 
 ##### 9.3.7 资产注销
 接口地址：/peer/transactions     
 请求方式：POST       
 支持格式：JSON       
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | transaction | json | Y  | etm-js.uia.createFlags根据资产名字、注销状态、黑白名单模式、一级密码、二级密码生成的交易数据|
@@ -2572,10 +2575,10 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | transactionId | String  |交易id |
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//9.3.7 注销资产
 	function destroyAssert() {
 	  let password = 'found razor spring fish surprise liar else argue tongue crouch fatal lucky'
@@ -2586,19 +2589,19 @@ JSON返回示例：
 	  // flag为黑、白名单模式
 	  var flag =1
 	  var trs = etmjs.uia.createFlags(currency, flagType, flag, password, secondSecret)
-	
+
 	  return JSON.stringify({
 	    "transaction": trs
 	  })
-	} 
+	}
 
 JSON返回示例：  
-	
+
 	//TODO 接口有问题
-	{ 
-		success: false, 
-		error: 'Writeoff not allowed' 
-	} 
+	{
+		success: false,
+		error: 'Writeoff not allowed'
+	}
 
 
 
@@ -2608,7 +2611,7 @@ JSON返回示例：
 请求方式：GET       
 支持格式：urlencoded       
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | limit | Integer | N  | 限制结果集个数，最小值：0,最大值：100|
@@ -2622,15 +2625,15 @@ JSON返回示例：
 | issuers | array  |查找的发行商|
 | count | integer  |发行商总个数|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get 请求
-	http://etm.red:8096/api/uia/issuers?offset=0&limit=5 
+	http://etm.red:8096/api/uia/issuers?offset=0&limit=5
 
 JSON返回示例：  
-	
+
 	{
 		"success": true,
 		"issuers": [{
@@ -2651,7 +2654,7 @@ JSON返回示例：
 请求方式：GET       
 支持格式：urlencoded       
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | name | String | Y  | 可以为发行商名称或ETM账户地址|
@@ -2663,15 +2666,15 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | issuers | array  |包含发行商名字、描述、id(地址)|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get 请求
-	http://etm.red:8096/api/uia/issuers/RAY 
+	http://etm.red:8096/api/uia/issuers/RAY
 
 JSON返回示例：  
-	
+
 	{
 		"success": true,
 		"issuer": {
@@ -2680,13 +2683,13 @@ JSON返回示例：
 			"issuerId": "AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX"
 		}
 	}
-	
+
 #### 10.3 查看指定发行商的资产
 接口地址：/api/uia/issuers/:name/assets     
 请求方式：GET       
 支持格式：urlencoded       
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | name | String | Y  | 可以为发行商名称或ETM账户地址|
@@ -2701,15 +2704,15 @@ JSON返回示例：
 | assets | array  |每个元素是一个字典，每个字典是一个资产详情，包含资产名字、描述、上限（最大发行量=真实发行量*10**精度）、精度、策略、当前发行量、发行高度、发行商id，acl模式（0：黑名单，1：白名单）、是否注销|
 | count | integer  |该发行商注册的资产总个数（包含已注销的）|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get 请求
 	http://etm.red:8096/api/uia/issuers/RAY/assets
 
 JSON返回示例：  
-	
+
 	{
 		"success": true,
 		"assets": [{
@@ -2731,13 +2734,13 @@ JSON返回示例：
 		}],
 		"count": 1
 	}
-	
+
 #### 10.4 获取全网所有资产信息
 接口地址：/api/uia/assets   
 请求方式：GET       
 支持格式：urlencoded       
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | limit | Integer | N  | 限制结果集个数，最小值：0,最大值：100|
@@ -2751,15 +2754,15 @@ JSON返回示例：
 | assets | array  |每个元素是一个字典，每个字典是一个资产详情，包含资产名字、描述、上限、精度、策略、当前发行量、发行高度、发行商id，acl、是否注销|
 | count | integer  |所有资产的个数|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get 请求
 	http://etm.red:8096/api/uia/assets
 
 JSON返回示例：  
-		
+
 	{
 		"success": true,
 		"assets": [{
@@ -2803,7 +2806,7 @@ JSON返回示例：
 请求方式：GET       
 支持格式：urlencoded       
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | name | String | Y  | 资产名|
@@ -2815,15 +2818,15 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | asset | json  |包含资产名字、描述、上限、精度、策略、当前发行量、发行高度、发行商id，acl、是否注销|
 
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get 请求
 	http://etm.red:8096/api/uia/assets/RAY.CNY
 
 JSON返回示例：  
-		
+
 	{
 		"success": true,
 		"asset": {
@@ -2850,7 +2853,7 @@ JSON返回示例：
 请求方式：GET       
 支持格式：urlencoded       
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | name | String | Y  | 资产名|
@@ -2865,24 +2868,24 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | list | array  |符合规则的账户列表|
 | count | integer  |符合规则账户总数|
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get 请求
 	http://etm.red:8096/api/uia/assets/RAY.CNY/acl/1
 	http://etm.red:8096/api/uia/assets/RAY.CNY/acl/0
 
 JSON返回示例：  
-		
+
 	//TODO 这里肯定有问题 发行的资产默认全部都是黑名单中的，需要设置acl
-	//flag = 1	
+	//flag = 1
 	{
 		"success": true,
 		"list": [],
 		"count": 0
 	}
-	//flag = 0 
+	//flag = 0
 	{
 		"success": true,
 		"list": [],
@@ -2895,7 +2898,7 @@ JSON返回示例：
 请求方式：GET       
 支持格式：urlencoded       
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | address | String | Y  | 账户地址|
@@ -2909,15 +2912,15 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | balances | array  |拥有的资产详情列表，每个元素是一个资产，包含资产名、余额、上限、精度、当前发行量、是否注销（0：未注销，1：已注销）|
 | count | integer  |当前该地址拥有的资产个数|
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get 请求
 	http://etm.red:8096/api/uia/balances/AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX
 
 JSON返回示例：  
-		
+
 	{
 		"success": true,
 		"balances": [{
@@ -2944,7 +2947,7 @@ JSON返回示例：
 支持格式：urlencoded  
 请求说明：包含发行商创建以及资产创建、发行、转账等        
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | address | String | Y  | 账户地址|
@@ -2958,16 +2961,16 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | transactions | array  |交易列表，每个元素是一个字典代表一次交易，包含交易id、区块高度、区块id、交易类型、时间戳、发送者公钥、发送者id、接收者id（系统为空，如资产注册）、交易数量（资产交易都为0）、手续费0.1ETM、签名、多重签名、确认数、资产信息（包含发行商id、发行商名字、描述）、交易id|
 | count | integer  |资产交易总个数|
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get 请求
 	http://etm.red:8096/api/uia/my/transactions/AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX
 
 JSON返回示例：  
-		
-	//TODO接口不存在	
+
+	//TODO接口不存在
 	{
 		"success":false,
 		"error":"API endpoint not found"
@@ -3024,14 +3027,14 @@ JSON返回示例：
 			"t_id": "17308768226103450697"
 		}],
 		"count": 58
-	}	
-	
+	}
+
 #### 10.9 获取指定账户指定资产的余额
 接口地址：/api/uia/balances/:address/:currency   
 请求方式：GET       
 支持格式：urlencoded        
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | address | String | Y  | 账户地址|
@@ -3045,15 +3048,15 @@ JSON返回示例：
 |------ |-----  |----              |   
 |success|boolean  |是否成功获得response数据      |   
 | balances | array  |包含资产名、余额、最大发行量、精度、当前发行量、是否注销|
-  
 
-请求示例： 
-	
+
+请求示例：
+
 	//get 请求
 	http://etm.red:8096/api/uia/balances/AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX/RAY.CNY
 
 JSON返回示例：  
-		
+
 	{
 		"success": true,
 		"balance": {
@@ -3078,7 +3081,7 @@ JSON返回示例：
 请求方式：GET       
 支持格式：urlencoded        
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | address | String | Y  | 账户地址|
@@ -3094,19 +3097,19 @@ JSON返回示例：
 | transactions | array  |交易列表，每个元素是一个字典代表一次交易，包含交易id、区块高度、区块id、交易类型、时间戳、发送者公钥、发送者id、接收者id（系统为空，如资产注册）、交易数量（资产交易都为0）、手续费0.1ETM、签名、多重签名、确认数、资产信息（包含发行商id、发行商名字、描述）、交易id|
 | count | integer  |资产交易总个数|   
 
-请求示例： 
-	
+请求示例：
+
 	//get 请求
 	http://etm.red:8096/api/uia/transactions/my/AN8qanfYV4HFdtVYoVacYm9CvVeLQ8tKFX/RAY.CNY
 JSON返回示例：  
-		
-	//TODO  应该是有交易的	
+
+	//TODO  应该是有交易的
 	{
 		"success":true,
 		"transactions":[],
 		"count":0
 	}
-	
+
 	//应该出现的结果
 	{
 		"success": true,
@@ -3144,7 +3147,7 @@ JSON返回示例：
 请求方式：GET       
 支持格式：urlencoded        
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | address | String | Y  | 账户地址|
@@ -3160,19 +3163,19 @@ JSON返回示例：
 | transactions | array  |交易列表，每个元素是一个字典代表一次交易，包含交易id、区块高度、区块id、交易类型、时间戳、发送者公钥、发送者id、接收者id（系统为空，如资产注册）、交易数量（资产交易都为0）、手续费0.1ETM、签名、多重签名、确认数、资产信息（包含发行商id、发行商名字、描述）、交易id|
 | count | integer  |资产交易总个数|   
 
-请求示例： 
-	
+请求示例：
+
 	//get 请求
 	http://etm.red:8096/api/uia/transactions/RAY.CNY
 JSON返回示例：  
-		
-	//TODO  应该是有交易的	
+
+	//TODO  应该是有交易的
 	{
 		"success":true,
 		"transactions":[],
 		"count":0
 	}
-	
+
 	//应该出现的结果
 	{
 		success: true,
@@ -3239,7 +3242,7 @@ JSON返回示例：
 请求方式：GET       
 支持格式：urlencoded        
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | address | String | Y  | 账户地址|
@@ -3255,13 +3258,13 @@ JSON返回示例：
 | transactions | array  |交易列表，每个元素是一个字典代表一次交易，包含交易id、区块高度、区块id、交易类型、时间戳、发送者公钥、发送者id、接收者id（系统为空，如资产注册）、交易数量（资产交易都为0）、手续费0.1ETM、签名、多重签名、确认数、资产信息（包含发行商id、发行商名字、描述）、交易id|
 | count | integer  |资产交易总个数|   
 
-请求示例： 
-	
+请求示例：
+
 	//get 请求
 	http://etm.red:8096/api/uia/transactions/RAY.CNY
 JSON返回示例：  
-		
-	//TODO  应该是有交易的	
+
+	//TODO  应该是有交易的
 	{
 		"success":true,
 		"transactions":[],
@@ -3269,19 +3272,19 @@ JSON返回示例：
 	}
 
 ##### 10.12.1 注册资产发行商
-对比参考 [9.3 UIA相关交易](#93-UIA相关交易) 
+对比参考 [9.3 UIA相关交易](#93-UIA相关交易)
 ##### 10.12.2 注册资产
-对比参考 [9.3 UIA相关交易](#93-UIA相关交易) 
+对比参考 [9.3 UIA相关交易](#93-UIA相关交易)
 ##### 10.12.3 更新资产访问控制列表
-对比参考 [9.3 UIA相关交易](#93-UIA相关交易) 
+对比参考 [9.3 UIA相关交易](#93-UIA相关交易)
 ##### 10.12.4 资产发行
-对比参考 [9.3 UIA相关交易](#93-UIA相关交易) 
+对比参考 [9.3 UIA相关交易](#93-UIA相关交易)
 ##### 10.12.5 资产转账
 接口地址：/api/uia/transfers   
 请求方式：PUT       
 支持格式：json        
 请求参数说明：  
-  
+
 |参数	|类型   |必填 |说明              |   
 |------ |-----  |---  |----              |   
 | secret | String | Y  | 账户密码|
@@ -3300,8 +3303,8 @@ JSON返回示例：
 |success|boolean  |是否成功获得response数据      |   
 | transactionId | String  |交易id|
 
-请求示例([参考](../utils/normal_transactions.js))： 
-	
+请求示例([参考](../utils/normal_transactions.js))：
+
 	//10.12.5 转账 pepper sleep youth blast vivid circle cross impact zebra neck salmon fee
 	//url: etm.red:8096/api/uia/transfers
 	function transferIssueAssert2() {
@@ -3309,7 +3312,7 @@ JSON返回示例：
 	  let currency = 'RAY.CNY';
 	  let recipientId = 'A9mhydu4PJd3KnSbi1p6vwuoBMGcHc4xjr'
 	  let amount ='1000000000'
-	
+
 	  return JSON.stringify({
 	    "secret": password,
 	    "amount":amount,
@@ -3325,10 +3328,10 @@ JSON返回示例：
 	})
 
 JSON返回示例：  
-		
-	{ 
+
+	{
 		success: true,
-		transactionId: '118b19b3c48d3660434b3016df08f94ef49458a800cbf4e7da6ae7ecc72b3a82' 
+		transactionId: '118b19b3c48d3660434b3016df08f94ef49458a800cbf4e7da6ae7ecc72b3a82'
 	}
 	//查询转账信息
 	http://etm.red:8096/api/uia/balances/A9mhydu4PJd3KnSbi1p6vwuoBMGcHc4xjr
@@ -3351,12 +3354,126 @@ JSON返回示例：
 		}],
 		"count": 1
 	}
-	
+
 ##### 10.12.6 更新黑白名单
 	//TODO 没有接口
 
+### 11 自定义合约接口调用
+参考[合约](https://github.com/etm-dev/secretDapp)，在此示例中，定义了多种合约，可以根据接口功能的不同使用不同的方式请求合约。
+
+#### 11.1 获取信息
+接口地址：/api/dapps/[dappID]/[router]/[params]
+请求方式：GET       
+支持格式：urlencoded   
+接口说明：获取合约储存的信息，并非增、删、改操作，就可以使用此方式调用        
+请求参数说明：参数以及返回值都需要自定义，请参考示例   
 
 
-	
+
+接口定义[示例](https://github.com/etm-dev/secretDapp/blob/master/interface/secret.js)：
+
+	//...
+	//获取加密的信息
+	app.route.get("/msg/:address", async req => {
+	  let {
+	    page,
+	    count
+	  } = req.query
+	  page = page || 1
+	  count = count || 10
+	  let address = req.params.address
+	  if (!etmjs.crypto.isAddress(address)) return INVALIDATE_USER
+	  let encodeMsgs = await app.model.Words.findAll({
+	    condition: {
+	      receiver: address
+	    },
+	    limit: count,
+	    offset: count * (page - 1)
+	  })
+	  let totalCount = await app.model.Words.count({})
+	  return {
+	    encodeMsgs,
+	    totalCount
+	  }
+	})
+
+请求示例：
+
+	//get 请求
+	http://etm.red:8097/api/dapps/27c1e5b0bd7f659298ca7ce8223d9958a2b0b696e5b0fd5001941da21d1233c6/msg/AGWefmsaAhnqx75xhucqjk8Ah2fqDG3Q4P
+
+JSON返回示例：  
+
+	{
+	"encodeMsgs": [{
+		"id": "mjl53EbE2xCy",
+		"msg": "0e141fa52463531fb654c2398cabf883ef194130af99a88e9e34669cb995e40c5de9cbe03a081a196dff375a719dc5b930435ebe9a36f31f821a1b22",
+		"sender": "AGWefmsaAhnqx75xhucqjk8Ah2fqDG3Q4P",
+		"receiver": "AGWefmsaAhnqx75xhucqjk8Ah2fqDG3Q4P",
+		"date": "1552632154799"
+	}],
+	"totalCount": 1,
+	"success": true
+	}
+
+
+#### 11.2 修改信息
+接口地址：/api/dapps/[dappID]/transactions/signed
+请求方式：PUT       
+支持格式：JSON          
+请求参数说明：参数以及返回值都需要自定义，请参考示例   
+
+
+
+接口定义[示例](https://github.com/etm-dev/secretDapp/blob/master/contract/secret.js)：
+
+	//...
+	//此处的所有接口都不能有返回值，只要有返回值，就代表此接口出错，会被rollback
+	module.exports = {
+	  register: async function(publicKey, image, nickname) {
+	    let sender = this.trs.senderId
+	    if (!etmjs.crypto.isAddress(sender)) return INVALIDATE_USER
+	    let temAddress = etmjs.crypto.getAddress(publicKey)
+	    if (!etmjs.crypto.isAddress(temAddress)) return INVALIDATE_USER
+	    if (sender != temAddress) {
+	      return INVALIDATE_USER
+	    }
+	    if (!nickname) {
+	      return INVALIDATE_NICKNAME
+	    }
+	    await app.model.User.create({
+	      address: sender,
+	      publicKey,
+	      image,
+	      nickname
+	    })
+
+	  },
+	  //...
+
+请求示例：
+
+	//put请求
+	let transaction = etmJS.dapp.createInnerTransaction({
+	  fee: `0`,
+	  type: 1000,
+	  args: JSON.stringify(['publicKey','imageUrl','nickname'])
+	}, secret)
+	axios.put(url, {
+	  transaction
+	}).then(res => {
+	  console.log(res)
+	}).catch(err => {
+	  console.error(err);
+	})
+
+JSON返回示例：  
+
+	{
+		"success": true
+	}
+
+
+
 -----------
 下一章：[实际demo](./demo.md)
